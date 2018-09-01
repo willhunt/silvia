@@ -1,0 +1,27 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/swa-app.html",
+  "fragments": [
+    "src/swa-view1.html",
+    "src/swa-brew-view.html",
+    "src/swa-info-view.html",
+    "src/swa-sessions-view.html",
+    "src/swa-settings-view.html",
+    "src/swa-view404.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "bower.json"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    { "preset": "es5-bundled" }
+  ]
+}

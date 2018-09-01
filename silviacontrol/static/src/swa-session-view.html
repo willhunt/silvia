@@ -1,0 +1,149 @@
+<!-- Load the Polymer.Element base class -->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="vaadin-material-styles.html">
+
+<dom-module id="swa-session-view">
+  <!-- Defines the element's style and local DOM -->
+  <template is="dom-bind">
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+
+        padding: 16px;
+      }
+      .layout-item {
+        padding: 15px;
+      }
+      paper-card {
+        min-width: 450px;
+        max-width: 600px;
+      }
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #FFF;
+      }
+    </style>
+    <style is="custom-style" include="vaadin-material-styles">
+      vaadin-grid {
+        height: auto;
+      }
+      vaadin-grid#material {
+        --vaadin-grid-cell: {
+            padding: 8px;
+          };
+      }
+      .centercell {
+        text-align: center;
+        align-items: center;
+      }
+    </style>
+
+    <!-- app-route provides session item. -->
+    <app-route
+      route="{{route}}"
+      pattern="/:item"
+      data="{{sessionData}}"
+      active="{{sessionActive}}"></app-route>
+
+    <!-- Spinner when loading -->
+    <div class="overlay" hidden$="[[!loading]]">
+      <paper-spinner active="[[loading]]"></paper-spinner>
+    </div>
+
+    <div class="horizontal center-justified layout wrap">   
+      <iron-ajax auto
+        id="requestSession"
+        url="[[computeUrl(sessionData.item)]]"
+        handle-as="json"
+        on-response="handleApiResponse"
+        last-response="{{apisession}}"
+        loading = "{{loading}}">
+      </iron-ajax>
+
+      <paper-card heading="Session [[sessionData.item]] Response">
+        <div class="card-content">
+          <!-- The array is set as the <vaadin-grid>'s "items" property -->
+          <vaadin-grid id="material" items="[[apisession]]" size="3">
+            <vaadin-grid-column width="120px" flex-grow="0">
+              <template class="header">Date</template>
+              <template>[[item.date]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" flex-grow="1">
+              <template class="header">Time</template>
+              <template>[[item.time]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px" flex-grow="1">
+              <template class="header">
+                <div class="centercell">Temperature</div>
+              </template>
+              <template>
+                <div class="centercell">[[item.T_boiler]]</div>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    // Your new element extends the Polymer.Element base class
+    class SwaSessionView extends Polymer.Element {
+      static get is() {
+        return 'swa-session-view';
+      }
+
+      static get properties() {
+        return {
+          route: Object,
+          routeData: Object,
+          sessionData: Object,
+          active:{
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+          },
+          loading: {
+            type: Boolean,
+            value: false,
+            notify: true
+          }
+        }
+      }
+
+      computeUrl(item) {
+        // var url = window.location.pathname;
+        // var session = url.substring(url.lastIndexOf('/') + 1)
+        // var apiUrl = "/api/v2/session/" + session;
+        var apiUrl = "/api/v2/session/" + item;
+        console.log('API URL:' + apiUrl);
+        return apiUrl;
+      }
+
+      handleApiResponse(apiresponse) {
+        // Check api response for debugging
+        console.log(apiresponse.detail.response);
+      }
+
+    }
+    //Now, register your new custom element so the browser can use it
+    customElements.define(SwaSessionView.is, SwaSessionView);
+  </script>
+</dom-module>

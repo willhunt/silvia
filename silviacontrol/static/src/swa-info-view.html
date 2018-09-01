@@ -1,0 +1,84 @@
+<!-- Load the Polymer.Element base class -->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="vaadin-material-styles.html">
+
+<dom-module id="swa-info-view">
+  <!-- Defines the element's style and local DOM -->
+  <template is="dom-bind">
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+
+        padding: 16px;
+      }
+      .layout-item {
+        padding: 15px;
+      }
+      paper-card {
+        min-width: 350px;
+        max-width: 400px;
+      }
+    </style>
+    <style is="custom-style" include="vaadin-material-styles">
+      vaadin-grid {
+        height: auto;
+      }
+      vaadin-grid#material {
+        --vaadin-grid-cell: {
+            padding: 8px;
+          };
+      }
+      .centercell {
+        text-align: center;
+        align-items: center;
+      }
+    </style>
+
+    <div class="horizontal center-justified layout wrap">    
+      <paper-card heading="Target Parameters">
+        <div class="card-content">
+          <!-- Load brew data from file to display in table-->
+          <iron-ajax auto url="../../static/data/brewparameters.json" last-response="{{params}}" handle-as="json"></iron-ajax> 
+          <!-- The array is set as the <vaadin-grid>'s "items" property -->
+          <vaadin-grid id="material" items="[[params]]" size="3">
+            <vaadin-grid-column width="75px" flex-grow="1">
+              <template class="header">Parameter</template>
+              <template>[[item.parameter]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="70px" flex-grow="0">
+              <template class="header">
+                  <div class="centercell">Value</div>
+                </template>
+              <template>
+                  <div class="centercell">[[item.value]]</div>
+              </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="65px" flex-grow="0">
+              <template class="header">Units</template>
+              <template>[[item.units]]</template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    // Your new element extends the Polymer.Element base class
+    class SwaInfoView extends Polymer.Element {
+      static get is() {
+        return 'swa-info-view';
+      }
+    }
+    //Now, register your new custom element so the browser can use it
+    customElements.define(SwaInfoView.is, SwaInfoView);
+  </script>
+</dom-module>

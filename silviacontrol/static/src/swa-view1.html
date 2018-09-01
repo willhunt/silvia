@@ -1,0 +1,60 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="swa-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <h1>Test Area</h1>
+      <paper-icon-button icon="favorite" title="heart"></paper-icon-button>
+      <p>Test iron form submission</p>
+      <iron-form id="testform" on-iron-form-presubmit="_presubmit">
+        <form method="post" action="http://httpbin.org/post">
+            <paper-input name="testfield" label="Type here"></paper-input>
+            <paper-button on-tap="_submit">Submit</paper-button>
+        </form>
+      </iron-form>
+    </div>
+  </template>
+
+  <script>
+    class SwaView1 extends Polymer.Element {
+      static get is() { return 'swa-view1'; }
+
+      _submit() {
+        this.$.testform.submit();
+      }
+
+      _presubmit(e) {
+        console.log('Pre-submit for settings form');
+        //this.request.method = 'put';
+        var requestBody = this.$.testform.request.body;
+        console.log('Pre-submit request:', requestBody);
+      }
+    }
+
+    window.customElements.define(SwaView1.is, SwaView1);
+  </script>
+</dom-module>

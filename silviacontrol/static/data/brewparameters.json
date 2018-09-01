@@ -1,0 +1,5 @@
+[
+    {"id": 0, "parameter": "Water Teperature", "value": 88, "units": "C"},
+    {"id": 1, "parameter": "Brew Volume", "value": 50, "units": "ml"},
+    {"id": 2, "parameter": "Extraction Time", "value": 25, "units": "s"}
+]

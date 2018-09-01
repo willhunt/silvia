@@ -1,0 +1,204 @@
+<!-- Load the Polymer.Element base class -->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="swa-brew-view">
+  <!-- Defines the element's style and local DOM -->
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+
+        padding: 16px;
+      }
+      .layout-item {
+        padding: 15px;
+      }
+      paper-card {
+        min-width: 380px;
+        max-width: 500px;
+      }
+      iron-image {
+        --iron-image-width: 100%;
+      }
+    </style>
+
+    <!--
+      AJAX call to flask database via API to retrieve current settings
+      Response stored in {{variable}} for use on page
+    -->
+    <div class="horizontal center-justified layout wrap">
+      <iron-ajax auto
+        id="requestSettings"
+        url="/api/v2/settings/1"
+        handle-as="json"
+        on-response="handleSettingsApiResponse"
+        last-response="{{apisettings}}">
+      </iron-ajax>
+      <iron-ajax auto
+        id="machineStatus"
+        url="/api/v2/status"
+        handle-as="json"
+        on-response="handleStatusApiResponse"
+        last-response="{{status}}">
+      </iron-ajax>
+      <iron-ajax
+        id="changeStatus"
+        url="/api/v2/status"
+        method="put"
+        handle-as="json"
+        content-type="application/json"
+        on-response="handleStatusApiResponse"
+        last-response="{{status}}">
+      </iron-ajax>
+      <iron-ajax auto
+        id="getTemperature"
+        url="/api/v2/tempcurrent"
+        method="get"
+        handle-as="json"
+        content-type="application/json"
+        on-response="handleTempApiResponse"
+        last-response="{{tempresponse}}">
+      </iron-ajax>
+
+      <paper-card>
+      <!-- <paper-card image="../../static/images/silvia_vector_illustration_off.svg" alt="Rancillio Silvia image" style="margin: 20px;">        -->
+        <div class="card-content horizontal center-justified layout">
+          <iron-image width="100%" alt="Rancillio Silvia image" src="../../static/images/silvia_vector_illustration_off.svg"></iron-image>
+        </div>
+          
+        <div class="card-actions horizontal layout">
+          <paper-button on-tap="updateTemperature">[[tempresponse_T]]</paper-button>
+          <div class="flex"></div>
+          <paper-button raised class="secondary" on-tap="toggleOn">[[status_onButton]]</paper-button>
+          <paper-button raised toggles active="[[status_brewButton]]" class="run" on-tap="toggleBrew" disabled="[[!status.on]]">
+            Brew
+          </paper-button>
+        </div> 
+      </paper-card>
+    </div>
+
+  </template>
+
+  <script>
+    // Your new element extends the Polymer.Element base class
+    class SwaBrewView extends Polymer.Element {
+      static get is() {
+        return 'swa-brew-view';
+      }
+
+      static get properties() {
+        return {
+          status_onButton: {
+            type: String,
+          },
+          status_brewButton: {
+            type: Boolean,
+          },
+          status: {
+            type: Object,
+          },
+          t_update: {
+            type: Number,
+          },
+          tempresponse_T: {
+            type: String,
+          }
+        }
+      }
+
+      handleStatusApiResponse(apiresponse) {
+        // Check api response for debugging
+        console.log(apiresponse.detail.response);
+        // Check machine on/off status
+        if (apiresponse.detail.response.on) {
+          this.status_onButton = "Off";
+        } else {
+          this.status_onButton = "On";
+        }
+        // Check machine brew status
+        if (apiresponse.detail.response.brew) {
+          this.status_brewButton = true;
+        } else {
+          this.status_brewButton = false;
+        } 
+        this.updateTemperature()
+      }
+
+      handleSettingsApiResponse(apiresponse) {
+        // Check api response for debugging
+        console.log(apiresponse.detail.response);
+        // Get update time interval
+        this.t_update = apiresponse.detail.response.t_update
+      }
+
+      toggleOn() {
+        if (this.status.on) {  // If machine on
+          var new_on = false;
+        } else {
+          var new_on = true;
+        }
+        console.log("Toggle machine on/off");
+        this.$.changeStatus.body = {"on": new_on, "brew": false};  // Make sure brewing is off when changing on/off
+        this.$.changeStatus.generateRequest();
+      }
+     
+      toggleBrew() {
+        console.log("Toggle machine brew");
+        //button = this.$.brewButton;
+        if (this.status.on) {  // Only change if machine is on
+          if (this.status.brew) {
+            var new_brew = false;
+          } else {
+            var new_brew = true;
+          }
+        } else {
+          var new_brew = false;  // Turn brewing off if mchine is off (for some reason)
+        }
+        this.$.changeStatus.body = {"brew": new_brew};
+        this.$.changeStatus.generateRequest();
+      }
+
+      handleTempApiResponse(apiresponse) {
+        // Check api response for debugging
+        console.log(apiresponse.detail.response);
+        if (apiresponse.detail.response.hasOwnProperty('T_boiler')){
+          if (apiresponse.detail.response.T_boiler == null) {
+            console.log("Temperature is old")
+            this.tempresponse_T = "-";
+          } else {
+            this.tempresponse_T = apiresponse.detail.response.T_boiler + String.fromCharCode(176) + "C";
+          }
+          
+        } else {
+          this.tempresponse_T = "Error";
+        }
+        var t_update_ms = this.t_update * 1000
+        console.log("Update time = " + t_update_ms + " ms")
+        setTimeout(() => this.updateTemperature(), t_update_ms)
+      }
+
+      updateTemperature() {
+        if (this.status_onButton == "Off") { // Only request temperature if machine is on, so button ays "off"
+          console.log("Requesting latest temperature...");
+          this.$.getTemperature.generateRequest();
+        } else {
+          console.log("Machine off, can't update temperature.");
+          this.tempresponse_T = "-";
+        }
+      }
+
+      tempChart() {
+        console.log('Change to temperature chart...');
+      }
+    }
+    //Now, register your new custom element so the browser can use it
+    customElements.define(SwaBrewView.is, SwaBrewView);
+  </script>
+</dom-module>

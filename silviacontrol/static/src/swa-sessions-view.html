@@ -1,0 +1,113 @@
+<!-- Load the Polymer.Element base class -->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="vaadin-material-styles.html">
+
+<dom-module id="swa-sessions-view">
+  <!-- Defines the element's style and local DOM -->
+  <template is="dom-bind">
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+
+        padding: 16px;
+      }
+      .layout-item {
+        padding: 15px;
+      }
+      paper-card {
+        min-width: 450px;
+        max-width: 600px;
+      }
+    </style>
+    <style is="custom-style" include="vaadin-material-styles">
+      vaadin-grid {
+        height: auto;
+      }
+      vaadin-grid#material {
+        --vaadin-grid-cell: {
+            padding: 8px;
+          };
+      }
+      .centercell {
+        text-align: center;
+        align-items: center;
+      }
+    </style>
+
+    <div class="horizontal center-justified layout wrap">   
+      <iron-ajax auto
+        id="requestSessions"
+        url="/api/v2/sessions"
+        handle-as="json"
+        on-response="handleApiResponse"
+        last-response="{{apisessions}}">
+      </iron-ajax>
+
+      <paper-card heading="Session History">
+        <div class="card-content">
+          <!-- The array is set as the <vaadin-grid>'s "items" property -->
+          <vaadin-grid id="material" items="[[apisessions]]" size="3" active-item="{{activeItem}}">
+            <vaadin-grid-column width="75px" flex-grow="0">
+              <template class="header">
+                <div class="centercell">Session</div>
+              </template>
+              <template>
+                <div class="centercell"><a href="/session-view/[[item.id]]">[[item.id]]</a></div>
+              </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="70px" flex-grow="1">
+              <template class="header">Date</template>
+              <template>[[item.date]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="70px" flex-grow="1">
+              <template class="header">Time</template>
+              <template>[[item.time]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="65px" flex-grow="0">
+              <template class="header">Active</template>
+              <template>[[item.active]]</template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    // Your new element extends the Polymer.Element base class
+    class SwaSessionsView extends Polymer.Element {
+      static get is() {
+        return 'swa-sessions-view';
+      }
+
+      static get properties() {
+        return {
+          activeItem: {
+            observer: '_activeItemChanged'
+          },
+        }
+      }
+
+      handleApiResponse(apiresponse) {
+        // Check api response for debugging
+        console.log(apiresponse.detail.response);
+      }
+
+      _activeItemChanged(item) {
+          // Highlight selected item (from example, not sure how this works)
+          this.$.material.selectedItems = item ? [item] : [];
+        }
+
+    }
+    //Now, register your new custom element so the browser can use it
+    customElements.define(SwaSessionsView.is, SwaSessionsView);
+  </script>
+</dom-module>
