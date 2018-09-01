@@ -36,21 +36,21 @@
     <div class="horizontal center-justified layout wrap">
       <iron-ajax auto
         id="requestSettings"
-        url="/api/v2/settings/1"
+        url="/api/v1/settings/1"
         handle-as="json"
         on-response="handleSettingsApiResponse"
         last-response="{{apisettings}}">
       </iron-ajax>
       <iron-ajax auto
         id="machineStatus"
-        url="/api/v2/status"
+        url="/api/v1/status"
         handle-as="json"
         on-response="handleStatusApiResponse"
         last-response="{{status}}">
       </iron-ajax>
       <iron-ajax
         id="changeStatus"
-        url="/api/v2/status"
+        url="/api/v1/status"
         method="put"
         handle-as="json"
         content-type="application/json"
@@ -59,12 +59,12 @@
       </iron-ajax>
       <iron-ajax auto
         id="getTemperature"
-        url="/api/v2/tempcurrent"
+        url="/api/v1/latestresponse"
         method="get"
         handle-as="json"
         content-type="application/json"
         on-response="handleTempApiResponse"
-        last-response="{{tempresponse}}">
+        last-response="{{latestresponse}}">
       </iron-ajax>
 
       <paper-card>
@@ -74,7 +74,7 @@
         </div>
           
         <div class="card-actions horizontal layout">
-          <paper-button on-tap="updateTemperature">[[tempresponse_T]]</paper-button>
+          <paper-button on-tap="updateTemperature">[[latestresponse_T]]</paper-button>
           <div class="flex"></div>
           <paper-button raised class="secondary" on-tap="toggleOn">[[status_onButton]]</paper-button>
           <paper-button raised toggles active="[[status_brewButton]]" class="run" on-tap="toggleBrew" disabled="[[!status.on]]">
@@ -107,7 +107,7 @@
           t_update: {
             type: Number,
           },
-          tempresponse_T: {
+          latestresponse_T: {
             type: String,
           }
         }
@@ -171,13 +171,13 @@
         if (apiresponse.detail.response.hasOwnProperty('T_boiler')){
           if (apiresponse.detail.response.T_boiler == null) {
             console.log("Temperature is old")
-            this.tempresponse_T = "-";
+            this.latestresponse_T = "-";
           } else {
-            this.tempresponse_T = apiresponse.detail.response.T_boiler + String.fromCharCode(176) + "C";
+            this.latestresponse_T = apiresponse.detail.response.T_boiler + String.fromCharCode(176) + "C";
           }
           
         } else {
-          this.tempresponse_T = "Error";
+          this.latestresponse_T = "Error";
         }
         var t_update_ms = this.t_update * 1000
         console.log("Update time = " + t_update_ms + " ms")
@@ -190,7 +190,7 @@
           this.$.getTemperature.generateRequest();
         } else {
           console.log("Machine off, can't update temperature.");
-          this.tempresponse_T = "-";
+          this.latestresponse_T = "-";
         }
       }
 

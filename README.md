@@ -1,6 +1,6 @@
 # Silvia Web App
 !!! Work in progress !!!
-Flask and Polymer web server to control espresso machine. Raspberry Pi hosts web server inside appliance.
+Django and Polymer web server to control espresso machine. Raspberry Pi hosts web server inside appliance.
 
 ## How to install
 ### Install server side requirements

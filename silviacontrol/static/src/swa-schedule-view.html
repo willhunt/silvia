@@ -64,14 +64,14 @@
     <div class="horizontal center-justified layout wrap">
       <iron-ajax auto
         id="requestSchedules"
-        url="/api/v2/schedules"
+        url="/api/v1/schedules"
         handle-as="json"
         on-response="handleApiResponse"
         last-response="{{apischedules}}">
       </iron-ajax>
       <iron-ajax
         id="addSchedule"
-        url="/api/v2/schedule"
+        url="/api/v1/schedule"
         handle-as="json"
         method="put"
         on-response="handleApiResponse"
