@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from .models import (SettingsModel, StatusModel, SessionModel,
                         ResponseModel)
 from .serializers import (SettingsSerializer, StatusSerializer, SessionSerializer,
                             ResponseSerializer)
 
 
-# Create your views here.
+# Html Views -----------
 def index(request):
     return HttpResponse("You're at Silvia Mission Control")
 
@@ -18,6 +18,7 @@ def polymerspa(request):
     context = {}
     return render(request, 'silviacontrol/polymerspa.html', context)
 
+# API Views -----------
 class SettingsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows settings to be viewed or edited
@@ -52,14 +53,24 @@ class ResponseViewSet(viewsets.ModelViewSet):
     """
     API endpoint for machine status to be viewed or edited
     """
-    # try:
-    #     ResponseModel.objects.all()
-    # except:
-    #     # If there are no settings, create them
-    #     status = StatusModel()
-    #     status.save()
-    queryset = ResponseModel.objects.all()
     serializer_class = ResponseSerializer
+    queryset = ResponseModel.objects.all()
+
+    # def get_queryset(self):
+    #     queryset = ResponseModel.objects.all()
+    #     position = self.request.query_params.get('position', None)
+    #     if position == 'latest':
+    #         last_id = queryset.order_by('-t')[0].id
+    #         queryset = queryset.filter(id=last_id)
+    #     return queryset
+
+    def get_object(self):
+        # position = self.request.query_params.get('position', None)
+        if self.kwargs['pk'] == 'latest':
+            obj = ResponseModel.objects.order_by('-t')[0]
+            return obj
+        else:
+            return super(ResponseViewSet, self).get_object()
 
 
 class SessionViewSet(viewsets.ModelViewSet):
