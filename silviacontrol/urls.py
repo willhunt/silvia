@@ -8,6 +8,7 @@ router.register(r'settings', views.SettingsViewSet)
 router.register(r'status', views.StatusViewSet)
 router.register(r'response', views.ResponseViewSet, base_name='response')
 router.register(r'session', views.SessionViewSet)
+router.register(r'schedule', views.ScheduleViewSet)
 
 urlpatterns = [
     # Rest API routing

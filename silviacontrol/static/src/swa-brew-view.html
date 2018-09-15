@@ -36,21 +36,22 @@
     <div class="horizontal center-justified layout wrap">
       <iron-ajax auto
         id="requestSettings"
-        url="/api/v1/settings/1"
+        url="/api/v1/settings/1/"
         handle-as="json"
         on-response="handleSettingsApiResponse"
         last-response="{{apisettings}}">
       </iron-ajax>
       <iron-ajax auto
         id="machineStatus"
-        url="/api/v1/status"
+        url="/api/v1/status/1/"
         handle-as="json"
         on-response="handleStatusApiResponse"
         last-response="{{status}}">
       </iron-ajax>
       <iron-ajax
         id="changeStatus"
-        url="/api/v1/status"
+        url="/api/v1/status/1/"
+        headers="[[_headers()]]"
         method="put"
         handle-as="json"
         content-type="application/json"
@@ -59,7 +60,7 @@
       </iron-ajax>
       <iron-ajax auto
         id="getTemperature"
-        url="/api/v1/latestresponse"
+        url="/api/v1/response/latest/"
         method="get"
         handle-as="json"
         content-type="application/json"
@@ -111,6 +112,10 @@
             type: String,
           }
         }
+      }
+
+      _headers() {
+        return {'X-CSRFToken': window.document.body.dataset.csrfToken};
       }
 
       handleStatusApiResponse(apiresponse) {

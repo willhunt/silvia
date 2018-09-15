@@ -64,26 +64,26 @@
     <div class="horizontal center-justified layout wrap">
       <iron-ajax auto
         id="requestSchedules"
-        url="/api/v1/schedules"
+        url="/api/v1/schedule/"
         handle-as="json"
         on-response="handleApiResponse"
         last-response="{{apischedules}}">
       </iron-ajax>
       <iron-ajax
         id="addSchedule"
-        url="/api/v1/schedule"
+        url="/api/v1/schedule/"
+        headers="[[_headers()]]"
         handle-as="json"
-        method="put"
-        on-response="handleApiResponse"
-        last-response="{{apischedules}}">
+        method="post"
+        on-response="_getSchedules">
       </iron-ajax>
       <iron-ajax
         id="deleteSchedule"
         url="{{urlDelete}}"
+        headers="[[_headers()]]"
         handle-as="json"
         method="delete"
-        on-response="handleApiResponse"
-        last-response="{{apischedules}}">
+        on-response="_getSchedules">
       </iron-ajax>
 
       <!-- Loop over all schedule entries -->
@@ -97,19 +97,19 @@
                   <div class="layout vertical">
                     <div class="layout horizontal around-justified">
                       <!--
-                      <paper-time-input format="24" label="Turn On" name="t_on"
-                            hour="{{_parseHour(item.t_on)}}" min="{{_parseMin(item.t_on)}}">
+                      <paper-time-input format="24" label="Turn On" name="start_time"
+                            hour="{{_parseHour(item.start_time)}}" min="{{_parseMin(item.start_time)}}">
                       </paper-time-input>
                     -->
-                      <paper-input name="t_on" label="Turn on" class="time-input"
-                                    value="{{_parseTime(item.t_on)}}"
+                      <paper-input name="start_time" label="Turn on" class="time-input"
+                                    value="{{_parseTime(item.start_time)}}"
                                     allowed-pattern="[\d:]"
                                     pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" 
                                     placeholder="00:00"
                                     error-message="HH:MM">
                       </paper-input>
-                      <paper-input name="t_off" label="Turn off" class="time-input"
-                                    value="{{_parseTime(item.t_off)}}"
+                      <paper-input name="end_time" label="Turn off" class="time-input"
+                                    value="{{_parseTime(item.end_time)}}"
                                     allowed-pattern="[\d:]"
                                     pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" 
                                     placeholder="00:00"
@@ -166,6 +166,10 @@
         }
       }
 
+      _headers() {
+        return {'X-CSRFToken': window.document.body.dataset.csrfToken};
+      }
+
       handleApiResponse(apiresponse) {
         // Check api response for debugging
         console.log(apiresponse.detail.response);
@@ -173,7 +177,6 @@
 
       connectedCallback() {
         super.connectedCallback();
-
       }
 
       // Code from response to my question here:
@@ -240,6 +243,10 @@
         return days[index_day]
       }
 
+      _getSchedules() {
+        console.log("Getting Schedules")
+        this.$.requestSchedules.generateRequest();
+      }
       _addSchedule() {
         console.log("Adding new schedule")
         this.$.addSchedule.generateRequest();
@@ -255,18 +262,21 @@
             { opacity: 1},
             { opacity: 0},
           ], {
-            duration: 500,
+            duration: 300,
             delay: 5,
             fill: "forwards",
+            // endDelay: 100,
         })
         animation.onfinish = () => {
           console.log("Sending delete request");
+          // card.remove()
           this.$.deleteSchedule.generateRequest();
+          // card.style.opacity = "1";
         }
       }
 
       computeUrl(idSchedule) {
-        return ['/api/v2/schedule', idSchedule].join('/');
+        return '/api/v1/schedule/' + idSchedule + '/';
       }
 
       // Animations

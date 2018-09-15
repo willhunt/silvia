@@ -49,8 +49,8 @@ $ apt-get install redis-server
 ```bash
 $ pytest
 $ redis-cli flushall
-$ celery -A celery_worker.celery worker --loglevel=info
-$ celery -A celery_worker.celery beat -S redbeat.RedBeatScheduler
+$ celery -A silvia worker -l info
+$ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 $ python manage.py runserver
 ```
 Use this to check redis tasks

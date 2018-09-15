@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils import timezone
 from datetime import datetime, time
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 class SettingsModel(models.Model):
     """
@@ -40,18 +42,29 @@ class SessionModel(models.Model):
     Reference session for each machine on/off cycle
     Holds all temperature records for session as database relationship
     """
-    t_start = models.DateTimeField(auto_now=True)  # Session start time
+    t_start = models.DateTimeField(default=timezone.now)  # Session start time
     t_end = models.DateTimeField(blank=True, null=True)  # Session end time
-    active = models.BooleanField()  # Current session flag
+    active = models.BooleanField(default=True)  # Current session flag
 
-    def set_end_time(self, t_end=datetime.now(), active=False):
+    def set_end_time(self, t_end=None, active=False):
         """
         ARGUMENTS:
         t_end (DateTime): Session end time
         active (Bool): Session active flag
         """
-        self.t_end = t_end
+        if t_end is None:
+            self.t_end = timezone.now()
+        else:
+            self.t_end = t_end
         self.active = active
+
+    @property
+    def start_date(self):
+        return timezone.localtime(self.t_start).strftime("%Y-%m-%d") 
+
+    @property
+    def start_time(self):
+        return timezone.localtime(self.t_start).strftime("%H:%M")
 
     def __repr__(self):
         repr_str = ("Session %d - %s"  % (self.id, self.t_start.strftime("%Y-%m-%d %H:%M")))
@@ -73,7 +86,8 @@ class ResponseModel(models.Model):
     Vdot = models.FloatField(default=0)
     brewing = models.BooleanField(default=False)
 
-    def add_response(self, T_boiler=None, t=datetime.now(), T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 
+    @classmethod
+    def create(cls, T_boiler=None, t=None, T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 
         """
         ARUMENTS:
         T_boiler (Float): Boiler temperature [degC]
@@ -82,22 +96,86 @@ class ResponseModel(models.Model):
         duty_pid (list of Float): Controller output breakdown (0-1) [duty_p, duty_i, duty_d]
         Vdot (Float): Pump flow rate [l/mim]
         """
-        self.t = t
-        self.T_boiler = T_boiler
-        self.T_amb = T_amb
-        self.duty = duty
-        self.duty_p = duty_pid[0]
-        self.duty_i = duty_pid[1]
-        self.duty_d = duty_pid[2]
         try:
             status = StatusModel.objects.filter(id=1)
-            self.brewing = status.brew
+            brewing = status.brew
         except:
-            self.brewing = False
+            brewing = False
+        if t is None:
+            t = timezone.now()
+
+        return cls(T_boiler=T_boiler, t=t, duty=duty, duty_pid=duty_pid, Vdot=Vdot)
+
+    @property
+    def response_date(self):
+        return self.t.date()
+
+    @property
+    def response_time(self):
+        return self.t.strftime("%H:%M:%S")
 
     def __repr__(self):
         repr_str = ("T=%d @ %s" % (self.T_boiler, self.t.strftime("%Y-%m-%d %H:%M:%S")))
         return repr_str
+
+
+class ScheduleManager(models.Manager):
+    """
+    Overwite manager to perform custom create, update and deletions for related schedule models (django_cleery_beat)
+
+    NB: pre-delete handled in signals.py file
+    """
+    def create_schedule(self, name='Schedule', t_on=time(hour=0, minute=0), t_off=time(hour=0, minute=0), days='0000000', active=False):
+        """
+        Create object
+        Inputs
+            t_on (Time): On time
+            t_off (Time): Off time
+            days (String): Days string 0/1 strarting SUnday
+        """
+        dow_crontype = ScheduleModel.convert_dow_to_crontype(days)
+        if t_on:
+            crontab_on = CrontabSchedule(
+                minute = t_on.minute,
+                hour = t_on.hour,
+                day_of_week = dow_crontype,
+                day_of_month = '*',
+                month_of_year = '*'
+            )
+            crontab_on.save()
+            schedule_on = PeriodicTask(
+                crontab=crontab_on,
+                name=('%s_cron[%d]_on' % (name, crontab_on.id)),  
+                task='silviacontrol.tasks.async_power_machine',
+                args='["True"]',
+                enabled=active
+            )
+            schedule_on.save()
+        else:
+            schedule_on = None
+
+        if t_off:
+            crontab_off = CrontabSchedule(
+                minute = t_off.minute,
+                hour = t_off.hour,
+                day_of_week = dow_crontype,
+                day_of_month = '*',
+                month_of_year = '*'
+            )
+            crontab_off.save()
+            schedule_off = PeriodicTask(
+                crontab=crontab_off,
+                name=('%s_cron[%d]_on' % (name, crontab_off.id)),  
+                task='silviacontrol.tasks.async_power_machine',
+                args='["False"]',
+                enabled=active
+            )
+            schedule_off.save()
+        else:
+            schedule_off = None
+
+        schedule = self.create(name=name, days=days, schedule_on=schedule_on, schedule_off=schedule_off, active=active)
+        return schedule
 
 
 class ScheduleModel(models.Model):
@@ -105,12 +183,12 @@ class ScheduleModel(models.Model):
     Machine on/off schedule model
     """
     name = models.CharField(max_length=20, default='Schedule')  # Name of schedule (e.g. "Morning")
-    days = models.CharField(max_length=7, default='0000000')  # Day scedule - string of 0 or 1's to indicate if active on weekday starting with Mon=0
-    t_on = models.TimeField(default=time(hour=0, minute=0))  # Time to turn machine on
-    t_off = models.TimeField(default=time(hour=0, minute=0))  # Time to turn machine off
-    active = models.BooleanField()  # Schedule active [True] or not [False]
-    key_task_on = models.IntegerField(blank=True, null=True)  # Celery task key/id
-    key_task_off = models.IntegerField(blank=True, null=True)
+    days = models.CharField(max_length=7, default='0000000')  # Day schedule - string of 0 or 1's to indicate if active on weekday starting with Sun=0
+    schedule_on = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_on', null=True)  # Time to turn machine on
+    schedule_off = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_off', null=True)  # Time to turn machine off
+    active = models.BooleanField(default=False)  # Schedule active [True] or not [False]
+
+    objects = ScheduleManager()
 
     def get_weekdays(self):
         day_names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -119,6 +197,46 @@ class ScheduleModel(models.Model):
             if active is '1':
                 schedule_days.append(name)
         return schedule_days
+
+    @staticmethod
+    def convert_dow_to_crontype(dow):
+        """
+        Convert database day of the week to crontab list format
+        """
+        dow_cron = []
+        for i, d in enumerate(dow):
+            if d is "1":
+                dow_cron.append(i)
+        return dow_cron
+
+    @staticmethod
+    def convert_dow_from_crontype(dow):
+        """
+        Convert crontab style day of the week to database type
+        """
+        dow_cron = []
+        for i, d in enumerate(dow):
+            if d is "1":
+                dow_cron.append(i)
+        return dow_cron
+
+    @staticmethod
+    def four_digit_time_string(t):
+        hour = str(t.hour)
+        if len(hour) == 1:
+            hour = "0" + hour
+        minute = str(t.minute)
+        if len(minute) == 1:
+            minute = "0" + minute
+        return ("%s:%s" % (hour, minute))
+
+    @property
+    def start_time(self):
+        return self.four_digit_time_string(self.schedule_on.crontab)
+
+    @property
+    def end_time(self):
+        return self.four_digit_time_string(self.schedule_off.crontab)
 
     def __repr__(self):
         if self.active:

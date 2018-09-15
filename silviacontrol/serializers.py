@@ -15,14 +15,29 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class ResponseSerializer(serializers.ModelSerializer):
+    response_time = serializers.ReadOnlyField()
+    response_date = serializers.ReadOnlyField()
     class Meta:
         model = ResponseModel
         fields = '__all__'
 
 
 class SessionSerializer(serializers.ModelSerializer):
+    start_time = serializers.ReadOnlyField()
+    start_date = serializers.ReadOnlyField()
     class Meta:
         model = SessionModel
-        fields = '__all__'
+        fields = ('id', 'start_time', 'start_date', 't_start', 't_end', 'active') 
 
+
+class ScheduleSerializer(serializers.ModelSerializer):
+    start_time = serializers.ReadOnlyField()
+    end_time = serializers.ReadOnlyField()
+    class Meta:
+        model = ScheduleModel
+        fields = ('id', 'name', 'start_time', 'end_time', 'active', 'days') 
+
+    def create(self, validated_date):
+        schedule = ScheduleModel.objects.create_schedule()
+        return schedule
 

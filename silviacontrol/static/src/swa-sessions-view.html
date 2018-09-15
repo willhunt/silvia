@@ -45,7 +45,7 @@
     <div class="horizontal center-justified layout wrap">   
       <iron-ajax auto
         id="requestSessions"
-        url="/api/v1/sessions"
+        url="/api/v1/session"
         handle-as="json"
         on-response="handleApiResponse"
         last-response="{{apisessions}}">
@@ -65,11 +65,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="70px" flex-grow="1">
               <template class="header">Date</template>
-              <template>[[item.date]]</template>
+              <template>[[item.start_date]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column width="70px" flex-grow="1">
               <template class="header">Time</template>
-              <template>[[item.time]]</template>
+              <template>[[item.start_time]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column width="65px" flex-grow="0">
               <template class="header">Active</template>
