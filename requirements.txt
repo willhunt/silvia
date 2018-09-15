@@ -3,3 +3,4 @@ djangorestframework
 Celery
 django-celery-beat
 sqlalchemy
+random-word

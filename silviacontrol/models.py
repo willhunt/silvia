@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from datetime import datetime, time
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from random_word import RandomWords
 
 class SettingsModel(models.Model):
     """
@@ -119,76 +120,17 @@ class ResponseModel(models.Model):
         return repr_str
 
 
-class ScheduleManager(models.Manager):
-    """
-    Overwite manager to perform custom create, update and deletions for related schedule models (django_cleery_beat)
-
-    NB: pre-delete handled in signals.py file
-    """
-    def create_schedule(self, name='Schedule', t_on=time(hour=0, minute=0), t_off=time(hour=0, minute=0), days='0000000', active=False):
-        """
-        Create object
-        Inputs
-            t_on (Time): On time
-            t_off (Time): Off time
-            days (String): Days string 0/1 strarting SUnday
-        """
-        dow_crontype = ScheduleModel.convert_dow_to_crontype(days)
-        if t_on:
-            crontab_on = CrontabSchedule(
-                minute = t_on.minute,
-                hour = t_on.hour,
-                day_of_week = dow_crontype,
-                day_of_month = '*',
-                month_of_year = '*'
-            )
-            crontab_on.save()
-            schedule_on = PeriodicTask(
-                crontab=crontab_on,
-                name=('%s_cron[%d]_on' % (name, crontab_on.id)),  
-                task='silviacontrol.tasks.async_power_machine',
-                args='["True"]',
-                enabled=active
-            )
-            schedule_on.save()
-        else:
-            schedule_on = None
-
-        if t_off:
-            crontab_off = CrontabSchedule(
-                minute = t_off.minute,
-                hour = t_off.hour,
-                day_of_week = dow_crontype,
-                day_of_month = '*',
-                month_of_year = '*'
-            )
-            crontab_off.save()
-            schedule_off = PeriodicTask(
-                crontab=crontab_off,
-                name=('%s_cron[%d]_on' % (name, crontab_off.id)),  
-                task='silviacontrol.tasks.async_power_machine',
-                args='["False"]',
-                enabled=active
-            )
-            schedule_off.save()
-        else:
-            schedule_off = None
-
-        schedule = self.create(name=name, days=days, schedule_on=schedule_on, schedule_off=schedule_off, active=active)
-        return schedule
-
-
 class ScheduleModel(models.Model):
     """
     Machine on/off schedule model
     """
-    name = models.CharField(max_length=20, default='Schedule')  # Name of schedule (e.g. "Morning")
+    name = models.CharField(max_length=20, default=('Schedule %s' % RandomWords().get_random_word()))  # Name of schedule (e.g. "Morning")
     days = models.CharField(max_length=7, default='0000000')  # Day schedule - string of 0 or 1's to indicate if active on weekday starting with Sun=0
-    schedule_on = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_on', null=True)  # Time to turn machine on
-    schedule_off = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_off', null=True)  # Time to turn machine off
+    t_on = models.TimeField(default=time(hour=0, minute=0))
+    t_off = models.TimeField(default=time(hour=0, minute=0))
+    schedule_on = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_on', null=True, blank=True)  # Time to turn machine on
+    schedule_off = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_off', null=True, blank=True)  # Time to turn machine off
     active = models.BooleanField(default=False)  # Schedule active [True] or not [False]
-
-    objects = ScheduleManager()
 
     def get_weekdays(self):
         day_names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
