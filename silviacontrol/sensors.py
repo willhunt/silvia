@@ -18,4 +18,10 @@ def read_temperature_sensor(select="sensor"):
         t = timezone.now()
         return T, t
     elif select is "simulated":
-        return sim_T_boiler(ResponseModel.objects.order_by('-t')[0])
+        responses = ResponseModel.objects.order_by('-t')
+        # There  might not be any responses if the database is clean
+        if responses:
+            response = responses[0]
+        else:
+            response = ResponseModel(T_boiler=20, t=timezone.now())
+        return sim_T_boiler(response)

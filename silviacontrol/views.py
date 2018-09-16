@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework import viewsets, generics
 from rest_framework.decorators import action
 from .models import (SettingsModel, StatusModel, SessionModel,
@@ -19,6 +20,14 @@ def polymerspa(request):
     """
     context = {}
     return render(request, 'silviacontrol/polymerspa.html', context)
+
+def viewjsspa(request):
+    """
+    Render vue.js single page app (spa) front end
+    """
+    context = {}
+    return render(request, 'silviacontrol/vuejsspa.html', context)
+
 
 # API Views -----------
 class SettingsViewSet(viewsets.ModelViewSet):
@@ -82,11 +91,20 @@ class ResponseViewSet(viewsets.ModelViewSet):
     def get_object(self):
         # Override get_object to see ig request is for latest object
         if self.kwargs['pk'] == 'latest':
-            obj = ResponseModel.objects.order_by('-t')[0]
-            return obj
+            response = ResponseModel.objects.order_by('-t')[0]
+            if (timezone.now() - response.t).total_seconds() > 10:
+                response = None
+            return response
         else:
             return super(ResponseViewSet, self).get_object()
 
+    def get_queryset(self):
+        queryset = ResponseModel.objects.all()
+        session_id = self.request.query_params.get('session', None)
+        if session_id is not None:
+            session = SessionModel.objects.get(id=session_id)
+            queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
+        return queryset
 
 class SessionViewSet(viewsets.ModelViewSet):
     """
@@ -102,8 +120,4 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     """
     queryset = ScheduleModel.objects.all()
     serializer_class = ScheduleSerializer
-
-    # def get_object(self):
-    #     debug_log(self.request)
-    #     return super().get_object()
 

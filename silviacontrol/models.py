@@ -87,25 +87,25 @@ class ResponseModel(models.Model):
     Vdot = models.FloatField(default=0)
     brewing = models.BooleanField(default=False)
 
-    @classmethod
-    def create(cls, T_boiler=None, t=None, T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 
-        """
-        ARUMENTS:
-        T_boiler (Float): Boiler temperature [degC]
-        t (datetime): Time of temperature reading
-        duty (Float): Controller output duty (0-1)
-        duty_pid (list of Float): Controller output breakdown (0-1) [duty_p, duty_i, duty_d]
-        Vdot (Float): Pump flow rate [l/mim]
-        """
-        try:
-            status = StatusModel.objects.filter(id=1)
-            brewing = status.brew
-        except:
-            brewing = False
-        if t is None:
-            t = timezone.now()
+    # @classmethod
+    # def create(cls, T_boiler=None, t=None, T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 
+    #     """
+    #     ARUMENTS:
+    #     T_boiler (Float): Boiler temperature [degC]
+    #     t (datetime): Time of temperature reading
+    #     duty (Float): Controller output duty (0-1)
+    #     duty_pid (list of Float): Controller output breakdown (0-1) [duty_p, duty_i, duty_d]
+    #     Vdot (Float): Pump flow rate [l/mim]
+    #     """
+    #     try:
+    #         status = StatusModel.objects.filter(id=1)
+    #         brewing = status.brew
+    #     except:
+    #         brewing = False
+    #     if t is None:
+    #         t = timezone.now()
 
-        return cls(T_boiler=T_boiler, t=t, duty=duty, duty_pid=duty_pid, Vdot=Vdot)
+    #     return cls(T_boiler=T_boiler, t=t, duty=duty, duty_pid=duty_pid, Vdot=Vdot)
 
     @property
     def response_date(self):
@@ -174,11 +174,11 @@ class ScheduleModel(models.Model):
 
     @property
     def start_time(self):
-        return self.four_digit_time_string(self.schedule_on.crontab)
+        return self.four_digit_time_string(self.t_on)
 
     @property
     def end_time(self):
-        return self.four_digit_time_string(self.schedule_off.crontab)
+        return self.four_digit_time_string(self.t_off)
 
     def __repr__(self):
         if self.active:

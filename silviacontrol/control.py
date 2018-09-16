@@ -8,7 +8,13 @@ def pid_update(T_boiler, t):
     """
     lim = (0, 100)
     setting = SettingsModel.objects.get(id=1)
-    response = ResponseModel.objects.order_by('-t')[0]
+    responses = ResponseModel.objects.order_by('-t')
+    # There  might not be any responses if the database is clean
+    if responses:
+        response = responses[0]
+    else:
+        response = ResponseModel(T_boiler=20)
+
     error = setting.T_set - T_boiler
     t_delta = (timezone.now() - t).total_seconds()
     error_delta = error - (setting.T_set - response.T_boiler)

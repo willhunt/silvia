@@ -24,7 +24,7 @@ def sim_T_boiler(response):
     Qdot_elec = Edot_max * duty * response.brewing
     Qdot_conv = h_conv * A * (T_amb - T_last)  # Positive into system
     t_new = timezone.now()
-    T_new = (Qdot_elec + Qdot_conv) * (t_new - t_last).seconds / (m * c_p) + T_last
+    T_new = (Qdot_elec + Qdot_conv) * (t_new - t_last).total_seconds() / (m * c_p) + T_last
 
     return T_new, t_new
 

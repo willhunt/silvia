@@ -14,7 +14,13 @@ def async_get_response():
     # Record temperature if machine is on
     status = StatusModel.objects.get(id=1)
     if status.on:
-        response = ResponseModel.create(T, t=t, duty=duty, duty_pid=duty_pid)
+        response = ResponseModel.objects.create(
+            T_boiler=T,
+            duty=duty,
+            duty_p=duty_pid[0],
+            duty_i=duty_pid[1],
+            duty_d=duty_pid[2]
+        )
         response.save()
     debug_log(T)
     return T

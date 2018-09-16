@@ -1,6 +1,6 @@
 from django.db.models.signals import post_init, pre_save, post_delete
 from django.dispatch import receiver
-from .models import ScheduleModel
+from .models import ScheduleModel, ResponseModel, StatusModel
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
@@ -81,3 +81,15 @@ def delete_schedule(sender, instance, **kwargs):
         instance.schedule_off.crontab.delete()
     except (AssertionError, AttributeError) as e:
         print('No Crontab off')
+
+
+@receiver(pre_save, sender=ResponseModel)
+def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
+    """
+    When creating response model check brewing status and add
+    """
+    try:
+        status = StatusModel.objects.filter(id=1)
+        instance.brewing = status.brew
+    except:
+        instance.brewing = False
