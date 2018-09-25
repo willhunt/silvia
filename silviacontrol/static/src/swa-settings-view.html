@@ -39,6 +39,7 @@
       <iron-ajax auto
         id="requestSettings"
         url="/api/v1/settings/1"
+        headers="[[_headers()]]"
         handle-as="json"
         on-response="handleApiResponse"
         last-response="{{apisettings}}">
@@ -47,7 +48,7 @@
       <paper-card heading="Settings">       
         <div class="card-content">
           <iron-form id="settingsForm">
-            <form method="post" action="/api/v2/settings/1">
+            <form method="post" action="/api/v1/settings/1/">
               <div class="layout vertical">
 
                 <div class="layout horizontal">     
@@ -98,6 +99,10 @@
         return 'swa-settings-view';
       }
 
+      _headers() {
+        return {'X-CSRFToken': window.document.body.dataset.csrfToken};
+      }
+      
       handleApiResponse(apiresponse) {
         // Check api response for debugging
         console.log(apiresponse.detail.response);

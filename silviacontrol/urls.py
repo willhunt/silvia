@@ -33,8 +33,8 @@ if FRONT_END == 'polymerjs':
         path('settings-view/', views.polymerspa, name='spa'),
     ]
 # Vue routing
-elif FRONT_END == 'vuejs':
-    urlpatterns += [
-        path('', views.vuejsspa, name='spa'),
-    ]
+# elif FRONT_END == 'vuejs':
+#     urlpatterns += [
+#         path('', views.vuejsspa, name='spa'),
+#     ]
     
