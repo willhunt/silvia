@@ -1,6 +1,11 @@
 <template>
   <div class="machine-interface">
     <MachineDisplay :machineOn="machineOn" :temperature="temperature" />
+    <br>
+    <div class="d-flex justify-space-between">
+      <v-btn color="secondary">{{ machineOn ? "On" : "Off" }}</v-btn>
+      <v-btn outlined color="secondary">{{ temperature }}&#8451;</v-btn>
+    </div>
   </div>
 </template>
 
@@ -23,23 +28,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-/* Image of machine */
-.machine-image {
-  height: 500px
+.machine-interface {
+  margin: auto;
 }
 </style>

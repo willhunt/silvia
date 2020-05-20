@@ -1,8 +1,9 @@
 <template>
+
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
     <MachineInterface />
   </div>
+
 </template>
 
 <script>
@@ -15,4 +16,9 @@ export default {
     MachineInterface
   }
 }
+
 </script>
+
+<style scoped>
+
+</style>

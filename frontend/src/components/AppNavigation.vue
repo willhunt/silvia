@@ -1,0 +1,63 @@
+<template>
+  <span>
+    <v-navigation-drawer app v-model="drawer" :clipped="true">
+      <v-list>
+        <template v-for="item in items">
+          <router-link :key="item.title" :to="item.path">
+            <v-list-item  link>
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </router-link>
+        </template>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app color="primary" clipped-left="true">
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-spacer class="hidden-md-and-up"></v-spacer>
+      <v-img
+        class="mx-2"
+        src="../assets/logo.png"
+        max-height="40"
+        max-width="40"
+        contain
+      ></v-img>
+
+      <v-toolbar-title class="hidden-sm-and-down">{{appTitle}}</v-toolbar-title>
+
+      <v-spacer class="hidden-sm-and-down"></v-spacer>
+      <v-btn flat class="hidden-sm-and-down" to="/">On</v-btn>
+    </v-app-bar>
+  </span>
+
+</template>
+
+<script>
+export default {
+  name: 'AppNavigation',
+  data () {
+    return {
+      appTitle: 'Silvia Control',
+      drawer: true,
+      items: [
+        { title: 'Operate', icon: 'mdi-coffee', path: '/' },
+        { title: 'About', icon: 'mdi-help-circle', path: '/about' }
+      ]
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+</style>
