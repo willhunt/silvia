@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <MachineInterface :machineOn="machineOn" :temperature="temperature" />
+    <MachineInterface />
   </div>
 </template>
 
@@ -13,12 +13,6 @@ export default {
   name: 'Home',
   components: {
     MachineInterface
-  },
-  data: function () {
-    return {
-      machineOn: false,
-      temperature: 20
-    }
   }
 }
 </script>
