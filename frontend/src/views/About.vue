@@ -1,7 +1,8 @@
 <template>
   <div class="about">
     <img class="img-center" alt="Vue logo" src="../assets/logo.png">
-    <h1>This is an about page</h1>
+    <hr class="my-6">
+    <p> Web-app controller for modified Rancillio Silvia espresso machine. </p>
   </div>
 </template>
 

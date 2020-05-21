@@ -15,9 +15,20 @@
           </router-link>
         </template>
       </v-list>
+
+      <a href="http://www.google.co.uk">
+        <v-list-item class="primary darken-2" link style="position: absolute; bottom:0; width: 100%">
+          <v-list-item-action>
+            <v-icon>mdi-lock</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Admin</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </a>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary" clipped-left="true">
+    <v-app-bar app color="primary" :clipped-left="true">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer class="hidden-md-and-up"></v-spacer>
       <v-img
@@ -31,7 +42,7 @@
       <v-toolbar-title class="hidden-sm-and-down">{{appTitle}}</v-toolbar-title>
 
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-btn flat class="hidden-sm-and-down" to="/">On</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/">On</v-btn>
     </v-app-bar>
   </span>
 
@@ -46,6 +57,7 @@ export default {
       drawer: true,
       items: [
         { title: 'Operate', icon: 'mdi-coffee', path: '/' },
+        { title: 'Settings', icon: 'mdi-cog', path: '/settings' },
         { title: 'About', icon: 'mdi-help-circle', path: '/about' }
       ]
     }
