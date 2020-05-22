@@ -7,15 +7,23 @@
       <GraphDisplay :temperatures="temperatures" />
     </div>
     <br>
-    <div class="d-flex justify-space-between">
-      <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn>
-      <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
-        <div v-if="displayOption == 'machine'">
-          <v-icon class="mr-2">mdi-chart-line</v-icon>
-        </div>
-        {{ temperature }}&#8451;
-      </v-btn>
-    </div>
+    <!-- <div class="d-flex justify-space-between justify-center"> -->
+    <v-row align="center">
+      <!-- <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn> -->
+      <v-col cols="auto">
+        <v-switch color="secondary" :value="machineOn" @change="toggleOnOff" :label="`Machine ${machineOn ? 'on' : 'off'}`"></v-switch>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col>
+        <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
+          <div v-if="displayOption == 'machine'">
+            <v-icon class="mr-2">mdi-chart-line</v-icon>
+          </div>
+          {{ temperature }}&#8451;
+        </v-btn>
+      </v-col>
+    <!-- </div> -->
+    </v-row>
   </div>
 </template>
 

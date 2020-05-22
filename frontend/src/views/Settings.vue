@@ -28,6 +28,9 @@
 
       <v-card-actions>
         <v-btn class="success" text @click="saveSettings">Save</v-btn>
+        <div v-if="saveUpToDate" class="mx-2">
+          <v-icon>mdi-check</v-icon>
+        </div>
         <v-spacer></v-spacer>
         <v-btn class="error" text @click="cancelSettings">Cancel</v-btn>
       </v-card-actions>
@@ -45,7 +48,17 @@ export default {
   data: function () {
     return {
       settings: {},
-      settingsServer: {}
+      settingsServer: {},
+      saveUpToDate: false
+    }
+  },
+  watch: {
+    settings: {
+      handler (val) {
+        console.log('settings changed')
+        this.saveUpToDate = false
+      },
+      deep: true // Required for object
     }
   },
   methods: {
@@ -55,9 +68,9 @@ export default {
     saveSettings () {
       // Make sure all inputs are numbers
       const settings = {}
-      for (const [key, value] of this.settings) {
-        settings[key] = Number(value)
-      }
+      Object.keys(this.settings).forEach((key, index) => {
+        settings[key] = this.settings[key]
+      })
 
       const axiosConfig = {
         headers: {
@@ -66,8 +79,8 @@ export default {
       }
 
       axios.put('/api/v1/settings/1/', settings, axiosConfig)
-        .then(function (response) {
-          console.log(response)
+        .then(response => {
+          this.saveUpToDate = true
         })
         .catch(function (error) {
           console.log(error)
@@ -80,6 +93,7 @@ export default {
         console.log(response.data)
         this.settingsServer = Object.assign({}, response.data)
         this.settings = Object.assign({}, response.data)
+        this.saveUpToDate = true
       })
       .catch(error => console.log(error))
   }
