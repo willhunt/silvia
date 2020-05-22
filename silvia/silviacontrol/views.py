@@ -14,21 +14,6 @@ from .utils import debug_log
 def index(request):
     return HttpResponse("You're at Silvia Mission Control")
 
-def polymerspa(request):
-    """
-    Render polymer single page app (spa) front end
-    """
-    context = {}
-    return render(request, 'silviacontrol/polymerspa.html', context)
-
-def viewjsspa(request):
-    """
-    Render vue.js single page app (spa) front end
-    """
-    context = {}
-    return render(request, 'silviacontrol/vuejsspa.html', context)
-
-
 # API Views -----------
 class SettingsViewSet(viewsets.ModelViewSet):
     """

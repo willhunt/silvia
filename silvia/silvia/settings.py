@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -143,7 +144,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
-
-# Front end settings
-
-FRONT_END = 'polymerjs' #'vuejs'
+# CORS
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:8080"
+# ]

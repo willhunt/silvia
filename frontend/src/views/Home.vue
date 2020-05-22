@@ -1,7 +1,7 @@
 <template>
 
   <div class="home">
-    <MachineInterface />
+    <MachineInterface :machineOn="machineOn"/>
   </div>
 
 </template>
@@ -14,6 +14,9 @@ export default {
   name: 'Home',
   components: {
     MachineInterface
+  },
+  props: {
+    machineOn: Boolean
   }
 }
 

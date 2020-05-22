@@ -8,8 +8,13 @@
     </div>
     <br>
     <div class="d-flex justify-space-between">
-      <v-btn color="secondary">{{ machineOn ? "On" : "Off" }}</v-btn>
-      <v-btn outlined color="secondary" @click="changeDisplay">{{ temperature }}&#8451;</v-btn>
+      <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn>
+      <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
+        <div v-if="displayOption == 'machine'">
+          <v-icon class="mr-2">mdi-chart-line</v-icon>
+        </div>
+        {{ temperature }}&#8451;
+      </v-btn>
     </div>
   </div>
 </template>
@@ -17,6 +22,7 @@
 <script>
 import MachineDisplay from '@/components/MachineDisplay.vue'
 import GraphDisplay from '@/components/GraphDisplay.vue'
+import { eventBus } from '@/main'
 
 export default {
   name: 'MachineInterface',
@@ -26,10 +32,21 @@ export default {
   },
   data: function () {
     return {
-      machineOn: false,
-      temperature: 20,
+      temperature: 59,
       temperatures: [20, 30, 40, 45, 49, 53, 56, 58, 59, 60, 60, 61, 60, 59, 60],
-      displayOption: 'machine'
+      displayOption: 'machine',
+      setpoint: 60
+    }
+  },
+  props: {
+    machineOn: Boolean
+  },
+  computed: {
+    tempBtnColor: function () {
+      if (Math.abs(this.setpoint - this.temperature) < 2) {
+        return 'success'
+      }
+      return 'secondary'
     }
   },
   methods: {
@@ -39,6 +56,9 @@ export default {
       } else {
         this.displayOption = 'machine'
       }
+    },
+    toggleOnOff () {
+      eventBus.$emit('toggleOnOff')
     }
   }
 }

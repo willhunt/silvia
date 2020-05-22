@@ -5,38 +5,11 @@ Notes mainly for my reference.
 ## How to install
 ### Install server side requirements
 ```bash
-$ sudo apt-get install git python3-pip
-$ mkdir silvia
-$ cd silvia
 $ git clone https://github.com/willhunt/silvia
-$ cd ..
-
-$ pip install virtualenvwrapper
-$ mkdir virtualenvs
-$ export WORKON_HOME=virtualenvs
-```
-
-Add this line to the end of ~/.bashrc so that the virtualenvwrapper commands are loaded.
-
-. /usr/local/bin/virtualenvwrapper.sh
-
-```bash
-$ mkvirtualenv venv-silvia --python=/usr/bin/python3.5
+$ python3 venv venv-silvia .virtualenvs/venv-silvia
+$ source virtualenvs/venv-silvia/bin/activate
 $ cd silvia
 $ pip install -r requirments.txt
-```
-
-### Install client side requirements
-```bash
-$ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-$ sudo apt-get install -y nodejs
-$ sudo apt-get install -y build-essential
-$ sudo npm install -g bower
-$ sudo npm install -g polymer-cli --unsafe-perm
-
-$ cd static
-$ bower install
-$ polymer build
 ```
 
 ### Install message broker
@@ -59,14 +32,9 @@ $ redis-cli -h localhost -p 6379 -n 1 keys \*
 ```
 
 ### Make changes to database
-Migrte database after making any changes (just for reference)
+Migrate database after making any changes (just for reference)
 ```bash
 $ python manage.py makemigrations
 $ python manage.py migrate
 ```
 
-### Work on project later (for reference)
-Access virtual environment
-```bash
-workon venv-silvia
-```

@@ -1,6 +1,6 @@
 <template>
   <span>
-    <v-navigation-drawer app v-model="drawer" :clipped="true">
+    <v-navigation-drawer app v-model="drawer" :clipped="true" >
       <v-list>
         <template v-for="item in items">
           <router-link :key="item.title" :to="item.path">
@@ -42,24 +42,35 @@
       <v-toolbar-title class="hidden-sm-and-down">{{appTitle}}</v-toolbar-title>
 
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-btn text class="hidden-sm-and-down" to="/">On</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn>
     </v-app-bar>
   </span>
 
 </template>
 
 <script>
+import { eventBus } from '@/main'
+
 export default {
   name: 'AppNavigation',
   data () {
     return {
       appTitle: 'Silvia Control',
-      drawer: true,
+      drawer: false,
       items: [
         { title: 'Operate', icon: 'mdi-coffee', path: '/' },
+        { title: 'Information', icon: 'mdi-information', path: '/info' },
         { title: 'Settings', icon: 'mdi-cog', path: '/settings' },
         { title: 'About', icon: 'mdi-help-circle', path: '/about' }
       ]
+    }
+  },
+  props: {
+    machineOn: Boolean
+  },
+  methods: {
+    toggleOnOff () {
+      eventBus.$emit('toggleOnOff')
     }
   }
 }

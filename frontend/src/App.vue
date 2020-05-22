@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <AppNaviagtion />
+    <AppNaviagtion :machineOn="machineOn" />
 
     <v-content>
       <v-container fluid class="mt-5">
         <v-row align="center" justify="center">
-          <router-view></router-view>
+          <router-view :machineOn="machineOn"></router-view>
         </v-row>
       </v-container>
     </v-content>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { eventBus } from '@/main'
 import AppNaviagtion from './components/AppNavigation'
 
 export default {
@@ -26,8 +27,20 @@ export default {
     AppNaviagtion
   },
 
-  data: () => ({
-    //
-  })
+  data: function () {
+    return {
+      machineOn: false
+    }
+  },
+
+  created () {
+    // Handle machine on/off globally
+    eventBus.$on('toggleOnOff', () => {
+      // Can send ajax request here
+
+      this.machineOn = !this.machineOn
+    })
+  }
+
 }
 </script>
