@@ -42,7 +42,7 @@
       <v-toolbar-title class="hidden-sm-and-down">{{appTitle}}</v-toolbar-title>
 
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-btn text class="hidden-sm-and-down" to="/" @click="toggleOnOff">{{ machineOn ? "Off" : "On" }}</v-btn>
+      <v-btn color="secondary" class="hidden-sm-and-down" to="/" @click="toggleOnOff">{{ machineOn ? "Off" : "On" }}</v-btn>
     </v-app-bar>
   </span>
 

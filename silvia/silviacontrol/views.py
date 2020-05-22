@@ -32,7 +32,7 @@ class SettingsViewSet(viewsets.ModelViewSet):
 
 class StatusViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows settings to be viewed or edited
+    API endpoint that allows status to be viewed or edited
     """
     # if not SettingsModel.objects.filter(id=1).exists():
     try:
@@ -74,11 +74,11 @@ class ResponseViewSet(viewsets.ModelViewSet):
     queryset = ResponseModel.objects.all()
 
     def get_object(self):
-        # Override get_object to see ig request is for latest object
+        # Override get_object to see if request is for latest object
         if self.kwargs['pk'] == 'latest':
             response = ResponseModel.objects.order_by('-t')[0]
-            if (timezone.now() - response.t).total_seconds() > 10:
-                response = None
+            # if (timezone.now() - response.t).total_seconds() > 10:
+            #     response = None
             return response
         else:
             return super(ResponseViewSet, self).get_object()

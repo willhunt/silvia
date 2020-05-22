@@ -31,6 +31,7 @@
 import MachineDisplay from '@/components/MachineDisplay.vue'
 import GraphDisplay from '@/components/GraphDisplay.vue'
 import { eventBus } from '@/main'
+import axios from 'axios'
 
 export default {
   name: 'MachineInterface',
@@ -40,10 +41,12 @@ export default {
   },
   data: function () {
     return {
-      temperature: 59,
+      temperature: 0,
       temperatures: [20, 30, 40, 45, 49, 53, 56, 58, 59, 60, 60, 61, 60, 59, 60],
       displayOption: 'machine',
-      setpoint: 60
+      setpoint: 60,
+      intervalReference: null, // Varibale to hold setInterval for getting temperature,
+      t_update: 10
     }
   },
   props: {
@@ -67,7 +70,33 @@ export default {
     },
     toggleOnOff () {
       eventBus.$emit('toggleOnOff')
+    },
+    updateTemperature () {
+      axios.get('/api/v1/response/latest')
+        .then(response => {
+          console.log(response.data)
+          this.temperature = response.data.T_boiler
+        })
+        .catch(error => console.log(error))
+    },
+    updateInterval () {
+      axios.get('/api/v1/settings/1')
+        .then(response => {
+          this.t_update = response.data.t_update
+          this.intervalReference = setInterval(() => {
+            this.updateTemperature()
+          }, 1000 * this.t_update)
+        })
+        .catch(error => console.log(error))
     }
+  },
+  created () {
+    this.updateInterval()
+    this.updateTemperature()
+  },
+  destroyed () {
+    console.log('Cancel temperature update')
+    clearInterval(this.intervalReference)
   }
 }
 </script>
