@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import NotFound from '../views/404.vue'
 
 // Lazy loading
+const Sessions = () => import('@/views/Sessions.vue')
 const Info = () => import('@/views/Info.vue')
 const Settings = () => import('@/views/Settings.vue')
 
@@ -14,6 +15,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/sessions',
+    name: 'Sessions',
+    component: Sessions
   },
   {
     path: '/info',

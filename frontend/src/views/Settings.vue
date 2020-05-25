@@ -2,9 +2,9 @@
 
   <div class="settings">
     <v-card class="mx-auto" min-width=350 max-width=500>
-      <v-card-text>
-        <div>Temperature Control Settings</div>
-      </v-card-text>
+      <v-card-title>Settings</v-card-title>
+      <v-card-subtitle>Temperature Control</v-card-subtitle>
+
       <v-form>
       <v-text-field class="mx-4" label="Boiler Setpoint" type="number" v-model="settings.T_set" suffix="C"></v-text-field>
 
@@ -20,9 +20,8 @@
         </v-col>
       </v-row>
 
-      <v-card-text>
-        <div>Update Settings</div>
-      </v-card-text>
+      <v-card-subtitle>Update</v-card-subtitle>
+
       <v-text-field class="mx-4" label="Sampling Interval" type="number" v-model="settings.t_sample" suffix="s"></v-text-field>
       <v-text-field class="mx-4" label="Update Interval" type="number" v-model="settings.t_update" suffix="s"></v-text-field>
 

@@ -59,6 +59,7 @@ export default {
       drawer: false,
       items: [
         { title: 'Operate', icon: 'mdi-coffee', path: '/' },
+        { title: 'Sessions', icon: 'mdi-database', path: '/sessions' },
         { title: 'Information', icon: 'mdi-information', path: '/info' },
         { title: 'Settings', icon: 'mdi-cog', path: '/settings' },
         { title: 'About', icon: 'mdi-help-circle', path: '/about' }

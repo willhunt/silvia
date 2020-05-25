@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import viewsets, generics
+from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import (SettingsModel, StatusModel, SessionModel,
                         ResponseModel, ScheduleModel)
 from .serializers import (SettingsSerializer, StatusSerializer, SessionSerializer,
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
+import json
 
 
 # Html Views -----------
@@ -86,10 +88,30 @@ class ResponseViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = ResponseModel.objects.all()
         session_id = self.request.query_params.get('session', None)
+        
         if session_id is not None:
             session = SessionModel.objects.get(id=session_id)
             queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
+
         return queryset
+
+    @action(detail=False, methods=['get'])
+    def sessions(self, request):
+        """
+        Query responses for multiple sessions
+        """
+        session_ids_string = request.query_params.get('session', None)
+        
+        if session_ids_string is not None:
+            session_ids = [int(x) for x in session_ids_string.split(',')]
+            queryset_dict = {}
+            for session_id in session_ids:
+                session = SessionModel.objects.get(id=session_id)
+                queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
+                queryset_dict[session_id] = self.serializer_class(queryset, many=True).data
+            return Response(queryset_dict)
+        return ResponseModel.objects.all()
+
 
 class SessionViewSet(viewsets.ModelViewSet):
     """

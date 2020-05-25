@@ -7,7 +7,6 @@
       <GraphDisplay :temperatures="temperatures" />
     </div>
     <br>
-    <!-- <div class="d-flex justify-space-between justify-center"> -->
     <v-row align="center">
       <!-- <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn> -->
       <v-col cols="auto">
