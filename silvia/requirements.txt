@@ -4,3 +4,5 @@ Celery
 django-celery-beat
 sqlalchemy
 random-word
+django-cors-headers
+whitenoise
