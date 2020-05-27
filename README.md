@@ -70,3 +70,27 @@ $ sudo apt install apache2-mpm-worker -y
 $ sudo apt install libapache2-mod-wsgi-py3 
 ```
 
+### Edit server configuration
+Replace contents of `/etc/apache2/sites-available/000-default.conf` with:
+
+```
+
+```
+
+### Change file permissions for Apache
+```bash
+$ chmod g+w ~/silvia/silvia/db.sqlite3 
+$ chmod g+w ~/silvia/silvia
+$ sudo chown :www-data ~/silvia/silvia/db.sqlite3
+$ sudo chown :www-data ~/silvia/silvia
+```
+
+### Check log errors
+```bash
+$ nano /var/log/apache2/error.log
+```
+
+Apache can be restarted using:
+```bash
+$ sudo service apache2 restart
+```
