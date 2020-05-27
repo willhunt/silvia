@@ -38,3 +38,7 @@ $ python manage.py makemigrations
 $ python manage.py migrate
 ```
 
+### Collect static files for production
+```bash
+$ python manage.py collectstatic
+```

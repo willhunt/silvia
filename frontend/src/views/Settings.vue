@@ -71,13 +71,7 @@ export default {
         settings[key] = this.settings[key]
       })
 
-      const axiosConfig = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-
-      axios.put('/api/v1/settings/1/', settings, axiosConfig)
+      axios.put('/api/v1/settings/1/', settings)
         .then(response => {
           this.saveUpToDate = true
         })

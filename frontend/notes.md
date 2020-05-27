@@ -32,3 +32,8 @@ Use: [vue-pwa-asset-generator](https://www.npmjs.com/package/vue-pwa-asset-gener
 $ cd frontend
 $ vue-asset-generate -a ./src/assets/will_silvia_icon.png -o ./public/img/icons
 ```
+
+# Build for production
+```bash
+$ npm run build
+```

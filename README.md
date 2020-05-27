@@ -7,8 +7,14 @@ Django and Vue.js web server to control espresso machine. Raspberry Pi hosts web
 ### Front End
 Front end progressive web-app using Vue.js.
 
+* Vue Js - Front end framework
+* Axios - HTTP CLient
+
 ### Back End
 Back end using Django.
+
+* Django - Web framework
+* Django Rest Framework - Restful API
 
 ### Hardware
 Raspberry pi for web app serving and possibly arduino to run PID temperature controller for espresso machine.

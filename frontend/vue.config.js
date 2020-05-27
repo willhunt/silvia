@@ -1,3 +1,5 @@
+const path = require("path")
+
 module.exports = {
   configureWebpack: {
     devtool: 'source-map'
@@ -86,5 +88,6 @@ module.exports = {
         }
       ]
     }
-  }
+  },
+  outputDir: path.resolve(__dirname, "../silvia/silviacontrol/static/silviacontrol/vue")
 }

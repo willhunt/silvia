@@ -92,6 +92,8 @@ export default {
   created () {
     this.updateInterval()
     this.updateTemperature()
+    // Fire event to check on/off status
+    eventBus.$emit('updateOnOff')
   },
   destroyed () {
     console.log('Cancel temperature update')

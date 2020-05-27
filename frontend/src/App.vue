@@ -18,8 +18,14 @@
 
 <script>
 import axios from 'axios'
+// import { axiosApi } from '@/api'
 import { eventBus } from '@/main'
 import AppNaviagtion from './components/AppNavigation'
+
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.headers['Content-Type'] = 'application/json'
+axios.defaults.withCredentials = true
 
 export default {
   name: 'App',
@@ -35,8 +41,6 @@ export default {
   },
 
   created () {
-    //  Register eventbus methods:
-
     // Handle machine on/off globally
     eventBus.$on('toggleOnOff', () => {
       // Can send ajax request here
@@ -46,12 +50,8 @@ export default {
         id: 1,
         on: this.machineOn
       }
-      const axiosConfig = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-      axios.put('/api/v1/status/1', axiosData, axiosConfig)
+
+      axios.put('/api/v1/status/1', axiosData)
         .then(response => {
           console.log(response)
         })
@@ -65,11 +65,6 @@ export default {
         })
         .catch(error => console.log(error))
     })
-
-    // Now fire event to check on/off status
-    // eventBus.$emit('updateOnOff')
-
   }
-
 }
 </script>

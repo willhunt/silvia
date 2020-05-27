@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u=-tzcj2zkg5y@w@(r0st)68(2-)6n02c-=3znme-yd4n&(kua'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -40,11 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'corsheaders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,12 +125,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, 'dist')
+]
 
 # Rest API settings
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
-    'DATE_FORMAT': "%Y-%m-%d"
+    'DATE_FORMAT': "%Y-%m-%d",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
 }
 
 
@@ -148,3 +156,13 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:8080"
 # ]
+CORS_ALLOW_HEADERS = [
+    "X-CSRFTOKEN"
+]
+
+# Whitenoise settings
+#   http://whitenoise.evans.io/en/stable/django.html#check-its-working
+#   https://cheat.readthedocs.io/en/latest/django/vue.html
+WHITENOISE_INDEX_FILE = True  # This means serve index.html for path "/" where appropriate
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Files served at root of application (useful for favicon etc)
+WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
