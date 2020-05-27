@@ -6,10 +6,10 @@ Notes mainly for my reference.
 ### Install server side requirements
 ```bash
 $ git clone https://github.com/willhunt/silvia
-$ python3 venv venv-silvia .virtualenvs/venv-silvia
-$ source virtualenvs/venv-silvia/bin/activate
-$ cd silvia
-$ pip install -r requirments.txt
+$ python3 -m venv .virtualenvs/venv-silvia
+$ source .virtualenvs/venv-silvia/bin/activate
+$ cd silvia/silvia
+$ pip install -r requirements.txt
 ```
 
 ### Install message broker

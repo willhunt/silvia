@@ -26,7 +26,12 @@ SECRET_KEY = 'u=-tzcj2zkg5y@w@(r0st)68(2-)6n02c-=3znme-yd4n&(kua'
 # DEBUG = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'rpi-silvia'
+]
 
 
 # Application definition
