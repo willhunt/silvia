@@ -13,22 +13,24 @@ $ pip install -r requirements.txt
 ```
 
 ### Install message broker
-For Redis
+For RabbitMQ
 ```bash
-$ apt-get install redis-server
+$ sudo apt install rabbitmq-server
 ```
 
-### Test website locally
+### Run Message Broker
 ```bash
-$ pytest
-$ redis-cli flushall
 $ celery -A silvia worker -l info
 $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-$ python manage.py runserver
 ```
-Use this to check redis tasks
+<!-- Use this to check redis tasks
 ```bash
 $ redis-cli -h localhost -p 6379 -n 1 keys \*
+``` -->
+
+### Run django in development
+```bash
+$ python manage.py runserver
 ```
 
 ### Make changes to database

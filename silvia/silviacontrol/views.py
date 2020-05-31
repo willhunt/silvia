@@ -10,7 +10,8 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_power_machine
+from .tasks import async_power_machine, async_get_response
+from django.conf import settings
 
 
 # Html Views -----------
@@ -55,14 +56,26 @@ class StatusViewSet(viewsets.ModelViewSet):
          # Start or end session based upon status change
         if data["on"] and not last_status.on:  # If machine is being turned on
             # Actually turn machine on
-            # async_power_machine.add(True)
+            async_power_machine.delay(True)
 
             # Create a new session
             session = SessionModel()
             session.save()
+
+            # If simulating, set temperature to 20degC
+            if settings.SIMULATE_MACHINE:
+                response = ResponseModel.objects.create(
+                    T_boiler=20,
+                    duty=0,
+                    duty_p=0,
+                    duty_i=0,
+                    duty_d=0
+                )
+                response.save()
+
         elif last_status.on and not data["on"]:  # If machine is being turned off
             # Actually turn machine off
-            # async_power_machine.add(False)
+            async_power_machine.delay(False)
 
             # Get current session
             session = SessionModel.objects.filter(active=True).order_by('-id')[0]
@@ -88,6 +101,10 @@ class ResponseViewSet(viewsets.ModelViewSet):
             response = ResponseModel.objects.order_by('-t')[0]
             # if (timezone.now() - response.t).total_seconds() > 10:
             #     response = None
+
+            # Just for testing purposes fire task here
+            async_get_response.delay()
+
             return response
         else:
             return super(ResponseViewSet, self).get_object()

@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u=-tzcj2zkg5y@w@(r0st)68(2-)6n02c-=3znme-yd4n&(kua'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -172,3 +172,6 @@ CORS_ALLOW_HEADERS = [
 WHITENOISE_INDEX_FILE = True  # This means serve index.html for path "/" where appropriate
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Files served at root of application (useful for favicon etc)
 WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
+
+# App in simulation mode or not
+SIMULATE_MACHINE = True

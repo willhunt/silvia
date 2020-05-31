@@ -101,3 +101,15 @@ Apache can be restarted using:
 ```bash
 $ sudo service apache2 restart
 ```
+
+### Install message broker
+For RabbitMQ
+```bash
+$ sudo apt install rabbitmq-server
+```
+
+### Run Message Broker
+```bash
+$ celery -A silvia worker -l info
+$ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```

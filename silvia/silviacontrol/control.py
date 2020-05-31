@@ -32,7 +32,7 @@ def pid_update(T_boiler, t):
         duty_d = (error_delta / t_delta) * setting.k_d
 
     duty = duty_p + duty_i + duty_d
-    # Aplly limits
+    # Apply limits
     if duty > lim[1]:
         duty = lim[1]
     elif duty < lim[0]:
