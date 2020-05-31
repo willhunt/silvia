@@ -18,7 +18,7 @@
           <div v-if="displayOption == 'machine'">
             <v-icon class="mr-2">mdi-chart-line</v-icon>
           </div>
-          {{ temperature }}&#8451;
+          {{ temperature | temperatureDisplayFilter }}&#8451;
         </v-btn>
       </v-col>
     <!-- </div> -->
@@ -71,7 +71,7 @@ export default {
       eventBus.$emit('toggleOnOff')
     },
     updateTemperature () {
-      axios.get('/api/v1/response/latest')
+      axios.get('/api/v1/response/latest/')
         .then(response => {
           console.log(response.data)
           this.temperature = response.data.T_boiler
@@ -79,7 +79,7 @@ export default {
         .catch(error => console.log(error))
     },
     updateInterval () {
-      axios.get('/api/v1/settings/1')
+      axios.get('/api/v1/settings/1/')
         .then(response => {
           this.t_update = response.data.t_update
           this.intervalReference = setInterval(() => {
