@@ -40,6 +40,13 @@ export default {
     }
   },
 
+  watch: {
+    // Change tab name in browser
+    '$route' (to, from) {
+      document.title = to.meta.title || 'Silvia'
+    }
+  },
+
   created () {
     // Handle machine on/off globally
     eventBus.$on('toggleOnOff', () => {
@@ -51,7 +58,7 @@ export default {
         on: this.machineOn
       }
 
-      axios.put('/api/v1/status/1', axiosData)
+      axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
         })
@@ -59,7 +66,7 @@ export default {
     })
 
     eventBus.$on('updateOnOff', () => {
-      axios.get('/api/v1/status/1')
+      axios.get('/api/v1/status/1/')
         .then(response => {
           this.machineOn = Boolean(response.data.on)
         })
