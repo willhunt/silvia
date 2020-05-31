@@ -2,11 +2,31 @@
 # Estimates boiler temperature based upon system model
 from django.utils import timezone
 
+class espresso_simulator():
+    def __init__(self):
+        self.T_amb = 20  # degC
+        self.h_conv = 10  # W/m^2/K
+        self.T_boiler = 20  # degC
+        self.m_boiler = 2  # kg
+        self.A_boiler = 0.0001  # m^2
+        self.cp_boiler = 375  # J/kg/K (Brass)
+        self.P_heater = 3000  # W
+
+        self.k_p = 1
+        self.k_i = 0.001
+        self.k_d = 1
+
+    def step_forward(self, duty, dt):
+        Qdot_heat = self.P_heater * duty
+        Qdot_conv = self.h_conv * self.A_boiler * (self.T_amb - self.T_boiler)  # Convection, positive into system
+        self.T_boiler = (Qdot_heat + Qdot_conv) * dt / (self.m_boiler * self.cp_boiler) + self.T_boiler
+
+
 def sim_T_boiler(response):
     """
     Simulates what the current temperature of the boiler is based upon quasi-steady state heating
     Inputs
-        response (Object): Last ReponseModel databse entry
+        response (Object): Last ReponseModel database entry
     """
     T_amb = 20  # [degC]
     h_conv = 10  # [W/m^2.K]

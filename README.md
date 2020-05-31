@@ -20,6 +20,10 @@ Back end using Django.
 Raspberry pi for web app serving and possibly arduino to run PID temperature controller for espresso machine.
 
 ## Setup
+Useful links:
+* [raspberry-pi-network-server-guide-with-django-ssh](https://www.codingforentrepreneurs.com/blog/raspberry-pi-network-server-guide-with-django-ssh/)
+* [configuring-django-with-apache-on-a-raspberry-pi](https://mikesmithers.wordpress.com/2017/02/21/configuring-django-with-apache-on-a-raspberry-pi/)
+
 ### SSH into raspberry pi
 ```bash
 $ ssh pi@<IP>
@@ -83,7 +87,10 @@ $ chmod g+w ~/silvia/silvia/db.sqlite3
 $ chmod g+w ~/silvia/silvia
 $ sudo chown :www-data ~/silvia/silvia/db.sqlite3
 $ sudo chown :www-data ~/silvia/silvia
+$ sudo chown :www-data ~/.virtualenvs/venv-silvia
 ```
+
+*Maybe try adding "-r" argument (recursive) for chown if having problems"
 
 ### Check log errors
 ```bash

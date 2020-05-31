@@ -10,6 +10,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
+from .tasks import async_power_machine
 
 
 # Html Views -----------
@@ -53,10 +54,16 @@ class StatusViewSet(viewsets.ModelViewSet):
         last_status = StatusModel.objects.get(id=1)
          # Start or end session based upon status change
         if data["on"] and not last_status.on:  # If machine is being turned on
+            # Actually turn machine on
+            # async_power_machine.add(True)
+
             # Create a new session
             session = SessionModel()
             session.save()
         elif last_status.on and not data["on"]:  # If machine is being turned off
+            # Actually turn machine off
+            # async_power_machine.add(False)
+
             # Get current session
             session = SessionModel.objects.filter(active=True).order_by('-id')[0]
             session.set_end_time()

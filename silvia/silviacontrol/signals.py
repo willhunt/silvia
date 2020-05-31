@@ -4,6 +4,13 @@ from .models import ScheduleModel, ResponseModel, StatusModel
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
+# @receiver(pre_save, sender=StatusModel)
+# def update_status(sender, instance, raw, using, update_fields, **kwargs):
+    # """
+    # When updating status, turn th machine on or off
+    # """
+
+
 @receiver(pre_save, sender=ScheduleModel)
 def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
     """

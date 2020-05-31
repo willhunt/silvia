@@ -4,11 +4,16 @@ from .sensors import read_temperature_sensor
 from .models import StatusModel, ResponseModel
 from .control import pid_update
 from .utils import debug_log
+from django.conf import settings
 
 @shared_task
 def async_get_response():
     # Read temperature sensor
-    T, t = read_temperature_sensor("simulated")
+    if settings.SIMULATE_MACHINE == True:
+        T, t = read_temperature_sensor("simulated")
+    else:
+        print("Real machine reading not yet implemented")
+        
     # Get new PID
     duty, duty_pid = pid_update(T, t)
     # Record temperature if machine is on
