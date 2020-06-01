@@ -10,10 +10,18 @@
     <v-row align="center">
       <!-- <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn> -->
       <v-col cols="auto">
-        <v-switch color="secondary" :value="machineOn" @change="toggleOnOff" :label="`Machine ${machineOn ? 'on' : 'off'}`"></v-switch>
+        <v-switch color="secondary" :value="machineOn" @change="toggleOnOff" :label="`${machineOn ? 'On' : 'Off'}`"></v-switch>
       </v-col>
       <v-spacer></v-spacer>
-      <v-col>
+      <div v-if="machineOn">
+        <div v-if="machineBrewing">
+          <v-btn color="secondary" @click="toggleBrew">Brew</v-btn>
+        </div>
+        <div v-else>
+          <v-btn color="error" @click="toggleBrew">Cancel</v-btn>
+        </div>
+      </div>
+      <v-col cols="auto">
         <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
           <div v-if="displayOption == 'machine'">
             <v-icon class="mr-2">mdi-chart-line</v-icon>
@@ -21,8 +29,15 @@
           {{ temperature | temperatureDisplayFilter }}&#8451;
         </v-btn>
       </v-col>
-    <!-- </div> -->
     </v-row>
+
+    <div v-if="machineOn"><v-row align="center">
+        <!-- <v-progress-linear value="15"></v-progress-linear> -->
+        <v-progress-linear :value="brewProgress" color="blue-grey" height="25" rounded>
+         {{ m_current | temperatureDisplayFilter }}g
+        </v-progress-linear>
+    </v-row></div>
+
   </div>
 </template>
 
@@ -45,11 +60,14 @@ export default {
       displayOption: 'machine',
       setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
-      t_update: 10
+      t_update: 10,
+      m_current: 5, // Brewed coffee mass (g)
+      m_setpoint: 20
     }
   },
   props: {
-    machineOn: Boolean
+    machineOn: Boolean,
+    machineBrewing: Boolean
   },
   computed: {
     tempBtnColor: function () {
@@ -57,6 +75,9 @@ export default {
         return 'success'
       }
       return 'secondary'
+    },
+    brewProgress: function () {
+      return 100 * this.m_current / this.m_setpoint
     }
   },
   methods: {
@@ -69,6 +90,9 @@ export default {
     },
     toggleOnOff () {
       eventBus.$emit('toggleOnOff')
+    },
+    toggleBrew () {
+      eventBus.$emit('toggleBrew')
     },
     updateTemperature () {
       axios.get('/api/v1/response/latest/')
