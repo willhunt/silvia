@@ -5,7 +5,7 @@
     <v-content>
       <v-container fluid class="mt-5">
         <v-row align="center" justify="center">
-          <router-view :machineOn="machineOn"></router-view>
+          <router-view :machineOn="machineOn" :machineBrewing="machineBrewing"></router-view>
         </v-row>
       </v-container>
     </v-content>
@@ -36,7 +36,8 @@ export default {
 
   data: function () {
     return {
-      machineOn: false
+      machineOn: false,
+      machineBrewing: false
     }
   },
 
@@ -65,10 +66,34 @@ export default {
         .catch(error => console.log(error))
     })
 
+    // Handle machine brew on/off globally
+    eventBus.$on('toggleBrew', () => {
+      // Can send ajax request here
+      this.machineBrewing = !this.machineBrewing
+
+      // Make sure machine is on if brewing!
+      if (this.machineBrewing) {
+        this.machineOn = true
+      }
+
+      const axiosData = {
+        id: 1,
+        brew: this.machineBrewing,
+        on: this.machineOn
+      }
+
+      axios.put('/api/v1/status/1/', axiosData)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => console.log(error))
+    })
+
     eventBus.$on('updateOnOff', () => {
       axios.get('/api/v1/status/1/')
         .then(response => {
           this.machineOn = Boolean(response.data.on)
+          this.machineBrewing = Boolean(response.data.brew)
         })
         .catch(error => console.log(error))
     })
