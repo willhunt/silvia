@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import NotFound from '../views/404.vue'
+import Home from '@/views/Home.vue'
+import NotFound from '@/views/404.vue'
 
 // Lazy loading
 const Sessions = () => import('@/views/Sessions.vue')
 const Info = () => import('@/views/Info.vue')
 const Settings = () => import('@/views/Settings.vue')
+const Docs = () => import('@/views/Docs.vue')
 
 Vue.use(VueRouter)
 
@@ -43,6 +44,12 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     meta: { title: 'About Silvia' }
+  },
+  {
+    path: '/docs',
+    name: 'Docs',
+    component: Docs,
+    meta: { title: 'Documentation' }
   },
   {
     path: '*',

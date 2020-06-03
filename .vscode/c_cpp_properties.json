@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/will/.arduino/arduino-1.8.12/tools/**",
+                "/home/will/.arduino/arduino-1.8.12/hardware/arduino/avr/**",
+                "/home/will/Arduino/libraries/**",
+                "${workspaceFolder}/arduino"
+            ],
+            "forcedInclude": [
+                "/home/will/.arduino/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}

@@ -66,6 +66,7 @@ export default {
         { title: 'Sessions', icon: 'mdi-database', path: '/sessions' },
         { title: 'Information', icon: 'mdi-information', path: '/info' },
         { title: 'Settings', icon: 'mdi-cog', path: '/settings' },
+        { title: 'Docs', icon: 'mdi-bookshelf', path: '/docs' },
         { title: 'About', icon: 'mdi-help-circle', path: '/about' }
       ]
     }
