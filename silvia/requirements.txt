@@ -6,3 +6,4 @@ sqlalchemy
 random-word
 django-cors-headers
 whitenoise
+smbus
