@@ -5,7 +5,7 @@ from .models import StatusModel, ResponseModel
 from .control import pid_update
 from .utils import debug_log
 from django.conf import settings
-# from smbus import SMBus
+from smbus import SMBus
 
 # I2C variables
 i2c_addr = 0x8
