@@ -43,7 +43,6 @@ def async_power_machine(on):
     Inputs
         on: True = machine on, False = machine off [Bool]
     """
-    Turn machine on here
     if on:
         i2c_bus.write_byte(i2c_addr, 0x1) # switch it on
     else:
