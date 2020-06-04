@@ -34,7 +34,33 @@ $ hostname -I
 ```
 In my case:
 ```bash
-$ ssh pi@192.168.0.14
+$ ssh pi@192.168.0.08
+```
+
+### Setup static IP address
+Reference: [Raspberry Pi Static IP Address](https://pimylifeup.com/raspberry-pi-static-ip-address/).
+
+Edit file:
+```bash
+$ sudo nano /etc/dhcpcd.conf
+```
+
+And add:
+```
+interface wlan0
+static ip_address=192.168.0.08/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
+```
+
+Replacing with relevant IP addresses. Use this to find router/name server:
+```bash
+$ ip r | grep default
+```
+
+Reboot
+```bash
+$ sudo reboot
 ```
 
 ### Update pi
@@ -49,7 +75,7 @@ Mount file system on local machine
 ```bash
 $ sudo apt-get install sshfs
 $ mkdir ~/remote_code
-$ sshfs pi@192.168.0.14:/home ~/remote_code #-o debug
+$ sshfs pi@192.168.0.08:/home ~/remote_code #-o debug
 ```
 
 ### Download files
@@ -59,7 +85,7 @@ $ git clone https://github.com/willhunt/silvia.git
 
 ### Install server side requirements
 ```bash
-$ sudo apt-get install python3-venv
+$ sudo apt-get install python3-venv python3-smbus
 $ python3 -m venv .virtualenvs/venv-silvia
 $ source .virtualenvs/venv-silvia/bin/activate
 $ cd silvia/silvia
@@ -78,16 +104,59 @@ $ sudo apt install libapache2-mod-wsgi-py3
 Replace contents of `/etc/apache2/sites-available/000-default.conf` with:
 
 ```
+<VirtualHost *:80>
+    # The ServerName directive sets the request scheme, hostname and port that
+    # the server uses to identify itself. This is used when creating
+    # redirection URLs. In the context of virtual hosts, the ServerName
+    # specifies what hostname must appear in the request's Host: header to
+    # match this virtual host. For the default virtual host (this file) this
+    # value is not decisive as it is used as a last resort host regardless.
+    # However, you must set it for any further virtual host explicitly.
+    #ServerName www.example.com
 
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+    # error, crit, alert, emerg.
+    # It is also possible to configure the loglevel for particular
+    # modules, e.g.
+    #LogLevel info ssl:warn
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    # For most configuration files from conf-available/, which are
+    # enabled or disabled at a global level, it is possible to
+    # include a line for only one particular virtual host. For example the
+    # following line enables the CGI configuration for this host only
+    # after it has been globally disabled with "a2disconf".
+    #Include conf-available/serve-cgi-bin.conf
+
+    Alias /static /home/pi/silvia/silvia/staticfiles
+        <Directory /home/pi/silvia/silvia/staticfiles>
+            Require all granted
+        </Directory>
+
+    WSGIDaemonProcess silvia python-path=/home/pi/silvia/silvia python-home=/home/pi/.virtualenvs/venv-silvia
+    WSGIProcessGroup silvia
+    WSGIScriptAlias / /home/pi/silvia/silvia/silvia/wsgi.py
+
+    <Directory /home/pi/silvia/silvia>
+        <Files wsgi.py>
+                Require all granted
+        </Files>
+    </Directory>
+</VirtualHost>
 ```
 
 ### Change file permissions for Apache
 ```bash
 $ chmod g+w ~/silvia/silvia/db.sqlite3 
 $ chmod g+w ~/silvia/silvia
-$ sudo chown :www-data ~/silvia/silvia/db.sqlite3
-$ sudo chown :www-data ~/silvia/silvia
-$ sudo chown :www-data ~/.virtualenvs/venv-silvia
+$ sudo chown www-data:www-data ~/silvia/silvia/db.sqlite3
+$ sudo chown www-data:www-data ~/silvia/silvia
+$ sudo chown www-data:www-data ~/.virtualenvs/venv-silvia
 ```
 
 *Maybe try adding "-r" argument (recursive) for chown if having problems"
@@ -113,3 +182,11 @@ $ sudo apt install rabbitmq-server
 $ celery -A silvia worker -l info
 $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
+
+## Update
+```bash
+$ cd silvia
+$ git fetch --all
+$ git reset --hard origin/master
+```
+
