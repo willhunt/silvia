@@ -5,7 +5,7 @@ from .models import StatusModel, ResponseModel
 from .control import pid_update
 from .utils import debug_log
 from django.conf import settings
-from smbus import SMBus
+# from smbus import SMBus
 
 # I2C variables
 i2c_addr = 0x8
@@ -43,11 +43,11 @@ def async_power_machine(on):
     Inputs
         on: True = machine on, False = machine off [Bool]
     """
-    # Turn machine on here
+    Turn machine on here
     if on:
-        i2c_bus.write_byte(addr, 0x1) # switch it on
+        i2c_bus.write_byte(i2c_addr, 0x1) # switch it on
     else:
-        i2c_bus.write_byte(addr, 0x0) # switch it off
+        i2c_bus.write_byte(i2c_addr, 0x0) # switch it off
 
     debug_log("Celery machine on: %s" % on)
     status = StatusModel.objects.get(id=1)
