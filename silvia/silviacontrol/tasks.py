@@ -5,7 +5,7 @@ from .models import StatusModel, ResponseModel
 from .control import pid_update
 from .utils import debug_log
 from django.conf import settings
-from smbus import SMBus
+from smbus2 import SMBus
 
 # I2C variables
 if settings.SIMULATE_MACHINE == False:
