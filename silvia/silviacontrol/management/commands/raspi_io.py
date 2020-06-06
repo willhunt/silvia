@@ -11,7 +11,7 @@ def trigger_celery_machine_off():
     # Add the code to create a new task here
     async_power_machine(False)
 
-class IOCommand(BaseCommand):
+class Command(BaseCommand):
     help = 'Registers functions for GPIO'
 
     def handle(self, *args, **options):
