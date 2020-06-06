@@ -15,7 +15,7 @@ class Command(BaseCommand):
     help = 'Registers functions for GPIO'
 
     def handle(self, *args, **options):
-        button = Button(7)
+        button = Button(4)  # GPIO4, pin 7
 
         button.when_pressed = trigger_celery_machine_on
         button.when_released = trigger_celery_machine_off
