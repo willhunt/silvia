@@ -153,14 +153,17 @@ Replace contents of `/etc/apache2/sites-available/000-default.conf` with:
 ### Change file permissions for Apache
 ```bash
 # Change permissions
-$ chmod g+w ~/silvia/silvia/db.sqlite3 
-$ chmod g+w ~/silvia/silvia
+$ sudo chmod g+w ~/silvia/silvia/db.sqlite3 
+$ sudo chmod g+w ~/silvia/silvia
 # Change owner
 $ sudo chown www-data:www-data ~/silvia/silvia/db.sqlite3
 $ sudo chown www-data:www-data ~/silvia/silvia
 $ sudo chown www-data:www-data ~/.virtualenvs/venv-silvia
 # Change group
 $ sudo groupadd server_group
+$ sudo adduser pi server_group
+$ sudo adduser www-data server_group
+$ sudo adduser rabbitmq server_group
 $ sudo chgrp server_group ~/silvia/silvia/db.sqlite3
 $ sudo chgrp server_group ~/silvia/silvia/
 ```
@@ -191,6 +194,11 @@ $ sudo apt install rabbitmq-server
 ```bash
 $ celery -A silvia worker -l info
 $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+
+### Purge messages
+```bash
+$ rabbitmqadmin purge queue name=celery
 ```
 
 ### Setup I2c
