@@ -1,6 +1,6 @@
 from gpiozero import Button
 from signal import pause
-from .tasks import async_power_machine
+from tasks import async_power_machine
 
 def trigger_celery_machine_on():
     # Add the code to create a new task here
