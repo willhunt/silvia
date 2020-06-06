@@ -19,7 +19,7 @@ def async_get_response():
         T, t = read_temperature_sensor("simulated")
     else:
         print("Real machine reading not yet implemented")
-        T = None
+        T = 20
         t = 0
         
     # Get new PID
