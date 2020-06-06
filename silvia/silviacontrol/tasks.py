@@ -5,6 +5,7 @@ from .models import StatusModel, ResponseModel
 from .control import pid_update
 from .utils import debug_log
 from django.conf import settings
+from django.utils import timezone
 from smbus2 import SMBus
 
 # I2C variables
@@ -20,7 +21,7 @@ def async_get_response():
     else:
         print("Real machine reading not yet implemented")
         T = 20
-        t = 0
+        t = timezone.now()
         
     # Get new PID
     duty, duty_pid = pid_update(T, t)
