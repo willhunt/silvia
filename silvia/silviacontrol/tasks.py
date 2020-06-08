@@ -22,7 +22,7 @@ def async_get_response():
     else:
         # print("Real machine reading not yet implemented")
         # T = 20
-        i2c_response = i2c_bus.read_i2c_block_data(i2c_addr, 0, 10)
+        i2c_response = i2c_bus.read_i2c_block_data(i2c_addr, 0, 12)
         debug_log(i2c_response)
         t = timezone.now()
         i2c_extract = struct.unpack('2b2f', bytes(i2c_response))
