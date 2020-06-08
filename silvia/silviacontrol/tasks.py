@@ -22,7 +22,7 @@ def async_get_response():
     else:
         # print("Real machine reading not yet implemented")
         # T = 20
-        i2c_response = SMBus.read_i2c_block_data(i2c_addr, 0, 10)
+        i2c_response = i2c_bus.read_i2c_block_data(i2c_addr, 0, 10)
         t = timezone.now()
         T_boiler = struct.unpack('f', i2c_response[2:6])
         print("Temperature read as: {}".format(T_boiler))
