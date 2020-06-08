@@ -23,9 +23,10 @@ def async_get_response():
         # print("Real machine reading not yet implemented")
         # T = 20
         i2c_response = i2c_bus.read_i2c_block_data(i2c_addr, 0, 10)
+        print(i2c_response)
         t = timezone.now()
-        T_boiler = struct.unpack('f', i2c_response[2:6])
-        print("Temperature read as: {}".format(T_boiler))
+        i2c_extract = struct.unpack('2b2f', bytes(i2c_response))
+        print("Temperature read as: {}".format(i2c_extract[2]))
         
     # Get new PID
     duty, duty_pid = pid_update(T, t)
