@@ -1,18 +1,23 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from .sensors import read_temperature_sensor
-from .models import StatusModel, ResponseModel
+from .models import StatusModel, ResponseModel, SettingsModel
 from .control import pid_update
 from .utils import debug_log
 from django.conf import settings
 from django.utils import timezone
 from smbus2 import SMBus
 import struct
+# from gpiozero import OutputDevice
 
 # I2C variables
 if settings.SIMULATE_MACHINE == False:
     i2c_addr = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+
+# Machine on/off relay
+relay_power = OutputDevice(15)
+relay_brew = OutputDevice(17)
 
 @shared_task
 def async_get_response():
@@ -25,6 +30,7 @@ def async_get_response():
         i2c_block = i2c_bus.read_i2c_block_data(i2c_addr, 0, 12)
         debug_log(i2c_block)
         t = timezone.now()
+        # Format '<2?2f' => Little endian, 2xbool, 2xfloat
         i2c_extract = struct.unpack('<2?2f', bytes(i2c_block))
         T = i2c_extract[2]
         debug_log(i2c_extract)
@@ -56,35 +62,49 @@ def async_power_machine(on):
     [Byte 1, Byte2, ...] = [Mode, Setting1, Setting2, ...]
     Modes: 0 Status, 1 Settings
     """
+    status = StatusModel.objects.get(id=1)
+    settings = SettingsModel.objects.get(id=1)
+
     if settings.SIMULATE_MACHINE == False:
-        if on:
-            i2c_bus.write_byte(i2c_addr, 0) # switch it on
-            i2c_bus.write_i2c_block_data(i2c_addr, 0, [0, 0])
-        else:
-            # i2c_bus.write_byte(i2c_addr, 1) # switch it off
-            i2c_bus.write_i2c_block_data(i2c_addr, 0, [0, 1])
+        # Send i2C data to arduino
+        # Structure packed here and unpacked using 'union' on Arduino
+        block_data = struct.pack('<2b3f', on, status.brew, settings.k_p, settings.k_i, settings.k_d)
+        i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
+
+        # if on:
+            # Physically turn machine on
+            # relay_power.on()
+        # else:
+            # Physically turn machine off
+            # relay_power.off()
 
     debug_log("Celery machine on: %s" % on)
-    status = StatusModel.objects.get(id=1)
     status.on = on
     status.save()
 
 @shared_task
-def async_toggle_brew(on):
+def async_toggle_brew(brew):
     """
     Args
         on [Bool]: True = start brewing, False = stop brewing
     """
-    if settings.SIMULATE_MACHINE == False:
-        if on:
-            # i2c_bus.write_byte(i2c_addr, 2) # switch it on
-            i2c_bus.write_i2c_block_data(i2c_addr, 0, [0, 2])
-        else:
-            # i2c_bus.write_byte(i2c_addr, 1) # switch it off
-            i2c_bus.write_i2c_block_data(i2c_addr, 0, [0, 1])
-
-    debug_log("Celery machine brewing: %s" % on)
     status = StatusModel.objects.get(id=1)
-    status.brewing = on
+    settings = SettingsModel.objects.get(id=1)
+
+    if settings.SIMULATE_MACHINE == False:
+        # Send i2C data to arduino
+        # Structure packed here and unpacked using 'union' on Arduino
+        block_data = struct.pack('<2b3f', status.on, brew, settings.k_p, settings.k_i, settings.k_d)
+        i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
+
+        # if brew:
+            # Physically turn brewing on
+            # relay_brew.on()
+        # else:
+            # Physically turn brewing on
+            # relay_brew.on()
+
+    debug_log("Celery machine brewing: %s" % brew)
+    status.brewing = brew
     status.save()
 
