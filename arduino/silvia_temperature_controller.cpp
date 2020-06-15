@@ -14,12 +14,12 @@ TemperatureController::TemperatureController(
     output_ = Output;
 }
 
-void TemperatureController::Setup() {
+void TemperatureController::setup() {
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);
 }
 
-void TemperatureController::RelayControl() {
+void TemperatureController::relayControl() {
     unsigned long now = millis();
     // Time to shift the Relay Window
     if (now - tpc_window_start_ > tpc_window_size_) {

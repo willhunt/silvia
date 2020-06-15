@@ -1,6 +1,10 @@
 #ifndef SILVIA_TEMP_SENSOR_H
 #define SILVIA_TEMP_SENSOR_H
 
+#ifndef DEBUG
+#define DEBUG true
+#endif  // DEBUG
+
 #include <Arduino.h>
 
 

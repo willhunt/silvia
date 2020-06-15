@@ -21,8 +21,8 @@ class TemperatureController : public PID {
       double Kp, double Ki, double Kd,
       int POn, int ControllerDirection, int relay_pin
     );
-    void Setup();
-    void RelayControl();
+    void setup();
+    void relayControl();
 
 };
 

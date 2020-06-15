@@ -11,7 +11,7 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
 }
 
 void TemperatureSensor::updateAverage() {
-    reading_sum_ += analogRead(sensor_pin_);
+    reading_sum_ += analogRead(sensor_pin_) * sensor_coefficient_;
     reading_count_ += 1;
 }
 
@@ -27,6 +27,11 @@ float TemperatureSensor::updateTemperature() {
     reading_sum_ = 0.0;
     reading_count_ = 0;
     reading_time_ = millis();
+
+    if (DEBUG) {
+        Serial.print("Temperature: ");
+        Serial.println(reading_last_);
+    }
 
     return reading_last_;
 }

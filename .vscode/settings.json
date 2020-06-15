@@ -1,3 +1,7 @@
 {
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "files.associations": {
+        "*.cpp": "cpp",
+        "numeric": "cpp"
+    }
 }

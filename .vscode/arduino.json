@@ -1,4 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "arduino/silvia_main.ino"
+    "sketch": "arduino/silvia_main.ino",
+    "port": "/dev/ttyACM0"
 }
