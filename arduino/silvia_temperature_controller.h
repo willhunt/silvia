@@ -14,6 +14,7 @@ class TemperatureController : public PID {
     unsigned long tpc_window_start_;  // Time proportional control start time [millis]
     unsigned long tpc_window_size_;  // Time proportional control window size [millis]
     double* output_;
+    double* setpoint_;
 
   public:
     TemperatureController(
@@ -23,7 +24,8 @@ class TemperatureController : public PID {
     );
     void setup();
     void relayControl();
-
+    void on(double Setpoint, double Kp, double Ki, double Kd);
+    void off();
 };
 
 

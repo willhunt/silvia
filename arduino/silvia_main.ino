@@ -9,9 +9,9 @@ Notes:
 
 // Pre-compile definitions
 #define TEMP_SENSOR_PIN A0
-#define HEAT_RELAY_PIN 8
-#define POWER_RELAY_PIN 7
-#define BREW_RELAY_PIN 2
+#define HEAT_RELAY_PIN 13
+#define POWER_RELAY_PIN 9
+#define BREW_RELAY_PIN 12
 
 // Imports
 #include "silvia_temperature_sensor.h"
@@ -45,17 +45,10 @@ PiCommunicator pi_communicator = PiCommunicator(
 
 void setup(void) {
     // Dummy settings - delete later
-    pid_setpoint = 90;
-    kp = 1.0;
-    ki = 1.0;
-    kd = 1.0;
     m_coffee = 0.0;
 
     // PID control
-    pid.SetTunings(kp, ki, kd);
     pid.setup();
-    // Turn the PID on
-    // pid.SetMode(AUTOMATIC);
 
     // Output
     power_output.setup();
@@ -75,5 +68,4 @@ void loop(void)  {
     pid.Compute();  // Method includes sampling time check
     pid.relayControl();
 
-    
 }

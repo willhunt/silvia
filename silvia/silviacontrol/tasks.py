@@ -16,8 +16,8 @@ if settings.SIMULATE_MACHINE == False:
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
 # Machine on/off relay
-relay_power = OutputDevice(15)
-relay_brew = OutputDevice(17)
+relay_power = OutputDevice(17)
+relay_brew = OutputDevice(27)
 
 @shared_task
 def async_get_response():
@@ -94,7 +94,7 @@ def async_toggle_brew(brew):
     if settings.SIMULATE_MACHINE == False:
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
-        block_data = struct.pack('<2b3f', status.on, brew, settings.k_p, settings.k_i, settings.k_d)
+        block_data = struct.pack('<2b4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
         i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
 
         # if brew:

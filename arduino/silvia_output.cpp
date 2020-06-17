@@ -30,12 +30,12 @@ PowerOutput::PowerOutput(int pin, TemperatureController* pid)
   pid_ = pid;
 };
 
-void PowerOutput::on() {
+void PowerOutput::on(double Setpoint, double Kp, double Ki, double Kd) {
   RelayOutput::on();
-  pid_->SetMode(AUTOMATIC);
+  pid_->on(Setpoint, Kp, Ki, Kd);
 };
 
 void PowerOutput::off() {
   RelayOutput::off();
-  pid_->SetMode(MANUAL);
+  pid_->off();
 };

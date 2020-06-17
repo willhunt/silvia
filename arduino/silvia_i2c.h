@@ -22,6 +22,7 @@ union responseData {
 struct receivedFormat {
   bool power;
   bool brew;
+  double* setpoint;
   double* kp;
   double* ki;
   double* kd;

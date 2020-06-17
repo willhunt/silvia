@@ -12,6 +12,7 @@ TemperatureController::TemperatureController(
     tpc_window_size_ = 5000;
     // Store this again as have no access to provate member variable in base class
     output_ = Output;
+    setpoint_ = Setpoint;
 }
 
 void TemperatureController::setup() {
@@ -30,4 +31,14 @@ void TemperatureController::relayControl() {
         digitalWrite(relay_pin_, HIGH);
     else
         digitalWrite(relay_pin_, LOW);
+}
+
+void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd) {
+    SetTunings(Kp, Ki, Kd);
+    *setpoint_ = Setpoint;
+    SetMode(AUTOMATIC);
+}
+
+void TemperatureController::off() {
+    SetMode(MANUAL);
 }

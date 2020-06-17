@@ -15,7 +15,7 @@ void receiveEvent(int numBytes) {
   if (received_data.data.power != *response_data.data.power) {
       // toggle power
       if (received_data.data.power)
-        power_output_ref->on();
+        power_output_ref->on(*received_data.data.setpoint, *received_data.data.kp, *received_data.data.ki, *received_data.data.kd);
       else
         power_output_ref->off();
   }

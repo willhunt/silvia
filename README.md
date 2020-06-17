@@ -34,7 +34,7 @@ $ hostname -I
 ```
 In my case:
 ```bash
-$ ssh pi@192.168.0.8
+$ ssh pi@192.168.0.9
 ```
 
 ### Setup static IP address
@@ -48,7 +48,7 @@ $ sudo nano /etc/dhcpcd.conf
 And add:
 ```
 interface wlan0
-static ip_address=192.168.0.8/24
+static ip_address=192.168.0.9/24
 static routers=192.168.0.1
 static domain_name_servers=192.168.0.1
 ```
@@ -75,17 +75,18 @@ Mount file system on local machine
 ```bash
 $ sudo apt-get install sshfs
 $ mkdir ~/remote_code
-$ sshfs pi@192.168.0.8:/home ~/remote_code #-o debug
+$ sshfs pi@192.168.0.9:/home ~/remote_code #-o debug
 ```
 
 ### Download files
 ```bash
+$ sudo apt install git
 $ git clone https://github.com/willhunt/silvia.git
 ```
 
 ### Install server side requirements
 ```bash
-$ sudo apt-get install python3-venv python3-smbus
+$ sudo apt install python3-venv # python3-smbus
 $ python3 -m venv .virtualenvs/venv-silvia
 $ source .virtualenvs/venv-silvia/bin/activate
 $ cd silvia/silvia
@@ -94,10 +95,7 @@ $ pip install -r requirements.txt
 
 ### Install Apache
 ```bash
-$ sudo apt install apache2 -y
-$ sudo apt install apache2-dev -y
-$ sudo apt install apache2-mpm-worker -y
-$ sudo apt install libapache2-mod-wsgi-py3 
+$ sudo apt install apache2 apache2-dev libapache2-mod-wsgi-py3 -y
 ```
 
 ### Edit server configuration
@@ -163,7 +161,6 @@ $ sudo chown www-data:www-data ~/.virtualenvs/venv-silvia
 $ sudo groupadd server_group
 $ sudo adduser pi server_group
 $ sudo adduser www-data server_group
-$ sudo adduser rabbitmq server_group
 $ sudo chgrp server_group ~/silvia/silvia/db.sqlite3
 $ sudo chgrp server_group ~/silvia/silvia/
 ```
@@ -188,6 +185,7 @@ $ sudo service apache2 stop
 For RabbitMQ
 ```bash
 $ sudo apt install rabbitmq-server
+$ sudo adduser rabbitmq server_group
 ```
 
 ### Run Message Broker
@@ -231,5 +229,5 @@ $ sudo service apache2 restart
 
 ### Run django dev server on pi
 ```bash
-$ python manage.py runserver 192.168.0.8:8000 
+$ python manage.py runserver 192.168.0.9:8000 
 ```
