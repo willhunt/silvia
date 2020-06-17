@@ -23,11 +23,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Machine on/off
-        button_power = Button(4)  # GPIO4, pin 7
+        button_power = Button(17)  # GPIO17
         button_power.when_pressed = trigger_celery_machine_on
         button_power.when_released = trigger_celery_machine_off
         # Machine brew
-        button_brew = Button(0)  # GPIO0, pin 11
+        button_brew = Button(27)  # GPIO27
         button_brew.when_pressed = trigger_celery_brew_start
         button_brew.when_released = trigger_celery_brew_stop
 

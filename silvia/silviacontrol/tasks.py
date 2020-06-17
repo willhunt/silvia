@@ -16,8 +16,8 @@ if settings.SIMULATE_MACHINE == False:
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
 # Machine on/off relay
-relay_power = OutputDevice(17)
-relay_brew = OutputDevice(27)
+# relay_power = OutputDevice(17)
+# relay_brew = OutputDevice(27)
 
 @shared_task
 def async_get_response():
