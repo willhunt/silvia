@@ -9,3 +9,5 @@ sleep 1
 chgrp server_group silvia/db.sqlite3 silvia/celery.sqlite
 sleep 1
 chmod +x update.sh
+sleep 1
+sudo service apache2 restart
