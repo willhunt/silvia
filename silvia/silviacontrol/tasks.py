@@ -4,25 +4,21 @@ from .sensors import read_temperature_sensor
 from .models import StatusModel, ResponseModel, SettingsModel
 from .control import pid_update
 from .utils import debug_log
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.utils import timezone
 from smbus2 import SMBus
 import struct
-# from gpiozero import OutputDevice
+
 
 # I2C variables
-if settings.SIMULATE_MACHINE == False:
+if django_settings.SIMULATE_MACHINE == False:
     i2c_addr = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
-
-# Machine on/off relay
-# relay_power = OutputDevice(17)
-# relay_brew = OutputDevice(27)
 
 @shared_task
 def async_get_response():
     # Read temperature sensor
-    if settings.SIMULATE_MACHINE == True:
+    if django_settings.SIMULATE_MACHINE == True:
         T, t = read_temperature_sensor("simulated")
     else:
         # print("Real machine reading not yet implemented")
@@ -65,18 +61,11 @@ def async_power_machine(on):
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
-    if settings.SIMULATE_MACHINE == False:
+    if django_settings.SIMULATE_MACHINE == False:
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
         block_data = struct.pack('<2b3f', on, status.brew, settings.k_p, settings.k_i, settings.k_d)
         i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
-
-        # if on:
-            # Physically turn machine on
-            # relay_power.on()
-        # else:
-            # Physically turn machine off
-            # relay_power.off()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
@@ -91,18 +80,11 @@ def async_toggle_brew(brew):
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
-    if settings.SIMULATE_MACHINE == False:
+    if django_settings.SIMULATE_MACHINE == False:
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
         block_data = struct.pack('<2b4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
         i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
-
-        # if brew:
-            # Physically turn brewing on
-            # relay_brew.on()
-        # else:
-            # Physically turn brewing on
-            # relay_brew.on()
 
     debug_log("Celery machine brewing: %s" % brew)
     status.brewing = brew
