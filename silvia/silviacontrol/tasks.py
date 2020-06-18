@@ -22,7 +22,7 @@ def async_get_response():
         T, t = read_temperature_sensor("simulated")
     else:
         i2c_block = i2c_bus.read_i2c_block_data(i2c_addr, 0, 6)
-        debug_log(i2c_block)
+        # debug_log(i2c_block)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
         i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
@@ -42,7 +42,6 @@ def async_get_response():
             duty_d=duty_pid[2]
         )
         response.save()
-    debug_log(T)
     return T
 
 @shared_task
@@ -61,8 +60,8 @@ def async_power_machine(on):
     if django_settings.SIMULATE_MACHINE == False:
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
-        debug_log("kp: {}".format(settings.k_p))
         block_data = struct.pack('<2b3f', on, False, settings.k_p, settings.k_i, settings.k_d)
+        debug_log("Data to send: {}".format(block_data))
         i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
 
     debug_log("Celery machine on: %s" % on)
