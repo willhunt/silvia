@@ -93,6 +93,15 @@ $ cd silvia/silvia
 $ pip install -r requirements.txt
 ```
 
+Source virtual env by default by adding line to .bashrc
+```bash
+$ sudo nano .bashrc
+```
+Add at end:
+```
+source .virtualenvs/venv-silvia/bin/activate
+```
+
 ### Install Apache
 ```bash
 $ sudo apt install apache2 apache2-dev libapache2-mod-wsgi-py3 -y
