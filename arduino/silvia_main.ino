@@ -19,26 +19,24 @@ Notes:
 #include "silvia_i2c.h"
 #include "sivlia_output.h"
 
-// Variable definition
-// bool power;
-// bool brew;
-double T_boiler;
 // Sensors
-TemperatureSensor temperatureSensor(TEMP_SENSOR_PIN);
+TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
+
 // Temperature controller
+double T_boiler;
 double pid_output;
 double pid_setpoint;
-double kp;
-double ki;
-double kd;
 // PID gains set to zero/ or default as not known yet
 TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
+
 // Relays
 PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
+
 // I2C communication
 PiCommunicator pi_communicator = PiCommunicator(
-    I2C_ADDR, &power_output, &brew_output, &T_boiler, &m_coffee, &kp, &ki, &kd
+    // I2C_ADDR, &power_output, &brew_output, &T_boiler, &kp, &ki, &kd
+    I2C_ADDR, &power_output, &brew_output, &temperature_sensor
 );
 
 
@@ -60,7 +58,7 @@ void setup(void) {
 }
 
 void loop(void)  {
-    T_boiler = temperatureSensor.getTemperature();  // Method includes sampling time check
+    T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
     pid.Compute();  // Method includes sampling time check
     pid.relayControl();
 

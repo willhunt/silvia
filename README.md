@@ -207,6 +207,10 @@ $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:Databa
 ```bash
 $ rabbitmqadmin purge queue name=celery
 ```
+or
+```bash
+$ sudo rabbitmqctl purge_queue celery
+```
 
 ### Setup I2c
 Edit this file for I2C permissions:

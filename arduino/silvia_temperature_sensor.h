@@ -21,14 +21,15 @@ class TemperatureSensor {
     float smoothing_filter_val_;  // Between 0 and 1 for smoothing function (small=more smooth)
     int sensor_pin_;  // Analog pin number
     float updateTemperature();  // Updates temperature reading
+    float averaging_interval_;  // Interval over which to average [millis]
+    float reading_last_;  // Last temperature last_reading
+    unsigned long reading_time_;  // Time at which last reading was taken
 
   public:
     TemperatureSensor(int sensor_pin);
     void updateAverage();  // Updates sum and reading count
     float getTemperature();  // Get temperature, either last or new depending on interval
-    float averaging_interval_;  // Interval over which to average [millis]
-    float reading_last_;  // Last temperature last_reading
-    unsigned long reading_time_;  // Time at which last reading was taken
+    float getLatestTemperature(); // Get latest without updating
     void updateInterval(int interval);  // Update interval [seconds]
 };
 

@@ -48,6 +48,10 @@ float TemperatureSensor::getTemperature() {
     }
 }
 
+float TemperatureSensor::getLatestTemperature() {
+    return reading_last_;
+}
+
 void TemperatureSensor::updateInterval(int interval) {
     averaging_interval_ = interval;
 }

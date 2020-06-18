@@ -42,3 +42,7 @@ void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd)
 void TemperatureController::off() {
     SetMode(MANUAL);
 }
+
+double TemperatureController::getSetpoint() {
+    return *setpoint_;
+}
