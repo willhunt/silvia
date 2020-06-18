@@ -12,7 +12,6 @@ struct responseFormat {
   bool* power;
   bool* brew;
   double* T_boiler;
-  double* m_coffee;
 };
 union responseData {
   responseFormat data;

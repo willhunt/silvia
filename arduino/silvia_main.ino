@@ -23,7 +23,6 @@ Notes:
 // bool power;
 // bool brew;
 double T_boiler;
-double m_coffee;
 // Sensors
 TemperatureSensor temperatureSensor(TEMP_SENSOR_PIN);
 // Temperature controller
@@ -44,9 +43,6 @@ PiCommunicator pi_communicator = PiCommunicator(
 
 
 void setup(void) {
-    // Dummy settings - delete later
-    m_coffee = 0.0;
-
     // PID control
     pid.setup();
 
