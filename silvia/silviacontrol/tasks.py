@@ -27,7 +27,7 @@ def async_get_response():
         debug_log(i2c_block)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
-        i2c_extract = struct.unpack('<2?2f', bytes(i2c_block))
+        i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
         T = i2c_extract[2]
         debug_log(i2c_extract)
         debug_log("Temperature read as: {}".format(T))
