@@ -15,10 +15,10 @@
       <v-spacer></v-spacer>
       <div v-if="machineOn">
         <div v-if="machineBrewing">
-          <v-btn color="secondary" @click="toggleBrew">Brew</v-btn>
+          <v-btn color="error" @click="toggleBrew">Cancel</v-btn>
         </div>
         <div v-else>
-          <v-btn color="error" @click="toggleBrew">Cancel</v-btn>
+          <v-btn color="secondary" @click="toggleBrew">Brew</v-btn>
         </div>
       </div>
       <v-col cols="auto">
