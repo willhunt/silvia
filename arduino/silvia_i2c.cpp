@@ -2,48 +2,57 @@
 
 
 void receiveEvent(int numBytes) {
-  // if (DEBUG) {
-    Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
-  // }
-  
-  int index = 0;
-
-  while (Wire.available() && index < sizeof_received_data) {
-    // loop through all but the last
-    // Data here is written directly to memory location for use in PID
-    received_data.buffer[index] = (byte)Wire.read();
-    Serial.print(received_data.buffer[index]);
-    index++;
-  }
-  Serial.println("--end");
-  
   if (DEBUG) {
-    Serial.print("    Power: "); Serial.println(received_data.data.power);
-    Serial.print("    kp: "); Serial.println(received_data.data.kp);
+    Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
   }
-  // Check if power needs to be toggled
-  if (received_data.data.power != power_output_ref->getStatus()) {
-    // toggle power
-    if (received_data.data.power) {
-      if (DEBUG) {
-        Serial.print("Turn on");
+
+  // Check register
+  if (Wire.available()) {
+    // Get register (1st byte sent)
+    int i2c_register = (byte)Wire.read();
+    // Register 1 to update
+    if (i2c_register == 1) {
+      int index = 0;
+      while (Wire.available() && index < sizeof_received_data) {
+        // loop through all but the last
+        // Data here is written directly to memory location for use in PID
+        received_data.buffer[index] = (byte)Wire.read();
+        Serial.print(received_data.buffer[index]);
+        index++;
       }
-      power_output_ref->on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
-    } else {
+      Serial.println("--end");
+
       if (DEBUG) {
-        Serial.print("Turn off");
+        Serial.print("    Power: "); Serial.println(received_data.data.power);
+        Serial.print("    kp: "); Serial.println(received_data.data.kp);
       }
-      power_output_ref->off();
+      // Check if power needs to be toggled
+      if (received_data.data.power != power_output_ref->getStatus()) {
+        // toggle power
+        if (received_data.data.power) {
+          if (DEBUG) {
+            Serial.print("Turn on");
+          }
+          power_output_ref->on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+        } else {
+          if (DEBUG) {
+            Serial.print("Turn off");
+          }
+          power_output_ref->off();
+        }
+      }
+      // Check if brew needs to be toggled
+      if (received_data.data.brew != brew_output_ref->getStatus()) {
+        // toggle brew
+        if (received_data.data.brew)
+          brew_output_ref->on();
+        else
+          brew_output_ref->off();
+      }
     }
   }
-  // Check if brew needs to be toggled
-  if (received_data.data.brew != brew_output_ref->getStatus()) {
-    // toggle brew
-    if (received_data.data.brew)
-      brew_output_ref->on();
-    else
-      brew_output_ref->off();
-  }
+
+  
 }
 
 void requestEvent() {
