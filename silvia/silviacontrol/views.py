@@ -82,10 +82,10 @@ class StatusViewSet(viewsets.ModelViewSet):
             session.set_end_time()
             session.save()
 
-        elif not last_status.brewing and data["brew"]:  # If brewing is starting
+        elif not last_status.brew and data["brew"]:  # If brewing is starting
             async_toggle_brew(True)
 
-        elif last_status.brewing and not data["brew"]:  # If brewing  is stopped
+        elif last_status.brew and not data["brew"]:  # If brewing  is stopped
             async_toggle_brew(False)
 
         return super().update(request, pk)

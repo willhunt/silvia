@@ -78,7 +78,7 @@ export default {
 
       const axiosData = {
         id: 1,
-        brewing: this.machineBrewing,
+        brew: this.machineBrewing,
         on: this.machineOn
       }
 

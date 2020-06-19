@@ -88,6 +88,6 @@ def async_toggle_brew(brew):
         i2c_bus.write_i2c_block_data(i2c_addr, 1, list(block_data))
 
     debug_log("Celery machine brewing: %s" % brew)
-    status.brewing = brew
+    status.brew = brew
     status.save()
 
