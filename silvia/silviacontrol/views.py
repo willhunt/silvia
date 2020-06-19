@@ -103,7 +103,7 @@ class ResponseViewSet(viewsets.ModelViewSet):
             #     response = None
 
             # Just for testing purposes fire task here
-            async_get_response.delay()
+            # async_get_response.delay()
 
             return response
         else:

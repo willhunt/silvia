@@ -11,7 +11,7 @@ void receiveEvent(int numBytes) {
   while (Wire.available() && index < sizeof_received_data) {
     // loop through all but the last
     // Data here is written directly to memory location for use in PID
-    received_data.buffer[index] = Wire.read();
+    received_data.buffer[index] = (byte)Wire.read();
     index++;
   }
   if (DEBUG) {
