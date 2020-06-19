@@ -65,7 +65,7 @@ def async_power_machine(on):
         block_data = struct.pack('<2?4f', on, False, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
         debug_log( "Data to send: {}".format(list(block_data)) )
         # i2c_bus.write_i2c_block_data(i2c_addr, 0, list(block_data))
-        i2c_bus.write_byte_data(i2c_addr, 0, on)
+        i2c_bus.write_byte_data(i2c_addr, 0, 1)
 
     debug_log("Celery machine on: %s" % on)
     status.on = on

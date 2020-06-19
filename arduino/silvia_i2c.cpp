@@ -2,9 +2,9 @@
 
 
 void receiveEvent(int numBytes) {
-  if (DEBUG) {
+  // if (DEBUG) {
     Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
-  }
+  // }
   
   int index = 0;
 
