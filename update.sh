@@ -12,4 +12,4 @@ chmod +x update.sh
 sleep 1
 printf "Restarting server...  "
 sudo service apache2 restart
-printfn "Done  \n"
+printf "Done  \n"
