@@ -3,7 +3,7 @@
 
 void receiveEvent(int numBytes) {
   if (DEBUG) {
-    Serial.println("Received message");
+    Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
   }
   
   int index = 0;
@@ -11,7 +11,7 @@ void receiveEvent(int numBytes) {
   while (Wire.available() && index < sizeof_received_data) {
     // loop through all but the last
     // Data here is written directly to memory location for use in PID
-    received_data.buffer[index] += (char)Wire.read();
+    received_data.buffer[index] = Wire.read();
     index++;
   }
   if (DEBUG) {
