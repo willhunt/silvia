@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u=-tzcj2zkg5y@w@(r0st)68(2-)6n02c-=3znme-yd4n&(kua'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -148,15 +148,24 @@ REST_FRAMEWORK = {
 
 # Celery settings
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+# CELERY_BROKER_URL = 'amqp://guest:guest@localhost//' # Rabbitmq
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'db+sqlite:///celery.sqlite'
+# CELERY_RESULT_BACKEND = 'db+sqlite:///celery.sqlite'  # Rabbitmq
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Redis
 CELERY_TASK_SERIALIZER = 'json'
-# Just use this (Ture) for debuging
+# Just use this (True) for debuging
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_ONCE = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://localhost:6379/0',
+    'default_timeout': 60 * 60
+  }
+}
 
 # CORS
 # CORS_ORIGIN_WHITELIST = [
@@ -174,4 +183,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Files served at root of a
 WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
 
 # App in simulation mode or not
+# SIMULATE_MACHINE = True
 SIMULATE_MACHINE = False

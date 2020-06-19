@@ -197,6 +197,12 @@ $ sudo apt install rabbitmq-server
 $ sudo adduser rabbitmq server_group
 ```
 
+For Redis
+```bash
+$ sudo apt install redis-server
+$ sudo redis-server # Start!
+```
+
 ### Run Message Broker
 ```bash
 $ celery -A silvia worker -l info

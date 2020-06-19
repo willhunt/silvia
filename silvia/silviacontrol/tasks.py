@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
+from celery_once import QueueOnce
 from .sensors import read_temperature_sensor
 from .models import StatusModel, ResponseModel, SettingsModel
 from .control import pid_update
@@ -15,7 +16,8 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
-@shared_task
+@shared_task(base=QueueOnce)
+# @celery.task(base=QueueOnce)
 def async_get_response():
     # Read temperature sensor
     if django_settings.SIMULATE_MACHINE == True:

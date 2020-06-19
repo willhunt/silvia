@@ -1,6 +1,7 @@
 django
 djangorestframework
 Celery
+celery-once
 django-celery-beat
 sqlalchemy
 random-word
@@ -10,3 +11,4 @@ smbus2
 gpiozero
 pigpio
 RPi.GPIO
+redis
