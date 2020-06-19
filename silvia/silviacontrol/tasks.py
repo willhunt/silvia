@@ -63,8 +63,8 @@ def async_power_machine(on):
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
         block_data = struct.pack('<2?4f', on, False, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-        debug_log("Data to send: {}".format(block_data))
-        i2c_bus.write_i2c_block_data(i2c_addr, 0, list(block_data))
+        debug_log( "Data to send: {}".format(list(block_data)) )
+        i2c_bus.write_block_data(i2c_addr, 0, list(block_data))
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
