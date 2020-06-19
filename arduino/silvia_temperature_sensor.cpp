@@ -28,10 +28,10 @@ float TemperatureSensor::updateTemperature() {
     reading_count_ = 0;
     reading_time_ = millis();
 
-    if (DEBUG) {
-        Serial.print("Temperature: ");
-        Serial.println(reading_last_);
-    }
+    // if (DEBUG) {
+        // Serial.print("Temperature: ");
+        // Serial.println(reading_last_);
+    // }
 
     return reading_last_;
 }

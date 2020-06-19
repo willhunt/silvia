@@ -12,8 +12,11 @@ void receiveEvent(int numBytes) {
     // loop through all but the last
     // Data here is written directly to memory location for use in PID
     received_data.buffer[index] = (byte)Wire.read();
+    Serial.print(received_data.buffer[index]);
     index++;
   }
+  Serial.println("--end");
+  
   if (DEBUG) {
     Serial.print("    Power: "); Serial.println(received_data.data.power);
     Serial.print("    kp: "); Serial.println(received_data.data.kp);
