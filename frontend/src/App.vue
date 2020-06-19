@@ -78,7 +78,7 @@ export default {
 
       const axiosData = {
         id: 1,
-        brew: this.machineBrewing,
+        brewing: this.machineBrewing,
         on: this.machineOn
       }
 
@@ -93,7 +93,7 @@ export default {
       axios.get('/api/v1/status/1/')
         .then(response => {
           this.machineOn = Boolean(response.data.on)
-          this.machineBrewing = Boolean(response.data.brew)
+          this.machineBrewing = Boolean(response.data.brewing)
         })
         .catch(error => console.log(error))
     })
