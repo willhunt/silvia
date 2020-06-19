@@ -10,6 +10,6 @@ chgrp server_group silvia/db.sqlite3 silvia/celery.sqlite
 sleep 1
 chmod +x update.sh
 sleep 1
-echo -n "Restarting server... \c"
+printf "Restarting server...  "
 sudo service apache2 restart
-echo -n "Done \c"
+printfn "Done  \n"
