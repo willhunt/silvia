@@ -84,8 +84,8 @@ def async_toggle_brew(brew):
     if django_settings.SIMULATE_MACHINE == False:
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
-        block_data = struct.pack('<2b4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-        i2c_bus.write_i2c_block_data(i2c_addr, 0, block_data)
+        block_data = struct.pack('<2?4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+        i2c_bus.write_i2c_block_data(i2c_addr, 1, list(block_data))
 
     debug_log("Celery machine brewing: %s" % brew)
     status.brewing = brew
