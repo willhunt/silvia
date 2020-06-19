@@ -10,7 +10,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_power_machine, async_get_response
+from .tasks import async_power_machine, async_get_response, async_toggle_brew
 from django.conf import settings
 
 
@@ -81,6 +81,13 @@ class StatusViewSet(viewsets.ModelViewSet):
             session = SessionModel.objects.filter(active=True).order_by('-id')[0]
             session.set_end_time()
             session.save()
+
+        elif not last_status.brewing and data["brew"]:  # If brewing is starting
+            async_toggle_brew(True)
+
+        elif last_status.brewing and not data["brew"]:  # If brewing  is stopped
+            async_toggle_brew(False)
+
         return super().update(request, pk)
 
     @action(methods=['get', 'put'], detail=True)  # Detail/instance or collection/list
