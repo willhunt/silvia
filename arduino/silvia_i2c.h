@@ -7,7 +7,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include "sivlia_output.h"
+#include "silvia_output.h"
 // #include "silvia_temperature_controller.h"
 #include "silvia_temperature_sensor.h"
 

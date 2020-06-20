@@ -1,4 +1,4 @@
-#include "sivlia_output.h"
+#include "silvia_output.h"
 
 // Basic relay output
 RelayOutput::RelayOutput(int pin) {

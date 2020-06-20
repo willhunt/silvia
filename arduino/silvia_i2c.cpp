@@ -23,7 +23,7 @@ void receiveEvent(int numBytes) {
       Serial.println("--end");
 
       if (DEBUG) {
-        Serial.print("    Power: "); Serial.println(received_data.data.power);
+        Serial.print("    Brew: "); Serial.println(received_data.data.brew);
         Serial.print("    kp: "); Serial.println(received_data.data.kp);
       }
       // Check if power needs to be toggled

@@ -17,7 +17,7 @@ Notes:
 #include "silvia_temperature_sensor.h"
 #include "silvia_temperature_controller.h"
 #include "silvia_i2c.h"
-#include "sivlia_output.h"
+#include "silvia_output.h"
 
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
