@@ -10,10 +10,10 @@ def trigger_celery_machine_off():
     async_power_machine.delay(False)
 
 def trigger_celery_brew_start():
-    async_toggle_brew(True)
+    async_toggle_brew.delay(True)
 
 def trigger_celery_brew_stop():
-    async_toggle_brew(False)
+    async_toggle_brew.delay(False)
 
 def trigger_celery_response():
     async_get_response()
