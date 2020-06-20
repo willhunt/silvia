@@ -1,7 +1,7 @@
 from gpiozero import Button, OutputDevice
 from signal import pause
 from django.core.management.base import BaseCommand, CommandError
-from silviacontrol.tasks import async_power_machine, async_get_response
+from silviacontrol.tasks import async_power_machine, async_get_response, async_toggle_brew
 
 def trigger_celery_machine_on():
     async_power_machine.delay(True)
@@ -10,10 +10,10 @@ def trigger_celery_machine_off():
     async_power_machine.delay(False)
 
 def trigger_celery_brew_start():
-    pass
+    async_toggle_brew(True)
 
 def trigger_celery_brew_stop():
-    pass
+    async_toggle_brew(False)
 
 def trigger_celery_response():
     async_get_response()
