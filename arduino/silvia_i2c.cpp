@@ -76,7 +76,7 @@ PiCommunicator::PiCommunicator(
   // Stored outside of object (better for interrupts as static variables and methods required)
   temp_sensor_ref = temperature_sensor;
   power_output_ref = power_output;
-  brew_output_ref = brew_output_ref;
+  brew_output_ref = brew_output;
   sizeof_received_data = sizeof(receivedFormat);
 };
 
