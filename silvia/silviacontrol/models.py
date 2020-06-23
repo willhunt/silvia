@@ -128,6 +128,7 @@ class ScheduleModel(models.Model):
     days = models.CharField(max_length=7, default='0000000')  # Day schedule - string of 0 or 1's to indicate if active on weekday starting with Sun=0
     t_on = models.TimeField(default=time(hour=0, minute=0))
     t_off = models.TimeField(default=time(hour=0, minute=0))
+    # Schedule tasks. These are not master (see above fields) as they share data. SIngle source of truth are data members above.
     schedule_on = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_on', null=True, blank=True)  # Time to turn machine on
     schedule_off = models.ForeignKey(PeriodicTask, on_delete=models.CASCADE, related_name='schedule_off', null=True, blank=True)  # Time to turn machine off
     active = models.BooleanField(default=False)  # Schedule active [True] or not [False]
