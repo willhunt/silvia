@@ -52,15 +52,7 @@ void requestEvent();
 
 class PiCommunicator {
   private:
-    // static responseData response_data_;
-    // static receivedData received_data_;
     int i2c_addr_;
-    // Pointers to data that can be requested
-    // double* T_boiler_;
-    // double* m_coffee_;
-    // bool* power_;
-    // bool* brew_;
-    // static int sizeof_received_data_;
 
   public:
     PiCommunicator(
@@ -69,7 +61,6 @@ class PiCommunicator {
       RelayOutput* brew_output,
       TemperatureSensor* temperature_sensor
     );
-    void setup();
 };
 
 

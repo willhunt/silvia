@@ -1,6 +1,5 @@
 #include "silvia_i2c.h"
 
-
 void receiveEvent(int numBytes) {
   if (DEBUG) {
     Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
@@ -50,9 +49,7 @@ void receiveEvent(int numBytes) {
           brew_output_ref->off();
       }
     }
-  }
-
-  
+  }  // if(Wire.available)
 }
 
 void requestEvent() {
@@ -65,24 +62,16 @@ void requestEvent() {
 }
 
 PiCommunicator::PiCommunicator(
-  int i2c_addr, 
-  PowerOutput* power_output,
-  RelayOutput* brew_output,
-  TemperatureSensor* temperature_sensor
-) {
-  // Stored within object
-  i2c_addr_ = i2c_addr;
-
+  int i2c_addr, PowerOutput* power_output, RelayOutput* brew_output, TemperatureSensor* temperature_sensor
+) : i2c_addr_(i2c_addr)
+{
   // Stored outside of object (better for interrupts as static variables and methods required)
   temp_sensor_ref = temperature_sensor;
   power_output_ref = power_output;
   brew_output_ref = brew_output;
   sizeof_received_data = sizeof(receivedFormat);
-};
 
-void PiCommunicator::setup() {
   Wire.begin(I2C_ADDR);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
-}
-
+};

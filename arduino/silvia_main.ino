@@ -12,6 +12,9 @@ Notes:
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
+#define DISPLAY_SDA_PIN 2
+#define DISPLAY_SCL_PIN 3
+
 
 // Imports
 #include "silvia_temperature_sensor.h"
@@ -29,8 +32,11 @@ double pid_setpoint;
 // PID gains set to zero/ or default as not known yet
 TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
 
+// Display
+SilviaDisplay display = SilviaDisplay(DISPLAY_SDA_PIN, DISPLAY_SCL_PIN);
+
 // Relays
-PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
+PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid, &display);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
 // I2C communication
@@ -41,25 +47,23 @@ PiCommunicator pi_communicator = PiCommunicator(
 
 
 void setup(void) {
-    // PID control
-    pid.setup();
-
-    // Output
-    power_output.setup();
-    brew_output.setup();
-
-    // Setup communication
-    pi_communicator.setup();
-
     // Setup serial
     if (DEBUG) {
         Serial.begin(9600);
     }
+
+    display.showLogo();
+    delay(1000);
+    display.clearDisplay();
 }
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
-    pid.Compute();  // Method includes sampling time check
-    pid.relayControl();
 
+    if (power_output.getStatus()) {
+        pid.Compute();  // Method includes sampling time check
+        pid.relayControl();
+        display.updateTemperature(&T_boiler, &pid_setpoint);
+    }
+    
 }

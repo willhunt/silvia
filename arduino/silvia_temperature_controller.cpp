@@ -5,17 +5,9 @@ TemperatureController::TemperatureController(
     double Kp, double Ki, double Kd, int POn, int ControllerDirection,
     int relay_pin
 )   // Call base class constructor
-    : PID(Input, Output, Setpoint, Kp, Ki, Kd, POn, ControllerDirection)
+    : PID(Input, Output, Setpoint, Kp, Ki, Kd, POn, ControllerDirection),
+    relay_pin_(relay_pin), tpc_window_start_(millis()), output_(Output), setpoint_(Setpoint)
 {
-    relay_pin_ = relay_pin;
-    tpc_window_start_ = millis();
-    tpc_window_size_ = 5000;
-    // Store this again as have no access to provate member variable in base class
-    output_ = Output;
-    setpoint_ = Setpoint;
-}
-
-void TemperatureController::setup() {
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);
 }
