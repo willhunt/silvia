@@ -64,6 +64,7 @@ export default {
       items: [
         { title: 'Operate', icon: 'mdi-coffee', path: '/' },
         { title: 'Sessions', icon: 'mdi-database', path: '/sessions' },
+        { title: 'Schedule', icon: 'mdi-calendar', path: '/schedule' },
         { title: 'Information', icon: 'mdi-information', path: '/info' },
         { title: 'Settings', icon: 'mdi-cog', path: '/settings' },
         { title: 'Docs', icon: 'mdi-bookshelf', path: '/docs' },

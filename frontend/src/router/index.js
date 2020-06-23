@@ -7,6 +7,7 @@ import NotFound from '@/views/404.vue'
 const Sessions = () => import('@/views/Sessions.vue')
 const Info = () => import('@/views/Info.vue')
 const Settings = () => import('@/views/Settings.vue')
+const Schedule = () => import('@/views/Schedule.vue')
 const Docs = () => import('@/views/Docs.vue')
 
 Vue.use(VueRouter)
@@ -35,6 +36,12 @@ const routes = [
     name: 'Settings',
     component: Settings,
     meta: { title: 'Settings' }
+  },
+  {
+    path: '/schedule',
+    name: 'Schedule',
+    component: Schedule,
+    meta: { title: 'Schedule' }
   },
   {
     path: '/about',

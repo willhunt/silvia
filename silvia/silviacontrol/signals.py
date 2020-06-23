@@ -91,7 +91,7 @@ def delete_schedule(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=ResponseModel)
-def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
+def save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
