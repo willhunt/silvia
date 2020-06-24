@@ -1,3 +1,4 @@
+from django.conf import settings as django_settings
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
@@ -23,7 +24,6 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
         # draw.text((2, 2),  'Hello',  font=self.font, fill=255)
         # draw.text((2, 22), 'World!', font=self.font, fill=255)
 
-        image = Image.open('static/silviacontrol/display/silvia_logo_128x64.png').resize((self.width, self.height), Image.ANTIALIAS).convert('1')
-
+        image = Image.open(django_settings.STATIC_ROOT + '/silviacontrol/display/silvia_logo_128x64.png').resize((self.width, self.height), Image.ANTIALIAS).convert('1')
         self.image(image)
         self.display()
