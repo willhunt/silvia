@@ -2,9 +2,9 @@
 
 git fetch --all
 sleep 2
-git reset --hard origin/master
+git reset --hard origin/dev-schedule
 sleep 1
-git checkout master
+git checkout dev-schedule
 sleep 1
 chmod g+w silvia/db.sqlite3 silvia/celery.sqlite
 sleep 1
