@@ -19,11 +19,15 @@ from PIL import ImageFont
 # I2C variables
 if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_arduino = 0x8
-    i2c_addr_oled = 0x3C
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
+    i2c_addr_oled = 0x3C
     display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
     display.begin()
+
+    # Clear display.
+    display.clear()
+    display.display()
     width = display.width
     height = display.height
     image = Image.new('1', (width, height))
