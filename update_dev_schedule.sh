@@ -10,7 +10,7 @@ chmod g+w silvia/db.sqlite3 silvia/celery.sqlite
 sleep 1
 chgrp server_group silvia/db.sqlite3 silvia/celery.sqlite
 sleep 1
-chmod +x update.sh
+chmod +x update_dev_schedule.sh
 sleep 1
 printf "Restarting server...  "
 sudo service apache2 restart
