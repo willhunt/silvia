@@ -22,7 +22,7 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_oled = 0x3C
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
-    display = Adafruit_SSD1306.SSD1306_128_64(rst=-1,i2c_address=i2c_addr_oled)
+    display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
     display.begin()
     width = disp.width
     height = disp.height
