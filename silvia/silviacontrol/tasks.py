@@ -41,6 +41,9 @@ if django_settings.SIMULATE_MACHINE == False:
     draw.text((2, 2),  'Hello',  font=font, fill=255)
     draw.text((2, 22), 'World!', font=font, fill=255)
 
+    display.image(image)
+    display.display()
+
 @shared_task(base=QueueOnce)
 # @celery.task(base=QueueOnce)
 def async_get_response():
