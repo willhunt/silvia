@@ -12,3 +12,4 @@ gpiozero
 pigpio
 RPi.GPIO
 redis
+Adafruit-SSD1306

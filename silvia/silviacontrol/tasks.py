@@ -10,11 +10,32 @@ from django.utils import timezone
 from smbus2 import SMBus
 import struct
 
+import Adafruit_SSD1306
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
 
 # I2C variables
 if django_settings.SIMULATE_MACHINE == False:
-    i2c_addr = 0x8
+    i2c_addr_arduino = 0x8
+    i2c_addr_oled = 0x3C
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+
+    display = Adafruit_SSD1306.SSD1306_128_64(rst=-1,i2c_address=i2c_addr_oled)
+    display.begin()
+    width = disp.width
+    height = disp.height
+    image = Image.new('1', (width, height))
+
+    # Get drawing object to draw on image.
+    draw = ImageDraw.Draw(image)
+
+    # Draw a black filled box to clear the image.
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    font = ImageFont.load_default()
+    draw.text((2, 2),  'Hello',  font=font, fill=255)
+    draw.text((2, 22), 'World!', font=font, fill=255)
 
 @shared_task(base=QueueOnce)
 # @celery.task(base=QueueOnce)
@@ -23,7 +44,7 @@ def async_get_response():
     if django_settings.SIMULATE_MACHINE == True:
         T, t = read_temperature_sensor("simulated")
     else:
-        i2c_block = i2c_bus.read_i2c_block_data(i2c_addr, 0, 6)
+        i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 6)
         # debug_log(i2c_block)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
@@ -64,8 +85,8 @@ def async_power_machine(on):
         # Structure packed here and unpacked using 'union' on Arduino
         block_data = struct.pack('<2?4f', on, False, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
         debug_log( "Data to send: {}".format(list(block_data)) )
-        i2c_bus.write_i2c_block_data(i2c_addr, 1, list(block_data))
-        # i2c_bus.write_byte(i2c_addr, 0)
+        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
+        # i2c_bus.write_byte(i2c_addr_arduino, 0)
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
@@ -85,7 +106,7 @@ def async_toggle_brew(brew):
         # Send i2C data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
         block_data = struct.pack('<2?4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-        i2c_bus.write_i2c_block_data(i2c_addr, 1, list(block_data))
+        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
 
     debug_log("Celery machine brewing: %s" % brew)
     status.brew = brew

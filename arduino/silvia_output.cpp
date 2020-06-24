@@ -54,7 +54,7 @@ SoftwareWire* SilviaDisplayHelper::getSoftwareWire() {
 SilviaDisplay::SilviaDisplay(int sda_pin, int scl_pin)
   : SilviaDisplayHelper(sda_pin, scl_pin),
     Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, getSoftwareWire(), -1) {
-
+  begin(SSD1306_EXTERNALVCC, 0x3C);
 };
 
 void SilviaDisplay::updateTemperature(double* T, double* T_set) {

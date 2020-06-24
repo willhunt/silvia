@@ -52,7 +52,12 @@ void setup(void) {
         Serial.begin(9600);
     }
 
-    display.showLogo();
+    // display.showLogo();
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 10);
+    // Display static text
+    display.println("Hello, world!");
     delay(1000);
     display.clearDisplay();
 }
