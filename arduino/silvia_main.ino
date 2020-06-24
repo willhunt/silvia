@@ -33,6 +33,7 @@ double pid_setpoint;
 TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
 
 // Display
+// Adafruit library doesn't seem to play with SoftwareWire. Implementing display from Pi side.
 SilviaDisplay display = SilviaDisplay(DISPLAY_SDA_PIN, DISPLAY_SCL_PIN);
 
 // Relays

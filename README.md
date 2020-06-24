@@ -86,7 +86,7 @@ $ git clone https://github.com/willhunt/silvia.git
 
 ### Install server side requirements
 ```bash
-$ sudo apt install python3-venv python3-pil # python3-smbus
+$ sudo apt install python3-venv libopenjp2-7 # python3-smbus
 $ python3 -m venv .virtualenvs/venv-silvia
 $ source .virtualenvs/venv-silvia/bin/activate
 $ cd silvia/silvia
