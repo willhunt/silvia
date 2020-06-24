@@ -24,8 +24,8 @@ if django_settings.SIMULATE_MACHINE == False:
 
     display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
     display.begin()
-    width = disp.width
-    height = disp.height
+    width = display.width
+    height = display.height
     image = Image.new('1', (width, height))
 
     # Get drawing object to draw on image.
