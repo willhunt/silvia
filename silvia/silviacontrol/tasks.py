@@ -25,27 +25,7 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
     display.welcome()
-    # display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
-    # display.begin()
 
-    # # Clear display.
-    # display.clear()
-    # display.display()
-    # width = display.width
-    # height = display.height
-    # image = Image.new('1', (width, height))
-
-    # # Get drawing object to draw on image.
-    # draw = ImageDraw.Draw(image)
-
-    # # Draw a black filled box to clear the image.
-    # draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    # font = ImageFont.load_default()
-    # draw.text((2, 2),  'Hello',  font=font, fill=255)
-    # draw.text((2, 22), 'World!', font=font, fill=255)
-
-    # display.image(image)
-    # display.display()
 
 @shared_task(base=QueueOnce)
 # @celery.task(base=QueueOnce)
@@ -60,7 +40,9 @@ def async_get_response():
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
         i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
         T = i2c_extract[2]
-        debug_log(i2c_extract)
+        # debug_log(i2c_extract)
+        settings = SettingsModel.objects.get(id=1)
+        display.showTemperature(T, settings.T_set)
         
     # Get new PID
     duty, duty_pid = pid_update(T, t)
