@@ -9,11 +9,12 @@ from django.conf import settings as django_settings
 from django.utils import timezone
 from smbus2 import SMBus
 import struct
+from.display import SilviaDisplay
 
-import Adafruit_SSD1306
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+# import Adafruit_SSD1306
+# from PIL import Image
+# from PIL import ImageDraw
+# from PIL import ImageFont
 
 
 # I2C variables
@@ -22,27 +23,29 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
     i2c_addr_oled = 0x3C
-    display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
-    display.begin()
+    display = SilviaDisplay(i2c_addr_oled)
+    display.welcome()
+    # display = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=i2c_addr_oled)
+    # display.begin()
 
-    # Clear display.
-    display.clear()
-    display.display()
-    width = display.width
-    height = display.height
-    image = Image.new('1', (width, height))
+    # # Clear display.
+    # display.clear()
+    # display.display()
+    # width = display.width
+    # height = display.height
+    # image = Image.new('1', (width, height))
 
-    # Get drawing object to draw on image.
-    draw = ImageDraw.Draw(image)
+    # # Get drawing object to draw on image.
+    # draw = ImageDraw.Draw(image)
 
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    font = ImageFont.load_default()
-    draw.text((2, 2),  'Hello',  font=font, fill=255)
-    draw.text((2, 22), 'World!', font=font, fill=255)
+    # # Draw a black filled box to clear the image.
+    # draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    # font = ImageFont.load_default()
+    # draw.text((2, 2),  'Hello',  font=font, fill=255)
+    # draw.text((2, 22), 'World!', font=font, fill=255)
 
-    display.image(image)
-    display.display()
+    # display.image(image)
+    # display.display()
 
 @shared_task(base=QueueOnce)
 # @celery.task(base=QueueOnce)
