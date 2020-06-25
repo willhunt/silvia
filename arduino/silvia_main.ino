@@ -34,10 +34,10 @@ TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_s
 
 // Display
 // Adafruit library doesn't seem to play with SoftwareWire. Implementing display from Pi side.
-SilviaDisplay display = SilviaDisplay(DISPLAY_SDA_PIN, DISPLAY_SCL_PIN);
+// SilviaDisplay display = SilviaDisplay(DISPLAY_SDA_PIN, DISPLAY_SCL_PIN);
 
 // Relays
-PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid, &display);
+PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
 // I2C communication
@@ -53,14 +53,6 @@ void setup(void) {
         Serial.begin(9600);
     }
 
-    // display.showLogo();
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
-    display.setCursor(0, 10);
-    // Display static text
-    display.println("Hello, world!");
-    delay(1000);
-    display.clearDisplay();
 }
 
 void loop(void)  {
@@ -69,7 +61,6 @@ void loop(void)  {
     if (power_output.getStatus()) {
         pid.Compute();  // Method includes sampling time check
         pid.relayControl();
-        display.updateTemperature(&T_boiler, &pid_setpoint);
     }
     
 }

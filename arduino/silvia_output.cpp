@@ -24,8 +24,8 @@ void RelayOutput::off() {
 };
 
 // Power ouput need to turn PID on and off
-PowerOutput::PowerOutput(int pin, TemperatureController* pid, SilviaDisplay* display)
-  : RelayOutput(pin), pid_(pid), display_(display) {
+PowerOutput::PowerOutput(int pin, TemperatureController* pid)
+  : RelayOutput(pin), pid_(pid) {
 
 };
 
@@ -37,7 +37,6 @@ void PowerOutput::on(double Setpoint, double Kp, double Ki, double Kd) {
 void PowerOutput::off() {
   RelayOutput::off();
   pid_->off();
-  display_->clearDisplay();
 };
 
 

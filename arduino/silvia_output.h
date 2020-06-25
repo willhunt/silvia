@@ -46,10 +46,9 @@ class RelayOutput {
 class PowerOutput : public RelayOutput {
   private:
     TemperatureController* pid_;
-    SilviaDisplay* display_;
   
   public:
-    PowerOutput(int pin, TemperatureController* pid, SilviaDisplay* display);
+    PowerOutput(int pin, TemperatureController* pid);
     void on(double Setpoint, double Kp, double Ki, double Kd);
     void off();
 };
