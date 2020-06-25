@@ -22,7 +22,7 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_arduino = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
-    i2c_addr_oled = 0x3c
+    i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
     display.welcome()
 
@@ -42,7 +42,7 @@ def async_get_response():
         T = i2c_extract[2]
         # debug_log(i2c_extract)
         settings = SettingsModel.objects.get(id=1)
-        display.showTemperature(T, settings.T_set)
+        # display.showTemperature(T, settings.T_set)
         
     # Get new PID
     duty, duty_pid = pid_update(T, t)
