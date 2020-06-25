@@ -3,6 +3,7 @@ import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import time
 
 class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
 
@@ -20,6 +21,10 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
                      .convert('1')
         self.image(image)
         self.display()
+        time.sleep(2)
+        self.clear()
+        self.display()
+
 
     def showTemperature(self, T, T_set):
         image = Image.new('1', (self.width, self.height))

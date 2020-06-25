@@ -22,8 +22,8 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_arduino = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
-    # i2c_addr_oled = 0x3C
-    # display = SilviaDisplay(i2c_addr_oled)
+    i2c_addr_oled = 0x3C
+    display = SilviaDisplay(i2c_addr_oled)
     # display.welcome()
 
 
@@ -79,6 +79,7 @@ def async_power_machine(on):
         debug_log( "Data to send: {}".format(list(block_data)) )
         i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
         # i2c_bus.write_byte(i2c_addr_arduino, 0)
+        display.welcome()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
