@@ -44,7 +44,7 @@ def async_get_response():
         T = i2c_extract[2]
         # debug_log(i2c_extract)
         settings = SettingsModel.objects.get(id=1)
-        # display.showTemperature(T, settings.T_set)
+        display.showTemperature(T, settings.T_set)
         
     # Get new PID
     duty, duty_pid = pid_update(T, t)
