@@ -20,7 +20,7 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
     
         # self.font = ImageFont.load_default()
         self.font_data = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 30)
-        self.font_sub = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 12)
+        self.font_sub = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 10)
         
     def welcome(self):
         image = Image.open(django_settings.STATIC_ROOT + '/silviacontrol/display/silvia_logo_128x64_inverted.png') \
@@ -45,12 +45,12 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
 
         drawing.text((padding_x, padding_y),
             "Temperature:",  font=self.font_sub, fill=255)
-        drawing.text((padding_x, 25),
+        drawing.text((padding_x, 22),
             "{0:.0f}{1}C".format(T, u'\N{DEGREE SIGN}'),  font=self.font_data, fill=255)
             
-        drawing.text((60, 60),
+        drawing.text((40, 40),
             "Setpoint:", font=self.font_data, fill=255)
-        drawing.text((70, 60),
+        drawing.text((40, 40),
             "{0:.0f}{1}C".format(T_set, u'\N{DEGREE SIGN}'), font=self.font_data, fill=255)
 
         self.image(image)
