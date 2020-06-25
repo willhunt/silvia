@@ -32,6 +32,7 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
         padding_y = 4
 
         draw.text((padding_x, padding_y),  'Temperature:',  font=self.font, fill=255)
-        draw.text((padding_x + 13, padding_y),  T,  font=self.font, fill=255)
-        draw.text((padding_x, padding_y + 30), 'Font size:', font=self.font, fill=255)
-        draw.text((padding_x + 13, padding_y + 30),  self.font,  font=self.font, fill=255)
+        draw.text((padding_x + 13, padding_y),  "{:.1f}".format(T),  font=self.font, fill=255)
+        draw.text((padding_x, padding_y + 30), 'Setpoint:', font=self.font, fill=255)
+        draw.text((padding_x + 13, padding_y + 30),  "{:.1f}".format(T_set),  font=self.font, fill=255)
+        
