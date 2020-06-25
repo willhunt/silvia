@@ -9,7 +9,7 @@ from django.conf import settings as django_settings
 from django.utils import timezone
 from smbus2 import SMBus
 import struct
-from.display import SilviaDisplay
+from.display_cp import SilviaDisplay
 import time
 
 # import Adafruit_SSD1306
