@@ -10,7 +10,7 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
         super().__init__(rst=None, i2c_address=i2c_address)
         self.begin()
         self.clear()
-        self.display()
+        # self.display()
     
         self.font = ImageFont.load_default()
         
@@ -35,4 +35,3 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
         draw.text((padding_x + 13, padding_y),  "{:.1f}".format(T),  font=self.font, fill=255)
         draw.text((padding_x, padding_y + 30), 'Setpoint:', font=self.font, fill=255)
         draw.text((padding_x + 13, padding_y + 30),  "{:.1f}".format(T_set),  font=self.font, fill=255)
-        
