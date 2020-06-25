@@ -10,7 +10,7 @@ class SilviaDisplay(Adafruit_SSD1306.SSD1306_128_64):
         super().__init__(rst=None, i2c_address=i2c_address)
         self.begin()
         self.clear()
-        # self.display()
+        self.display()
     
         self.font = ImageFont.load_default()
         
