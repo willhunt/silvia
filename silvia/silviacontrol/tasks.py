@@ -22,7 +22,7 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_arduino = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
 
-    i2c_addr_oled = 0x3C
+    i2c_addr_oled = 0x3c
     display = SilviaDisplay(i2c_addr_oled)
     display.welcome()
 
