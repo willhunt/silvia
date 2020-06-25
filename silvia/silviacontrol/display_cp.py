@@ -28,7 +28,7 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         self.show()
         time.sleep(2)
         self.fill(0)
-        self.display()
+        self.show()
 
 
     def showTemperature(self, T, T_set):
