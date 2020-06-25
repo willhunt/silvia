@@ -40,17 +40,17 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         # Draw a black filled box to clear the image.
         # drawing.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
         
-        padding_x = 4
-        padding_y = 4
+        padding_x = 2
+        padding_y = 2
 
         drawing.text((padding_x, padding_y),
             "Temperature:",  font=self.font_sub, fill=255)
-        drawing.text((padding_x, 22),
+        drawing.text((padding_x + 4, 22),
             "{0:.0f}{1}C".format(T, u'\N{DEGREE SIGN}'),  font=self.font_data, fill=255)
             
         # drawing.text((85, 25),
         #     "Set:", font=self.font_sub, fill=255)
-        drawing.text((85, 40),
+        drawing.text((85, 35),
             "[{0:.0f}{1}C]".format(T_set, u'\N{DEGREE SIGN}'), font=self.font_sub, fill=255)
 
         self.image(image)
