@@ -48,10 +48,10 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         drawing.text((padding_x, 22),
             "{0:.0f}{1}C".format(T, u'\N{DEGREE SIGN}'),  font=self.font_data, fill=255)
             
-        drawing.text((75, 25),
-            "Set:", font=self.font_sub, fill=255)
-        drawing.text((75, 35),
-            "{0:.0f}{1}C".format(T_set, u'\N{DEGREE SIGN}'), font=self.font_sub, fill=255)
+        # drawing.text((85, 25),
+        #     "Set:", font=self.font_sub, fill=255)
+        drawing.text((85, 40),
+            "[{0:.0f}{1}C]".format(T_set, u'\N{DEGREE SIGN}'), font=self.font_sub, fill=255)
 
         self.image(image)
         self.show()
