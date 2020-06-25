@@ -10,6 +10,7 @@ from django.utils import timezone
 from smbus2 import SMBus
 import struct
 from.display import SilviaDisplay
+import time
 
 # import Adafruit_SSD1306
 # from PIL import Image
@@ -21,6 +22,7 @@ from.display import SilviaDisplay
 if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_arduino = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+    time.sleep(1) 
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
