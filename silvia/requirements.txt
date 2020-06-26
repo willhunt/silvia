@@ -13,8 +13,5 @@ pigpio
 RPi.GPIO
 redis
 Pillow
-
-Adafruit-SSD1306
-
 adafruit-blinka
 adafruit-circuitpython-ssd1306
