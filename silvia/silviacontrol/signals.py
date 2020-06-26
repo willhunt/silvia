@@ -1,7 +1,8 @@
-from django.db.models.signals import post_init, pre_save, post_delete
+from django.db.models.signals import post_init, pre_save, post_delete, post_save
 from django.dispatch import receiver
-from .models import ScheduleModel, ResponseModel, StatusModel
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel
+from .tasks import async_get_response, async_update_microcontroller
+from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 
 # @receiver(pre_save, sender=StatusModel)
@@ -100,3 +101,34 @@ def save_response(sender, instance, raw, using, update_fields, **kwargs):
         instance.brewing = status.brew
     except:
         instance.brewing = False
+
+
+@receiver(post_save, sender=SettingsModel)
+def save_settings(sender, instance, raw, using, update_fields, **kwargs):
+    """
+    When updating settings model update periodic task and arduino settings
+    """
+    # See if periodic temperature update task exists
+    try:
+        periodic_response = PeriodicTask.objects.get(name="Get Response")
+        #  Update period if different
+        if periodic_response.interval.every != instance.t_sample:
+            periodic_response.interval.every = instance.t_sample
+            periodic_response.interval.save()
+
+    except PeriodicTask.DoesNotExist:
+        # Create periodic task if it doesn't exist
+        periodic_interval = IntervalSchedule.objects.create(
+            every=instance.t_sample,
+            period='seconds'
+        )
+        status = StatusModel.objects.get(pk=1)
+        periodic_response = PeriodicTask.objects.create(
+            name="Get Response",
+            task="silviacontrol.tasks.async_get_response",
+            enabled=status.on,
+            interval=periodic_interval
+        )
+
+    # Send to Arduino
+    async_update_microcontroller.delay()

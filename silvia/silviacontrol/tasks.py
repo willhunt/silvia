@@ -1,36 +1,30 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from celery_once import QueueOnce
-from .sensors import read_temperature_sensor
 from .models import StatusModel, ResponseModel, SettingsModel
-from .control import pid_update
 from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
-from smbus2 import SMBus
-import struct
-from.display_cp import SilviaDisplay
-import time
 
-# import Adafruit_SSD1306
-# from PIL import Image
-# from PIL import ImageDraw
-# from PIL import ImageFont
-
-
-# I2C variables
+# For real machine
 if django_settings.SIMULATE_MACHINE == False:
+    import struct
+    from smbus2 import SMBus
+    from.display_cp import SilviaDisplay
+
+    # I2C variables
     i2c_addr_arduino = 0x8
     i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
-    time.sleep(1) 
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
-    # display.welcome()
+# For testing
+else:
+    from .control import pid_update
+    from .sensors import read_temperature_sensor
 
 
 @shared_task(base=QueueOnce)
-# @celery.task(base=QueueOnce)
 def async_get_response():
     # Read temperature sensor
     if django_settings.SIMULATE_MACHINE == True:
@@ -72,15 +66,9 @@ def async_power_machine(on):
     Modes: 0 Status, 1 Settings
     """
     status = StatusModel.objects.get(id=1)
-    settings = SettingsModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
-        # Send i2C data to arduino
-        # Structure packed here and unpacked using 'union' on Arduino
-        block_data = struct.pack('<2?4f', on, False, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-        debug_log( "Data to send: {}".format(list(block_data)) )
-        # i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
-        # i2c_bus.write_byte(i2c_addr_arduino, 0)
+        update_microcontroller(on=on, brew=False)
         display.welcome()
 
     debug_log("Celery machine on: %s" % on)
@@ -95,15 +83,29 @@ def async_toggle_brew(brew):
         on [Bool]: True = start brewing, False = stop brewing
     """
     status = StatusModel.objects.get(id=1)
-    settings = SettingsModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
-        # Send i2C data to arduino
-        # Structure packed here and unpacked using 'union' on Arduino
-        block_data = struct.pack('<2?4f', status.on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
+        update_microcontroller(brew=brew)
 
     debug_log("Celery machine brewing: %s" % brew)
     status.brew = brew
     status.save()
 
+@shared_task
+def async_update_microcontroller():
+    update_microcontroller()
+
+def update_microcontroller(on=None, brew=None):
+    status = StatusModel.objects.get(id=1)
+    settings = SettingsModel.objects.get(id=1)
+    
+    if on is None:
+        on = status.on
+    if brew is None:
+        brew = status.brew
+    # Send i2C data to arduino
+    # Structure packed here and unpacked using 'union' on Arduino
+    block_data = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    debug_log( "Data to send: {}".format(list(block_data)) )
+    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
+    # i2c_bus.write_byte(i2c_addr_arduino, 0)

@@ -37,8 +37,6 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         image = Image.new('1', (self.width, self.height))
         # Get drawing object to draw on image.
         drawing = ImageDraw.Draw(image)
-        # Draw a black filled box to clear the image.
-        # drawing.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
         
         padding_x = 2
         padding_y = 2
