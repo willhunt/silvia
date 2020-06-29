@@ -1,6 +1,6 @@
 ---
 images_wiring: [
-    {src: "/assets/build/wiring_temperaturecontrol_01.png", caption: "Fritzing wiring diagram for temperature control"},
+    {src: "$withBase('/assets/build/wiring_temperaturecontrol_01.png')", caption: "Fritzing wiring diagram for temperature control"},
 ]
 ---
 

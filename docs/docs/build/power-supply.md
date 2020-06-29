@@ -1,9 +1,9 @@
 ---
 images_installation: [
-    {src: "/assets/build/build_power_01.jpg", caption: "Power input cable to DC supply attached with spade connectors"},
+    {src: "$withBase('/assets/build/build_power_01.jpg')", caption: "Power input cable to DC supply attached with spade connectors"},
 ]
 images_wiring: [
-    {src: "/assets/build/wiring_powersupply_01.png", caption: "Fritzing wiring diagram for electronics power supply"},
+    {src: "$withBase('/assets/build/wiring_powersupply_01.png')", caption: "Fritzing wiring diagram for electronics power supply"},
 ]
 ---
 

@@ -1,6 +1,6 @@
 ---
 images_installation: [
-    {src: "/assets/build/build_power_01.jpg", caption: "Power input cable to DC supply attached with spade connectors"},
+    {src: "$withBase('/assets/build/build_power_01.jpg')", caption: "Power input cable to DC supply attached with spade connectors"},
 ]
 ---
 

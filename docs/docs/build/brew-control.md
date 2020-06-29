@@ -1,11 +1,11 @@
 ---
 images_installation: [
-    {src: "/assets/build/build_brewrelay_03.jpg", caption: "Relay modified with JST female connector"},
-    {src: "/assets/build/build_brewrelay_01.jpg", caption: "Marking out for drilling"},
-    {src: "/assets/build/build_brewrelay_02.jpg", caption: "Drilled holes"},
+    {src: "$withBase('/assets/build/build_brewrelay_03.jpg')", caption: "Relay modified with JST female connector"},
+    {src: "$withBase('/assets/build/build_brewrelay_01.jpg')", caption: "Marking out for drilling"},
+    {src: "$withBase('/assets/build/build_brewrelay_02.jpg')", caption: "Drilled holes"},
 ]
 images_wiring: [
-    {src: "/assets/build/wiring_brewcontrol_01.png", caption: "Fritzing wiring diagram for brew control"},
+    {src: "$withBase('/assets/build/wiring_brewcontrol_01.png')", caption: "Fritzing wiring diagram for brew control"},
 ]
 ---
 

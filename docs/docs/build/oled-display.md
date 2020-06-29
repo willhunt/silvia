@@ -1,12 +1,12 @@
 ---
 images_component: [
-    {src: "/assets/build/component_oled_01.jpg", caption: "OLED component"},
+    {src: "$withBase('/assets/build/component_oled_01.jpg')", caption: "OLED component"},
 ]
 images_installation: [
-    {src: "/assets/build/build_oled_01.jpg", caption: "X"},
+    {src: "$withBase('/assets/build/build_oled_01.jpg')", caption: "X"},
 ]
 images_wiring: [
-    {src: "/assets/build/wiring_oleddisplay_01.png", caption: "Fritzing wiring diagram for OLED screen"},
+    {src: "$withBase('/assets/build/wiring_oleddisplay_01.png')", caption: "Fritzing wiring diagram for OLED screen"},
 ]
 ---
 
