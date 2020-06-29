@@ -1,4 +1,5 @@
-# Notes on development and debugging commands
+# Notes
+Notes on development and debugging commands
 
 ## Update files
 Scripts are used to fetch latest updates

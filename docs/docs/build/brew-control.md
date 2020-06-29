@@ -1,6 +1,6 @@
 ---
 images_installation: [
-    {src: "$withBase('/assets/build/build_brewrelay_03.jpg')", caption: "Relay modified with JST female connector"},
+    {src: "silvia/assets/build/build_brewrelay_03.jpg", caption: "Relay modified with JST female connector"},
     {src: "$withBase('/assets/build/build_brewrelay_01.jpg')", caption: "Marking out for drilling"},
     {src: "$withBase('/assets/build/build_brewrelay_02.jpg')", caption: "Drilled holes"},
 ]

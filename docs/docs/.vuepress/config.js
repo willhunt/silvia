@@ -40,6 +40,10 @@ module.exports = {
         link: '/demo/',
       },
       {
+        text: 'Setup',
+        link: '/setup/',
+      },
+      {
         text: 'Build',
         link: '/build/'
       },
@@ -56,6 +60,18 @@ module.exports = {
           children: [
             '',
             'app-demo',
+          ]
+        }
+      ],
+      '/setup/': [
+        {
+          title: 'Setup',
+          collapsable: false,
+          children: [
+            '',
+            'raspi-setup',
+            'arduino-setup',
+            'development-notes'
           ]
         }
       ],
