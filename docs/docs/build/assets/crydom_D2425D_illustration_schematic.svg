@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="44.099201"
+   height="60.87772"
+   viewBox="0 0 44.0992 60.87772"
+   xml:space="preserve"
+   sodipodi:docname="crydom_D2425D_illustration_schematic.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
+   id="metadata4015"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs4013">
+	
+		
+	
+	
+	
+	
+	
+
+		
+		
+		
+		
+			
+		
+			
+		
+			
+		
+			
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			
+	</defs><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1015"
+   id="namedview4011"
+   showgrid="false"
+   inkscape:zoom="5.7564072"
+   inkscape:cx="-0.21988493"
+   inkscape:cy="39.348311"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+
+<rect
+   style="fill:#ffffff;stroke:#000000;stroke-width:0.80344725;stroke-linecap:round"
+   height="45.780445"
+   width="43.295753"
+   y="7.506608"
+   x="0.40172362"
+   id="part_symbol" /><text
+   font-size="3"
+   id="text3959"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="14.450365"
+   y="4.7491431">2</text>
+
+<text
+   font-size="3"
+   id="text3969"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="5.1790562"
+   y="4.6457">1</text>
+
+<text
+   font-size="4.5"
+   id="text3974"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="18.239779"
+   y="13.314064">Out</text>
+
+<text
+   font-size="4.5"
+   id="text3990"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="20.461876"
+   y="50.086235">In</text>
+
+
+<text
+   style="font-size:6px;font-family:DroidSans"
+   id="text4005"
+   font-size="6"
+   x="11.214151"
+   y="25.773884">Crydom </text>
+
+<text
+   style="font-size:6px;font-family:DroidSans"
+   id="text4007"
+   font-size="6"
+   x="11.047159"
+   y="32.974087">D2425D </text>
+
+
+<g
+   id="g3942"
+   transform="translate(7.6483035,0.35498487)">
+			
+				<line
+   x1="28.799999"
+   y1="7.2010002"
+   x2="28.799999"
+   y2="0"
+   id="line3940"
+   style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" />
+		</g><g
+   id="g3942-3"
+   transform="translate(-1.9516965,0.35498487)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-6"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><g
+   id="g3942-5"
+   transform="translate(7.6483035,53.321735)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-3"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><g
+   id="g3942-3-5"
+   transform="translate(-1.9516965,53.321735)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-6-6"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g>
+<text
+   font-size="3"
+   id="text3969-9"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="4.9915562"
+   y="57.747364">5</text>
+
+<text
+   font-size="3"
+   id="text3969-9-1"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="14.418871"
+   y="57.691807">6</text>
+
+<text
+   font-size="3"
+   id="text3959-4"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="33.623901"
+   y="4.6744461">4</text>
+<text
+   font-size="3"
+   id="text3969-8"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="24.22975"
+   y="4.571003">3</text>
+<g
+   id="g3942-0"
+   transform="translate(-11.551697,0.35498487)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-4"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><g
+   id="g3942-3-2"
+   transform="translate(-21.151697,0.35498487)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-6-9"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><g
+   id="g3942-3-5-4"
+   transform="translate(-11.551697,53.321735)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-6-6-4"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><text
+   font-size="3"
+   id="text3969-9-1-9"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="24.206312"
+   y="57.691807">7</text>
+<g
+   id="g3942-3-5-4-0"
+   transform="translate(-21.151697,53.321735)"><line
+     x1="28.799999"
+     y1="7.2010002"
+     x2="28.799999"
+     y2="0"
+     id="line3940-6-6-4-5"
+     style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round" /></g><text
+   font-size="3"
+   id="text3969-9-1-9-0"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="33.609253"
+   y="57.691807">8</text>
+</svg>

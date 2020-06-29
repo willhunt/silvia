@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="44.099201"
+   height="60.87772"
+   viewBox="0 0 44.0992 60.87772"
+   xml:space="preserve"
+   sodipodi:docname="generic_ssr_illustration_schematic.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
+   id="metadata4015"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs4013">
+	
+		
+	
+	
+	
+	
+	
+
+		
+		
+		
+		
+			
+		
+			
+		
+			
+		
+			
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			
+	</defs><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1015"
+   id="namedview4011"
+   showgrid="false"
+   inkscape:zoom="8.1407891"
+   inkscape:cx="26.676503"
+   inkscape:cy="40.841975"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+
+<rect
+   style="fill:#ffffff;stroke:#000000;stroke-width:0.80344725;stroke-linecap:round"
+   height="45.780445"
+   width="43.295753"
+   y="7.506608"
+   x="0.40172362"
+   id="part_symbol" /><text
+   font-size="3"
+   id="text3959"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="28.450365"
+   y="4.7491431">2</text>
+<text
+   font-size="3"
+   id="text3969"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="9.3018942"
+   y="4.6457">1</text>
+<text
+   font-size="4.5"
+   id="text3974"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="8.166275"
+   y="13.227204">Out</text>
+<text
+   font-size="4.5"
+   id="text3990"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="10.125567"
+   y="50.520535">In</text>
+<text
+   font-size="4.5"
+   id="text3998"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="27.329039"
+   y="13.211528">Out</text>
+<text
+   style="font-size:6px;font-family:DroidSans"
+   id="text4005"
+   font-size="6"
+   x="11.454385"
+   y="25.773884">Generic </text>
+<text
+   style="font-size:6px;font-family:DroidSans"
+   id="text4007"
+   font-size="6"
+   x="17.010538"
+   y="32.974087">SSR </text>
+
+<g
+   id="g4172"
+   transform="translate(-6.7498996,0.35498487)"><g
+     transform="translate(-9.6339642)"
+     id="g3942">
+			
+				<line
+   style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round"
+   id="line3940"
+   y2="0"
+   x2="28.799999"
+   y1="7.2010002"
+   x1="28.799999" />
+		</g><g
+     transform="translate(9.5660358)"
+     id="g3942-3"><line
+       style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round"
+       id="line3940-6"
+       y2="0"
+       x2="28.799999"
+       y1="7.2010002"
+       x1="28.799999" /></g></g><g
+   id="g4166"
+   transform="translate(-7.2193597,-11.471295)"><g
+     transform="translate(-9.1645042,64.79303)"
+     id="g3942-5"><line
+       style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round"
+       id="line3940-3"
+       y2="0"
+       x2="28.799999"
+       y1="7.2010002"
+       x1="28.799999" /></g><g
+     transform="translate(10.035496,64.79303)"
+     id="g3942-3-5"><line
+       style="fill:none;stroke:#555555;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round"
+       id="line3940-6-6"
+       y2="0"
+       x2="28.799999"
+       y1="7.2010002"
+       x1="28.799999" /></g></g><text
+   font-size="4.5"
+   id="text3990-2"
+   style="font-size:4.5px;font-family:DroidSans;fill:#555555"
+   x="29.207598"
+   y="50.298275">In</text>
+<text
+   font-size="3"
+   id="text3969-9"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="8.9364595"
+   y="57.747364">4</text>
+<text
+   font-size="3"
+   id="text3969-9-1"
+   style="font-size:3px;font-family:DroidSans;fill:#555555"
+   x="27.998777"
+   y="57.691807">3</text>
+</svg>

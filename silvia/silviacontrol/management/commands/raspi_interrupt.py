@@ -1,4 +1,4 @@
-from gpiozero import Button, OutputDevice
+from gpiozero import Button
 from signal import pause
 from django.core.management.base import BaseCommand, CommandError
 from silviacontrol.tasks import async_power_machine, async_get_response, async_toggle_brew

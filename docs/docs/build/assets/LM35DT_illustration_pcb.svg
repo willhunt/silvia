@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny' x='0in' y='0in' width='0.285in' height='0.235in' viewBox='0 0 20.52 16.92' >
+<g partID='854153190'><g xmlns="http://www.w3.org/2000/svg" id="copper0">
+ <circle xmlns="http://www.w3.org/2000/svg" id="connector0pin" stroke="#ffbf00" stroke-width="1.44" r="1.98" fill="none" cx="3.6" cy="8.208"/>
+ <circle xmlns="http://www.w3.org/2000/svg" id="connector1pin" stroke="#ffbf00" stroke-width="1.44" fill="none" r="1.98" cx="10.8" cy="8.208"/>
+ <circle xmlns="http://www.w3.org/2000/svg" id="connector2pin" stroke="#ffbf00" stroke-width="1.44" r="1.98" fill="none" cx="18" cy="8.208"/>
+</g>
+</g><g partID='854153192'><g xmlns="http://www.w3.org/2000/svg" id="copper1">
+ <g xmlns="http://www.w3.org/2000/svg" id="copper0">
+  <circle xmlns="http://www.w3.org/2000/svg" id="connector0pin" stroke="#ffbf00" stroke-width="1.44" r="1.98" fill="none" cx="3.6" cy="8.208"/>
+  <circle xmlns="http://www.w3.org/2000/svg" id="connector1pin" stroke="#ffbf00" stroke-width="1.44" fill="none" r="1.98" cx="10.8" cy="8.208"/>
+  <circle xmlns="http://www.w3.org/2000/svg" id="connector2pin" stroke="#ffbf00" stroke-width="1.44" r="1.98" fill="none" cx="18" cy="8.208"/>
+ </g>
+</g>
+</g><g partID='854153191'><g xmlns="http://www.w3.org/2000/svg" id="silkscreen">
+ <line xmlns="http://www.w3.org/2000/svg" id="line7" stroke="#ffffff" x2="15.84" stroke-width="0.72" y1="3.6" y2="3.6" x1="5.76"/>
+ <path xmlns="http://www.w3.org/2000/svg" id="path2413" stroke="#ffffff" fill-opacity="1" d="M16.7479,11.2431A6.11074,3.79092,0,0,1,4.52687,11.2864" style="opacity:1;fill-rule:nonzero;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;" stroke-width="0.72" fill="none" stroke-opacity="1"/>
+</g>
+</g></svg>

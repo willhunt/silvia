@@ -20,7 +20,7 @@
       <!-- Time -->
       <v-row v-if="showExtra" class="mx-2">
         <v-col>
-          <v-dialog ref="dialog" v-model="dialogStart" persistent width="290px">
+          <v-dialog ref="dialog" v-model="dialogStart" :return-value.sync="start_time_local" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 :value="start_time"
@@ -32,11 +32,11 @@
               ></v-text-field>
             </template>
             <v-card>
-              <v-time-picker v-if="dialogStart" :value="start_time" color="secondary" full-width></v-time-picker>
+              <v-time-picker v-if="dialogStart" v-model="start_time_local" color="secondary" full-width></v-time-picker>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text color="error" @click="dialogStart = false">Cancel</v-btn>
-                <v-btn text color="success" @click="updateStartTime($event)">OK</v-btn>
+                <v-btn text color="success" @click="$refs.dialog.save(start_time_local)">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -66,7 +66,8 @@ export default {
     return {
       dayLetters: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
       showExtra: false,
-      dialogStart: false
+      dialogStart: false,
+      start_time_local: null
     }
   },
   props: {
@@ -87,7 +88,11 @@ export default {
     },
     updateStartTime (event) {
       console.log('update time')
+      this.dialogStart = false
     }
+  },
+  created () {
+    this.start_time_local = '10:30'
   }
 }
 </script>

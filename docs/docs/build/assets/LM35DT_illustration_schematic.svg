@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny' x='0in' y='0in' width='0.9in' height='0.9in' viewBox='0 0 64.8 64.8' >
+<g partID='854153190'><g id="schematic">
+<rect stroke="#000000" class="interior rect" stroke-width="0.9" fill="#FFFFFF" height="35.1" x="0.45" width="49.5" y="14.85" stroke-linecap="round"/>
+<line stroke="#787878" id="connector1pin" class="pin" x2="64.4499" stroke-width="0.699999" fill="none" y1="28.8" y2="28.8" stroke-linecap="round" x1="50.0499"/>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="2.5" font-family="'Droid Sans'" x="57.2499" y="27.75" text-anchor="middle">2</text>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="3.49999" font-family="'Droid Sans'" x="48.6499" y="29.4999" text-anchor="end">Vout</text>
+<g stroke="none" id="connector1terminal" class="terminal" stroke-width="0" fill="none" height="0.699999" x="64.4499" width="0.699999" y="28.4499"/>
+<line stroke="#787878" id="connector2pin" class="pin" x2="21.6" stroke-width="0.699999" fill="none" y1="50.0499" y2="64.4499" stroke-linecap="round" x1="21.6"/>
+<g transform="matrix(1, 0, 0, 1, 20.55, 57.2499)">
+<g>
+<g transform="rotate(270)">
+<g>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="2.5" font-family="'Droid Sans'" x="0" y="0" text-anchor="middle">3</text>
+</g>
+</g>
+</g>
+</g>
+<g transform="matrix(1, 0, 0, 1, 22.3, 48.6499)">
+<g>
+<g transform="rotate(270)">
+<g>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="3.49999" font-family="'Droid Sans'" x="0" y="0" text-anchor="start">GND</text>
+</g>
+</g>
+</g>
+</g>
+<g stroke="none" id="connector2terminal" class="terminal" stroke-width="0" fill="none" height="0.699999" x="21.25" width="0.699999" y="64.4499"/>
+<line stroke="#787878" id="connector0pin" class="pin" x2="21.6" stroke-width="0.699999" fill="none" y1="0.349999" y2="14.75" stroke-linecap="round" x1="21.6"/>
+<g transform="matrix(1, 0, 0, 1, 20.55, 7.54999)">
+<g>
+<g transform="rotate(270)">
+<g>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="2.5" font-family="'Droid Sans'" x="0" y="0" text-anchor="middle">1</text>
+</g>
+</g>
+</g>
+</g>
+<g transform="matrix(1, 0, 0, 1, 22.3, 16.15)">
+<g>
+<g transform="rotate(270)">
+<g>
+<text stroke="none" class="text" stroke-width="0" fill="#8c8c8c" font-size="3.49999" font-family="'Droid Sans'" x="0" y="0" text-anchor="end">+Vs</text>
+</g>
+</g>
+</g>
+</g>
+<g stroke="none" id="connector0terminal" class="terminal" stroke-width="0" fill="none" height="0.699999" x="21.25" width="0.699999" y="-0.349999"/>
+<text id="label" stroke="none" class="text" stroke-width="0" fill="#000000" font-size="4.25001" font-family="'Droid Sans'" x="25.65" y="27.9835" text-anchor="middle">LM35</text>
+<text id="label" stroke="none" class="text" stroke-width="0" fill="#000000" font-size="4.25001" font-family="'Droid Sans'" x="25.65" y="32.5168" text-anchor="middle">Temperature</text>
+<text id="label" stroke="none" class="text" stroke-width="0" fill="#000000" font-size="4.25001" font-family="'Droid Sans'" x="25.65" y="37.0505" text-anchor="middle">Sensor</text>
+</g>
+</g></svg>
