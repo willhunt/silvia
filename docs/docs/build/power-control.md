@@ -4,8 +4,8 @@ images_installation: [
 ]
 ---
 
-# Power Relay
-The main power switch is a double pole, single throw (DPST) switch, connecting both the live and neutral circuits. To replace this a dual relay was used. This requires 12V to switch so a mosfet is needed to switch from the microcontroller output (5V with Arduino) to a 12V relay circuit.
+# Power Control
+Digital power control was implemented by rewiring the power switch connections to a relay. The switch can be used indirectly to power the machine by wiring to a digital microcontroller pin. The main power switch is a double pole, single throw (DPST) switch, connecting both the live and neutral circuits. To replace this a dual relay was used. The relay used requires 12V to switch so a mosfet is needed to switch from the microcontroller output (5V with Arduino) to a higher 12V circuit.
 
 
 ## Components

@@ -21,4 +21,5 @@ The power supply was fixed at the back next to the water pump using double sided
 
 ## Wiring
 
+
 <DocsImageLayout :images="$frontmatter.images_wiring" size="lg"></DocsImageLayout>
