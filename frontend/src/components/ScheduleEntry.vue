@@ -4,26 +4,26 @@
       <v-row>
         <v-col cols="auto">
           <v-card-text>
-            {{ name }}
+            {{ scheduleLocal.name }}
           </v-card-text>
           <v-row class="ml-4 mr-2">
-            <v-col v-for="(active, index) in days.split('')" :key="index">
+            <v-col v-for="(active, index) in scheduleLocal.days.split('')" :key="index">
               <v-btn fab small depressed :class="active==1 ? 'secondary' : 'primary'">{{ dayLetters[index] }}</v-btn>
             </v-col>
           </v-row>
         </v-col>
         <v-spacer></v-spacer>
         <v-col class="mx-4" cols="auto">
-          <v-switch color="secondary" :value="active" @change="toggleActive"></v-switch>
+          <v-switch color="secondary" :value="scheduleLocal.active" @change="toggleActive"></v-switch>
         </v-col>
       </v-row>
       <!-- Time -->
       <v-row v-if="showExtra" class="mx-2">
         <v-col>
-          <v-dialog ref="dialog" v-model="dialogStart" :return-value.sync="start_time_local" persistent width="290px">
+          <v-dialog ref="dialog" v-model="dialogStart" :return-value.sync="scheduleLocal.start_time" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                :value="start_time"
+                :value="scheduleLocal.start_time"
                 label="Start time"
                 prepend-icon="mdi-clock"
                 readonly
@@ -32,11 +32,12 @@
               ></v-text-field>
             </template>
             <v-card>
-              <v-time-picker v-if="dialogStart" v-model="start_time_local" color="secondary" full-width></v-time-picker>
+              <v-time-picker v-if="dialogStart" v-model="scheduleLocal.start_time" color="secondary" full-width></v-time-picker>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text color="error" @click="dialogStart = false">Cancel</v-btn>
-                <v-btn text color="success" @click="$refs.dialog.save(start_time_local)">OK</v-btn>
+                <!-- <v-btn text color="success" @click="$refs.dialog.save(start_time_local)">OK</v-btn> -->
+                <v-btn text color="success" @click="saveStartTimeDialog($refs.dialog)">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -67,15 +68,17 @@ export default {
       dayLetters: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
       showExtra: false,
       dialogStart: false,
-      start_time_local: null
+      start_time_local: null,
+      scheduleLocal: null
     }
   },
   props: {
-    name: String,
-    days: String,
-    start_time: String,
-    end_time: String,
-    active: Boolean
+    // name: String,
+    // days: String,
+    // start_time: String,
+    // end_time: String,
+    // active: Boolean,
+    schedule: Object
   },
   // computed: {
   //   dayActives: function () {
@@ -86,13 +89,18 @@ export default {
     toggleActive () {
       console.log('Toggle active')
     },
-    updateStartTime (event) {
+    saveSchedule () {
+      this.$emit('saveScheduleEntry', this.scheduleLocal)
+    },
+    saveStartTimeDialog (dialog) {
       console.log('update time')
+      dialog.save(this.scheduleLocal.start_time)
       this.dialogStart = false
+      this.saveSchedule()
     }
   },
-  created () {
-    this.start_time_local = '10:30'
+  beforeMount () {
+    this.scheduleLocal = Object.assign({}, this.schedule)
   }
 }
 </script>

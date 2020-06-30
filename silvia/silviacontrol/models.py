@@ -164,7 +164,7 @@ class ScheduleModel(models.Model):
         return dow_cron
 
     @staticmethod
-    def four_digit_time_string(t):
+    def time_to_four_digit_string(t):
         hour = str(t.hour)
         if len(hour) == 1:
             hour = "0" + hour
@@ -173,13 +173,32 @@ class ScheduleModel(models.Model):
             minute = "0" + minute
         return ("%s:%s" % (hour, minute))
 
+    @staticmethod
+    def four_digit_string_to_time(t_string):
+        try:
+            hour, minute = t_string.split(":")
+        except ValueError:
+            raise ValueError("String must be in the format '00:00'")
+
+        return time(hour=int(hour), minute=int(minute))
+
     @property
     def start_time(self):
-        return self.four_digit_time_string(self.t_on)
+        return self.time_to_four_digit_string(self.t_on)
+
+    @start_time.setter
+    def start_time(self, value):
+        # self.start_time = value
+        self.t_on = self.four_digit_string_to_time(value)
 
     @property
     def end_time(self):
-        return self.four_digit_time_string(self.t_off)
+        return self.time_to_four_digit_string(self.t_off)
+
+    @end_time.setter
+    def end_time(self, value):
+        # self.end_time = value
+        self.t_off = self.four_digit_string_to_time(value)
 
     def __repr__(self):
         if self.active:

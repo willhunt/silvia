@@ -31,8 +31,9 @@ class SessionSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
-    start_time = serializers.ReadOnlyField()
-    end_time = serializers.ReadOnlyField()
+    #  https://stackoverflow.com/questions/44703213/problems-to-serialize-property-getter-and-setter-from-a-model-using-django-res
+    start_time = serializers.CharField()
+    end_time = serializers.CharField()
     class Meta:
         model = ScheduleModel
         fields = ('id', 'name', 'start_time', 'end_time', 'active', 'days') 

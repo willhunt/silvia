@@ -3,11 +3,8 @@
   <div class="schedules">
     <div v-for="schedule in schedules" :key="schedule.id">
       <schedule-entry
-        :name="schedule.name"
-        :days="schedule.days"
-        :start_time="schedule.start_time"
-        :end_time="schedule.end_time"
-        :active="schedule.active"
+        :schedule="schedule"
+        @saveScheduleEntry="saveSchedule"
       ></schedule-entry>
     </div>
 
@@ -38,15 +35,27 @@ export default {
     },
     removeSchedule () {
 
+    },
+    saveSchedule (schedule) {
+      axios.put('/api/v1/schedule/' + schedule.id + '/', schedule)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    refreshSchedules () {
+      axios.get('/api/v1/schedule/')
+        .then(response => {
+          console.log(response.data)
+          this.schedules = response.data
+        })
+        .catch(error => console.log(error))
     }
   },
   created () {
-    axios.get('/api/v1/schedule/')
-      .then(response => {
-        console.log(response.data)
-        this.schedules = response.data
-      })
-      .catch(error => console.log(error))
+    this.refreshSchedules()
   }
 }
 </script>
