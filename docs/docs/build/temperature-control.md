@@ -1,6 +1,6 @@
 ---
 images_wiring: [
-    {src: "$withBase('/assets/build/wiring_temperaturecontrol_01.png')", caption: "Fritzing wiring diagram for temperature control"},
+    {src: "wiring_temperaturecontrol_01.png", caption: "Fritzing wiring diagram for temperature control"},
 ]
 ---
 
@@ -19,7 +19,7 @@ In line with other Rancillio Silvia mods the heat relay was fastened behind the 
 ## Wiring
 The Arduino controls the PID I/O independently of the raspberry pi although the pi, connected via i2C can turn the operation on and off as well as change the setpoint and gains. A 10k&#8486; pull-down resistor is used to ensure the relay input is at 0V when the output in not high.
 
-<DocsImageLayout :images="$frontmatter.images_wiring" size="lg"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_wiring" size="lg" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 ## Software
 ### Temperature sensing

@@ -1,11 +1,11 @@
 ---
 images_installation: [
-    {src: "silvia/assets/build/build_brewrelay_03.jpg", caption: "Relay modified with JST female connector"},
-    {src: "$withBase('/assets/build/build_brewrelay_01.jpg')", caption: "Marking out for drilling"},
-    {src: "$withBase('/assets/build/build_brewrelay_02.jpg')", caption: "Drilled holes"},
+    {src: "build_brewrelay_03.jpg", caption: "Relay modified with JST female connector"},
+    {src: "build_brewrelay_01.jpg", caption: "Marking out for drilling"},
+    {src: "/build_brewrelay_02.jpg", caption: "Drilled holes"},
 ]
 images_wiring: [
-    {src: "$withBase('/assets/build/wiring_brewcontrol_01.png')", caption: "Fritzing wiring diagram for brew control"},
+    {src: "wiring_brewcontrol_01.png", caption: "Fritzing wiring diagram for brew control"},
 ]
 ---
 
@@ -21,12 +21,12 @@ To actuate the brew control relays are required for both the pump and the soleno
 ## Installation
 The relay is installed adjacent to the manual brew control to avoid any additional wiring changes. It is fixed by M3 machine screws to the body, requiring 2 3.5mm holes to be drilled.
 
-<DocsImageLayout :images="$frontmatter.images_installation"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_installation" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 ## Wiring
 The Arduino controls the relay which requires >4V input (raspberry pi is 3.3V). A 10k&#8486; pull-down resistor is used to ensure the relay input is at 0V when the output in not high. The raspberry pi detects the switch operation via a GPIO pin. This does not require a pull up/down resistor as they are built in.
 
-<DocsImageLayout :images="$frontmatter.images_wiring" size="lg"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_wiring" size="lg" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 ## Software
 

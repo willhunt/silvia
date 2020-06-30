@@ -1,5 +1,8 @@
 ---
 # sidebar: auto
+images_component: [
+    {src: "rancillo_silvia_v2.jpg", caption: "Rancillio Silvia V2"},
+]
 ---
 
 # Introduction
@@ -8,8 +11,7 @@
 
 The espresso machine used is the ever popular [Rancillio Silvia](https://www.ranciliogroup.com/rancilio/silvia/silvia/), in this case v2.
 
-<!-- <img src="./assets/rancillio_silvia_v2.jpg" height="300px"></img> -->
-![Rancillio Silvia V2](/assets/build/rancillo_silvia_v2.jpg)
+<DocsImageLayout :images="$frontmatter.images_component" size="lg" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 It seems now that [Rancillio](https://www.ranciliogroup.com/rancilio/silvia-xl/silvia-pro/) are offering an updated version of the machine with PID temperature control, auto on/off and shot timer.
 

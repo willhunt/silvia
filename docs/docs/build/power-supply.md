@@ -1,9 +1,9 @@
 ---
 images_installation: [
-    {src: "$withBase('/assets/build/build_power_01.jpg')", caption: "Power input cable to DC supply attached with spade connectors"},
+    {src: "build_power_01.jpg", caption: "Power input cable to DC supply attached with spade connectors"},
 ]
 images_wiring: [
-    {src: "$withBase('/assets/build/wiring_powersupply_01.png')", caption: "Fritzing wiring diagram for electronics power supply"},
+    {src: "wiring_powersupply_01.png", caption: "Fritzing wiring diagram for electronics power supply"},
 ]
 ---
 
@@ -17,9 +17,9 @@ A 12V DC power supply was used for powering the embedded systems because 12V is 
 ## Installation
 The power supply was fixed at the back next to the water pump using double sided adhesive foam. The AC input cable was connected using spade connectors where the mains cable connects to the on/off relay.
 
-<DocsImageLayout :images="$frontmatter.images_installation"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_installation" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 ## Wiring
 
 
-<DocsImageLayout :images="$frontmatter.images_wiring" size="lg"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_wiring" size="lg" srcBase="/silvia/assets/build/"></DocsImageLayout>

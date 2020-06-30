@@ -1,12 +1,12 @@
 ---
 images_component: [
-    {src: "$withBase('/assets/build/component_oled_01.jpg')", caption: "OLED component"},
+    {src: "component_oled_01.jpg", caption: "OLED component"},
 ]
 images_installation: [
-    {src: "$withBase('/assets/build/build_oled_01.jpg')", caption: "X"},
+    {src: "build_oled_01.jpg", caption: "X"},
 ]
 images_wiring: [
-    {src: "$withBase('/assets/build/wiring_oleddisplay_01.png')", caption: "Fritzing wiring diagram for OLED screen"},
+    {src: "wiring_oleddisplay_01.png", caption: "Fritzing wiring diagram for OLED screen"},
 ]
 ---
 
@@ -23,7 +23,7 @@ images_wiring: [
 
 The CAD file for the OLED fasia can be found on [onshape](https://cad.onshape.com/documents/74cfbda0a8ffd6aca69f2a44/w/b147cd8222d0fff6b9d2a3b7/e/44c8a1f85f3d1b70e01c56da)
 
-<DocsImageLayout :images="$frontmatter.images_component"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_component" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 
 ## Installation
@@ -34,4 +34,4 @@ The CAD file for the OLED fasia can be found on [onshape](https://cad.onshape.co
 ## Wiring
 The OLED display is wired to the I2C pins of the raspberry pi in parallel with the Arduino. Keeping the pi as master keeps the lines at 3.3V.
 
-<DocsImageLayout :images="$frontmatter.images_wiring" size="lg"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_wiring" size="lg" srcBase="/silvia/assets/build/"></DocsImageLayout>

@@ -1,6 +1,6 @@
 ---
 images_installation: [
-    {src: "$withBase('/assets/build/build_power_01.jpg')", caption: "Power input cable to DC supply attached with spade connectors"},
+    {src: "build_power_01.jpg", caption: "Power input cable to DC supply attached with spade connectors"},
 ]
 ---
 
@@ -19,4 +19,4 @@ Digital power control was implemented by rewiring the power switch connections t
 
 ## Wiring
 
-<DocsImageLayout :images="$frontmatter.images_installation"></DocsImageLayout>
+<DocsImageLayout :images="$frontmatter.images_installation" srcBase="/silvia/assets/build/"></DocsImageLayout>

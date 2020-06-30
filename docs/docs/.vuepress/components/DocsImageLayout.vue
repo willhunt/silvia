@@ -1,7 +1,7 @@
 <template>
   <div class="docs-image-layout">
     <div v-for="image in images">
-      <docs-image-item :src="image.src" :caption="image.caption" :size="size"></docs-image-item>
+      <docs-image-item :src="srcBase + image.src" :caption="image.caption" :size="size"></docs-image-item>
     </div>
   </div>
 </template>
@@ -18,9 +18,14 @@ export default {
   },
   props: {
     images: Array,
+    // Add to all image paths
+    srcBase: {
+      type: String,
+      default: '',
+    },
     size: {
       type: String,
-      default: "sm"
+      default: 'sm'
     }
   }
 };
