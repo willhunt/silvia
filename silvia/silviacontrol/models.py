@@ -124,7 +124,7 @@ class ScheduleModel(models.Model):
     """
     Machine on/off schedule model
     """
-    name = models.CharField(max_length=20, default=('Schedule %s' % RandomWords().get_random_word()))  # Name of schedule (e.g. "Morning")
+    name = models.CharField(max_length=20, default="New Schedule") #('Schedule %s' % RandomWords().get_random_word()))  # Name of schedule (e.g. "Morning")
     days = models.CharField(max_length=7, default='0000000')  # Day schedule - string of 0 or 1's to indicate if active on weekday starting with Sun=0
     t_on = models.TimeField(default=time(hour=0, minute=0))
     t_off = models.TimeField(default=time(hour=0, minute=0))

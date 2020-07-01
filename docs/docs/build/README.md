@@ -3,6 +3,7 @@
 images_component: [
     {src: "rancillo_silvia_v2.jpg", caption: "Rancillio Silvia V2"},
 ]
+
 ---
 
 # Introduction

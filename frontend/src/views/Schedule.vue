@@ -5,6 +5,7 @@
       <schedule-entry
         :schedule="schedule"
         @saveScheduleEntry="saveSchedule"
+        @deleteScheduleEntry="deleteSchedule"
       ></schedule-entry>
     </div>
 
@@ -31,10 +32,21 @@ export default {
   },
   methods: {
     addSchedule () {
-
-    },
-    removeSchedule () {
-
+      const emptySchedule = {
+        name: 'New',
+        days: '0000000',
+        active: false,
+        start_time: '00:00',
+        end_time: '00:00'
+      }
+      axios.post('/api/v1/schedule/', emptySchedule)
+        .then(response => {
+          console.log(response)
+          this.refreshSchedules()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     saveSchedule (schedule) {
       axios.put('/api/v1/schedule/' + schedule.id + '/', schedule)
@@ -52,6 +64,16 @@ export default {
           this.schedules = response.data
         })
         .catch(error => console.log(error))
+    },
+    deleteSchedule (id) {
+      axios.delete('/api/v1/schedule/' + id + '/')
+        .then(response => {
+          console.log(response)
+          this.refreshSchedules()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   },
   created () {

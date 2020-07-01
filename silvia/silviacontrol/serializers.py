@@ -38,7 +38,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
         model = ScheduleModel
         fields = ('id', 'name', 'start_time', 'end_time', 'active', 'days') 
 
-    # def create(self, validated_date):
-    #     schedule = ScheduleModel.objects.create_schedule()
-    #     return schedule
+    def create(self, validated_data):
+        schedule = ScheduleModel.objects.create()
+        return schedule
 

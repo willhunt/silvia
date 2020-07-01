@@ -21,13 +21,15 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
         )
         schedule_on = PeriodicTask.objects.create(
             crontab=crontab_on,
-            name=('%s_on' % (instance.name)),  
+            name="on:{0} {1}".format(instance.id, instance.name),
+            # name=('%s_on' % (instance.name)),  
             task='silviacontrol.tasks.async_power_machine',
             args='["True"]',
             enabled=instance.active
         )
         instance.schedule_on = schedule_on
     else:
+        instance.schedule_on.name = "on:{0} {1}".format(instance.id, instance.name)
         instance.schedule_on.crontab.minute = instance.t_on.minute
         instance.schedule_on.crontab.hour = instance.t_on.hour
         instance.schedule_on.crontab.day_of_week = dow_crontype
@@ -45,13 +47,15 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
         )
         schedule_off = PeriodicTask.objects.create(
             crontab=crontab_off,
-            name=('%s_off' % (instance.name)),  
+            name="off:{0} {1}".format(instance.id, instance.name),
+            # name=('%s_off' % (instance.name)),  
             task='silviacontrol.tasks.async_power_machine',
             args='["False"]',
             enabled=instance.active
         )
         instance.schedule_off = schedule_off
     else:
+        instance.schedule_off.name = "off:{0} {1}".format(instance.id, instance.name)
         instance.schedule_off.crontab.minute = instance.t_off.minute
         instance.schedule_off.crontab.hour = instance.t_off.hour
         instance.schedule_off.crontab.day_of_week = dow_crontype
