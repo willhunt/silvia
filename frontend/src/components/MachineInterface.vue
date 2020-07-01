@@ -56,13 +56,14 @@ export default {
   data: function () {
     return {
       temperature: 0,
-      temperatures: [20, 30, 40, 45, 49, 53, 56, 58, 59, 60, 60, 61, 60, 59, 60],
+      temperatures: [],
       displayOption: 'machine',
       setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
       t_update: 10,
-      m_current: 5, // Brewed coffee mass (g)
-      m_setpoint: 20
+      m_current: 0, // Brewed coffee mass (g)
+      m_setpoint: 20,
+      n_datapoints: 20
     }
   },
   props: {
@@ -99,6 +100,10 @@ export default {
         .then(response => {
           console.log(response.data)
           this.temperature = response.data.T_boiler
+          this.temperatures.push(response.data.T_boiler)
+          while (this.temperatures.length > this.n_datapoints) {
+            this.temperatures.pop(0)
+          }
         })
         .catch(error => console.log(error))
     },

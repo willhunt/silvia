@@ -5,7 +5,6 @@
         <v-sheet color="rgba(0, 0, 0, .12)">
           <v-sparkline
             :value="temperatures"
-            :labels="temperatures"
             color="error"
             height="100"
             padding="24"
