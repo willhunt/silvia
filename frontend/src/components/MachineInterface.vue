@@ -63,7 +63,7 @@ export default {
       t_update: 10,
       m_current: 0, // Brewed coffee mass (g)
       m_setpoint: 20,
-      n_datapoints: 20
+      n_datapoints: 10
     }
   },
   props: {

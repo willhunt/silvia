@@ -11,6 +11,9 @@
             stroke-linecap="round"
             smooth
           >
+            <template v-slot:label="item">
+              {{ Number(item.value).toFixed(0) }}
+            </template>
           </v-sparkline>
         </v-sheet>
       </v-card-text>
