@@ -128,3 +128,15 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
 
     # Send to Arduino
     async_update_microcontroller.delay()
+
+@receiver(pre_save, sender=StatusModel)
+def save_status(sender, instance, raw, using, update_fields, **kwargs):
+    """
+    When saving status model turn temperature update on/off
+    """
+    try:
+        periodic_response = PeriodicTask.objects.get(name="Get Response")
+        periodic_response.enabled = instance.on
+        periodic_response.save()
+    except:
+        raise ValueError("Save sample time to create 'Get Response' periodic task")

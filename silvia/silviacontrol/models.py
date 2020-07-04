@@ -84,7 +84,7 @@ class ResponseModel(models.Model):
     duty_p = models.FloatField(default=0)
     duty_i = models.FloatField(default=0)
     duty_d = models.FloatField(default=0)
-    Vdot = models.FloatField(default=0)
+    m = models.FloatField(default=0)
     brewing = models.BooleanField(default=False)
 
     # @classmethod

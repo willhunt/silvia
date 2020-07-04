@@ -1,6 +1,9 @@
 # Simulation of espresso machine response for development and testing
 # Estimates boiler temperature based upon system model
 from django.utils import timezone
+import random
+from .models import ResponseModel, SettingsModel
+
 
 class espresso_simulator():
     def __init__(self):
@@ -43,10 +46,86 @@ def sim_T_boiler(response):
         duty = response.duty
     Qdot_elec = Edot_max * duty / 100 #* response.brewing
     Qdot_conv = h_conv * A * (T_amb - T_last)  # Positive into system
-    t_new = timezone.now()
     T_new = (Qdot_elec + Qdot_conv) * (t_new - t_last).total_seconds() / (m * c_p) + T_last
 
-    return T_new, t_new
+    return T_new
 
+def simulated_temperature_sensor(select="sensor"):
+    """
+    Simulated temperature sensor
+    Inputs
+        select (String): Choose responce method - "random", "simulated"
+    """
+    if select is "random":
+        # Read sensor value
+        return random.randrange(60, 100)  # Dummy code
+    elif select is "simulated":
+        responses = ResponseModel.objects.order_by('-t')
+        # There  might not be any responses if the database is clean
+        if responses:
+            response = responses[0]
+        else:
+            response = ResponseModel(T_boiler=20, t=timezone.now())
+        return sim_T_boiler(response)
+    else:
+        raise NotImplementedError
 
+def simulated_mass_sensor(select="random"):
+    """
+    Simulated mass sensor
+    Inputs
+        select (String): Choose responce method - "random", "simulated", "off"
+    """
+    if select is "random":
+        return= random.randrange(0, 20)
+    elif select is "simulated":
+        responses = ResponseModel.objects.order_by('-t')
+        last_response = responses[0]
+        if last_response.brewing:
+            return last_response.m + 2
+        else:
+            return 0
+    elif select is "off":
+        return None
+    else:
+        raise NotImplementedError
 
+def pid_update(T_boiler, t):
+    """
+    Get new output from PID controler
+    u(t) = K_p e(t) + K_i \int_{0}^{t} e(t)dt + K_d {de}/{dt}
+    """
+    lim = (0, 100)
+    setting = SettingsModel.objects.get(id=1)
+    responses = ResponseModel.objects.order_by('-t')
+    # There  might not be any responses if the database is clean
+    if responses:
+        response = responses[0]
+    else:
+        response = ResponseModel(T_boiler=20)
+
+    error = setting.T_set - T_boiler
+    t_delta = (timezone.now() - t).total_seconds()
+    error_delta = error - (setting.T_set - response.T_boiler)
+
+    duty_p = error * setting.k_p
+    duty_i = (response.duty_i + error) * setting.k_i
+    if duty_i > lim[1]:
+        duty_i = lim[1]
+    elif duty_i < lim[0]:
+        duty_i = lim[0]
+    # Only use new data for derivative term
+    if t_delta > setting.t_sample:
+        duty_d = 0
+    else:
+        duty_d = (error_delta / t_delta) * setting.k_d
+
+    duty = duty_p + duty_i + duty_d
+    # Apply limits
+    if duty > lim[1]:
+        duty = lim[1]
+    elif duty < lim[0]:
+        duty = lim[0]
+    # !!! might be useful to change duty k & d for logging here
+
+    return duty, [duty_p, duty_i, duty_d]

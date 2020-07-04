@@ -5,12 +5,13 @@ from .models import StatusModel, ResponseModel, SettingsModel
 from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
+import struct
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
-    import struct
     from smbus2 import SMBus
     from.display_cp import SilviaDisplay
+    import requests
 
     # I2C variables
     i2c_addr_arduino = 0x8
@@ -20,28 +21,39 @@ if django_settings.SIMULATE_MACHINE == False:
     display = SilviaDisplay(i2c_addr_oled)
 # For testing
 else:
-    from .control import pid_update
-    from .sensors import read_temperature_sensor
+    from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
 
 
 @shared_task(base=QueueOnce)
 def async_get_response():
     # Read temperature sensor
     if django_settings.SIMULATE_MACHINE == True:
-        T, t = read_temperature_sensor("simulated")
+        t = timezone.now()
+        T = simulated_temperature_sensor("simulated")
+        m = simulated_mass_sensor("simulated")
+        # Get new PID
+        duty, duty_pid = pid_update(T, t)
     else:
+        # TEMPERATURE - from Microcontroller over I2C
         i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 6)
-        # debug_log(i2c_block)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
         i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
         T = i2c_extract[2]
-        # debug_log(i2c_extract)
+        duty = 
+        
         settings = SettingsModel.objects.get(id=1)
         display.showTemperature(T, settings.T_set)
-        
-    # Get new PID
-    duty, duty_pid = pid_update(T, t)
+
+        # MASS - from Scale over HTTP
+        try:
+            request_scale = requests.get("http://192.168.0.12/mass")
+            # Decode data
+            data_scale = request_scale.json()
+            m = data_scale["mass"]
+        except:
+            m = None
+
     # Record temperature if machine is on
     status = StatusModel.objects.get(id=1)
     if status.on:
@@ -50,7 +62,8 @@ def async_get_response():
             duty=duty,
             duty_p=duty_pid[0],
             duty_i=duty_pid[1],
-            duty_d=duty_pid[2]
+            duty_d=duty_pid[2],
+            m=m
         )
         response.save()
     return T
@@ -108,4 +121,3 @@ def update_microcontroller(on=None, brew=None):
     block_data = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(block_data)) )
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
-    # i2c_bus.write_byte(i2c_addr_arduino, 0)
