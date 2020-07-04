@@ -26,6 +26,7 @@ class TemperatureController : public PID {
     void on(double Setpoint, double Kp, double Ki, double Kd);
     void off();
     double getSetpoint();
+    double getDuty();
 };
 
 

@@ -57,21 +57,24 @@ void requestEvent() {
   response_data.data.T_boiler = temp_sensor_ref->getLatestTemperature();
   response_data.data.power = power_output_ref->getStatus();
   response_data.data.brew = brew_output_ref->getStatus();
+  response_data.data.duty = 
   // Write bytes to i2c address
   Wire.write(response_data.buffer, sizeof(responseData));
 }
 
-PiCommunicator::PiCommunicator(
-  int i2c_addr, PowerOutput* power_output, RelayOutput* brew_output, TemperatureSensor* temperature_sensor
-) : i2c_addr_(i2c_addr)
+void i2cSetup(
+  int i2c_addr, PowerOutput* power_output, RelayOutput* brew_output,
+  TemperatureSensor* temperature_sensor, TemperatureController* temperature_controller
+)
 {
   // Stored outside of object (better for interrupts as static variables and methods required)
   temp_sensor_ref = temperature_sensor;
   power_output_ref = power_output;
   brew_output_ref = brew_output;
+  temperature_controller_ref = temperature_controller;
   sizeof_received_data = sizeof(receivedFormat);
 
-  Wire.begin(I2C_ADDR);
+  Wire.begin(i2c_addr);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
-};
+}

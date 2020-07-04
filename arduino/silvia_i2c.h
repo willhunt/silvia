@@ -8,15 +8,15 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "silvia_output.h"
-// #include "silvia_temperature_controller.h"
+#include "silvia_temperature_controller.h"
 #include "silvia_temperature_sensor.h"
 
-#define I2C_ADDR 0x8
 
 struct responseFormat {
   bool power;
   bool brew;
   double T_boiler;
+  double duty;
 };
 union responseData {
   responseFormat data;
@@ -36,9 +36,6 @@ union receivedData {
   byte buffer[sizeof(receivedFormat)];
 };
 
-// Declare data stores here
-// double* T_boiler_ref;
-
 responseData response_data;
 receivedData received_data;
 int sizeof_received_data;
@@ -46,22 +43,18 @@ int sizeof_received_data;
 TemperatureSensor* temp_sensor_ref;
 PowerOutput* power_output_ref;
 RelayOutput* brew_output_ref;
+TemperatureController* temperature_controller_ref;
 
 void receiveEvent(int numBytes);
 void requestEvent();
 
-class PiCommunicator {
-  private:
-    int i2c_addr_;
-
-  public:
-    PiCommunicator(
-      int i2c_addr, 
-      PowerOutput* power_output,
-      RelayOutput* brew_output,
-      TemperatureSensor* temperature_sensor
-    );
-};
+void i2cSetup(
+  int i2c_addr, 
+  PowerOutput* power_output,
+  RelayOutput* brew_output,
+  TemperatureSensor* temperature_sensor,
+  TemperatureController* temperature_controller
+);
 
 
 #endif // SILVIA_I2C_H

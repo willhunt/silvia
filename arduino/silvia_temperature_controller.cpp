@@ -38,3 +38,7 @@ void TemperatureController::off() {
 double TemperatureController::getSetpoint() {
     return *setpoint_;
 }
+
+double TemperatureController::getDuty() {
+    return *output_;
+}

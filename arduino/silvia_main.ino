@@ -14,7 +14,7 @@ Notes:
 #define BREW_RELAY_PIN 12
 #define DISPLAY_SDA_PIN 2
 #define DISPLAY_SCL_PIN 3
-
+#define I2C_ADDR 0x8
 
 // Imports
 #include "silvia_temperature_sensor.h"
@@ -40,12 +40,6 @@ TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_s
 PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
-// I2C communication
-PiCommunicator pi_communicator = PiCommunicator(
-    // I2C_ADDR, &power_output, &brew_output, &T_boiler, &kp, &ki, &kd
-    I2C_ADDR, &power_output, &brew_output, &temperature_sensor
-);
-
 
 void setup(void) {
     // Setup serial
@@ -53,6 +47,7 @@ void setup(void) {
         Serial.begin(9600);
     }
 
+    i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid);
 }
 
 void loop(void)  {
