@@ -95,7 +95,7 @@ export default {
     toggleBrew () {
       eventBus.$emit('toggleBrew')
     },
-    updateTemperature () {
+    updateResponse () {
       axios.get('/api/v1/response/latest/')
         .then(response => {
           console.log(response.data)
@@ -104,6 +104,7 @@ export default {
           while (this.temperatures.length > this.n_datapoints) {
             this.temperatures.pop(0)
           }
+          this.m_current = response.data.m
         })
         .catch(error => console.log(error))
     },
@@ -112,7 +113,7 @@ export default {
         .then(response => {
           this.t_update = response.data.t_update
           this.intervalReference = setInterval(() => {
-            this.updateTemperature()
+            this.updateResponse()
           }, 1000 * this.t_update)
         })
         .catch(error => console.log(error))
@@ -120,7 +121,7 @@ export default {
   },
   created () {
     this.updateInterval()
-    this.updateTemperature()
+    this.updateResponse()
     // Fire event to check on/off status
     eventBus.$emit('updateOnOff')
   },

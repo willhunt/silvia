@@ -71,6 +71,7 @@ module.exports = {
             '',
             'raspi-setup',
             'arduino-setup',
+            'scale-setup',
             'development-notes'
           ]
         }

@@ -50,3 +50,7 @@ $ nano /var/log/apache2/error.log
 ```
 
 
+## Scale
+
+### Display Images
+XBM images can be converted at: [www.online-utility.org](https://www.online-utility.org/image/convert/to/XBM)
