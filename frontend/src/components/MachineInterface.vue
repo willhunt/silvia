@@ -32,10 +32,14 @@
     </v-row>
 
     <div v-if="machineOn"><v-row align="center">
-        <!-- <v-progress-linear value="15"></v-progress-linear> -->
-        <v-progress-linear :value="brewProgress" color="blue-grey" height="25" rounded>
-         {{ m_current | temperatureDisplayFilter }}g
-        </v-progress-linear>
+          <v-progress-linear :value="brewProgress" color="blue-grey" height="25" rounded>
+            <div v-if="m_current == null">
+              No scale detected
+            </div>
+            <div v-else>
+              {{ m_current | temperatureDisplayFilter }}g
+            </div>
+          </v-progress-linear>
     </v-row></div>
 
   </div>
@@ -61,7 +65,7 @@ export default {
       setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
       t_update: 10,
-      m_current: 0, // Brewed coffee mass (g)
+      m_current: null, // Brewed coffee mass (g)
       m_setpoint: 20,
       n_datapoints: 10
     }

@@ -32,6 +32,8 @@ ESP8266WebServer* scaleWifiSetup(IPAddress ip, IPAddress subnet, IPAddress gatew
   server_.on("/", handleRoot);
   server_.on("/mass", HTTP_GET, handleGetMass); 
   server_.on("/tare", HTTP_GET, handleTare); 
+  server_.on("/brewstart", HTTP_GET, handleBrewStart);
+  server_.on("/brewstop", HTTP_GET, handleBrewStop);
   server_.begin();
   
   Serial.println("HTTP server started");
@@ -55,4 +57,17 @@ void handleTare() {
   Serial.println("Tare get request received");
   // Set to current mass reading
   server_.send(200, "application/json", "{tare: true}");
+}
+
+void handleBrewStart() {
+  // Tare scale
+  loadcellTare();
+  // Start timer
+  timerReset();
+  timerStartStop();
+}
+
+void handleBrewStop () {
+  // Stop timer
+  timerStartStop();
 }

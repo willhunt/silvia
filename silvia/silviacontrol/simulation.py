@@ -77,7 +77,7 @@ def simulated_mass_sensor(select="random"):
         select (String): Choose responce method - "random", "simulated", "off"
     """
     if select is "random":
-        return= random.randrange(0, 20)
+        return random.randrange(0, 20)
     elif select is "simulated":
         responses = ResponseModel.objects.order_by('-t')
         last_response = responses[0]
@@ -92,7 +92,7 @@ def simulated_mass_sensor(select="random"):
 
 def pid_update(T_boiler, t):
     """
-    Get new output from PID controler
+    Get new output from PID controller
     u(t) = K_p e(t) + K_i \int_{0}^{t} e(t)dt + K_d {de}/{dt}
     """
     lim = (0, 100)

@@ -81,10 +81,10 @@ class ResponseModel(models.Model):
     T_boiler = models.FloatField()
     T_amb = models.FloatField(blank=True, null=True)
     duty = models.FloatField(default=0)
-    duty_p = models.FloatField(default=0)
-    duty_i = models.FloatField(default=0)
-    duty_d = models.FloatField(default=0)
-    m = models.FloatField(default=0)
+    duty_p = models.FloatField(blank=True, null=True)
+    duty_i = models.FloatField(blank=True, null=True)
+    duty_d = models.FloatField(blank=True, null=True)
+    m = models.FloatField(default=0, null=True)
     brewing = models.BooleanField(default=False)
 
     # @classmethod

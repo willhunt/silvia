@@ -10,7 +10,7 @@
 #define SCALE_CLK_PIN 8
 #define TIMER_START_PIN 13     // D7
 #define TIMER_RESET_PIN 12     // D6
-#define LOADCELL_RESET_PIN 14  // D5
+#define LOADCELL_TARE_PIN 14  // D5
 
 //Static IP address configuration
 IPAddress ip(192, 168, 0, 12); // Static IP
@@ -30,7 +30,7 @@ void setup() {
   server = scaleWifiSetup(ip, gateway, subnet, dns);
   
 
-//  loadcellSetup(SCALE_DOUT_PIN, SCALE_CLK_PIN);
+  loadcellSetup(SCALE_DOUT_PIN, SCALE_CLK_PIN, LOADCELL_TARE_PIN);
 
 
   timerSetup(TIMER_START_PIN, TIMER_RESET_PIN);

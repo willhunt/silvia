@@ -1,7 +1,8 @@
 #include "silvia_scale_timer.h"
 
-unsigned long timer_start;
+//unsigned long timer_start;
 unsigned long timer_last;
+int millis_passed;
 bool timer_on;
 
 void timerSetup(int start_pin, int reset_pin) {
@@ -15,15 +16,16 @@ void timerSetup(int start_pin, int reset_pin) {
 }
 
 void timerReset() {
-  timer_start = 0;
-  timer_last = 0;
+//  timer_start = 0;
+//  timer_last = 0;
+  millis_passed = 0;
   timer_on = false;
 }
 
 void timerStartStop() {
   if (!timer_on) {
-    timer_start = millis();
-    timer_last = timer_start;
+//    timer_start = millis();
+    timer_last = millis();
     timer_on = true;
   }
   else {
@@ -34,7 +36,9 @@ void timerStartStop() {
 
 int timerUpdate() {
   if (timer_on) {
-    timer_last = millis();
+    unsigned long millis_now = millis();
+    millis_passed += (millis_now - timer_last); 
+    timer_last = millis_now;
   }
-  return timer_last - timer_start;
+  return millis_passed;
 }

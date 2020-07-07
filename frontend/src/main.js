@@ -11,8 +11,8 @@ export const eventBus = new Vue()
 
 // Define global filters
 Vue.filter('temperatureDisplayFilter', function (value) {
-  if (!value) return ''
-  return numeral(value).format('0')
+  // if (!value) return ''
+  return numeral(value).format('0.0')
 })
 
 new Vue({

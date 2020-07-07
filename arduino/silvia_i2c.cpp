@@ -57,7 +57,7 @@ void requestEvent() {
   response_data.data.T_boiler = temp_sensor_ref->getLatestTemperature();
   response_data.data.power = power_output_ref->getStatus();
   response_data.data.brew = brew_output_ref->getStatus();
-  response_data.data.duty = 
+  response_data.data.duty = temperature_controller_ref->getDuty();
   // Write bytes to i2c address
   Wire.write(response_data.buffer, sizeof(responseData));
 }

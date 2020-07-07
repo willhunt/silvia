@@ -6,11 +6,15 @@
 #include <ESP8266WebServer.h>
 #include "wifi_details.h"  // Wifi SSID & password
 #include "silvia_scale_display.h"
+#include "silvia_scale_timer.h"
+#include "silvia_scale_loadcell.h"
 
 
 ESP8266WebServer* scaleWifiSetup(IPAddress ip, IPAddress subnet, IPAddress gateway, IPAddress dns);
 void handleRoot();
 void handleGetMass();
 void handleTare();
+void handleBrewStart();
+void handleBrewStop();
 
 #endif  // SILVIA_SCALE_WIFI_H

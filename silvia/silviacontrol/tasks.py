@@ -40,8 +40,8 @@ def async_get_response():
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat
         i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
         T = i2c_extract[2]
-        duty = 
-        
+        duty = i2c_extract[3]
+
         settings = SettingsModel.objects.get(id=1)
         display.showTemperature(T, settings.T_set)
 
@@ -60,9 +60,10 @@ def async_get_response():
         response = ResponseModel.objects.create(
             T_boiler=T,
             duty=duty,
-            duty_p=duty_pid[0],
-            duty_i=duty_pid[1],
-            duty_d=duty_pid[2],
+            # Can't get these from Arduino PID library
+            # duty_p=duty_pid[0],
+            # duty_i=duty_pid[1],
+            # duty_d=duty_pid[2],
             m=m
         )
         response.save()
@@ -98,7 +99,15 @@ def async_toggle_brew(brew):
     status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
+        # Reset scale
+        if brew:
+            requests.get("http://192.168.0.12/brewstart")
+        else:
+            requests.get("http://192.168.0.12/brewstop")
+        
+        # Turn machine on
         update_microcontroller(brew=brew)
+
 
     debug_log("Celery machine brewing: %s" % brew)
     status.brew = brew
