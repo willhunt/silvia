@@ -1,7 +1,7 @@
 <template>
 
   <div class="sessions">
-    <v-card class="mx-auto mb-4" min-width=350 max-width=900>
+    <v-card class="mx-auto mb-4" min-width=350 max-width=1200>
       <v-row align="center" class="ml-0 mr-4">
         <v-col cols="auto">
           <v-card-title>Sessions</v-card-title>
@@ -28,6 +28,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="accent lighten-1" @click="viewData">Graph</v-btn>
+            <v-btn class="error" @click="deleteSessions">Delete</v-btn>
             <v-btn class="secondary" @click="loadSessions">Reload</v-btn>
           </v-card-actions>
         </div>
@@ -36,7 +37,11 @@
 
     <div v-if="showGraph">
       <v-card max-height="450" class="pa-6">
-        <response-chart v-if="graphLoaded" :chartdata="graphData" :options="graphOptions" class="">
+        <response-chart v-if="graphLoaded" :chartdata="graphDataT" :chartOptions="graphOptionsT" class="">
+        </response-chart>
+      </v-card>
+      <v-card max-height="450" class="pa-6">
+        <response-chart v-if="graphLoaded" :chartdata="graphDataD" :chartOptions="graphOptionsD" class="">
         </response-chart>
       </v-card>
     </div>
@@ -67,8 +72,45 @@ export default {
       showTable: true,
       showGraph: false,
       graphLoaded: false,
-      graphData: null,
-      graphOptions: {
+      graphDataT: null,
+      graphDataD: null,
+      graphOptionsT: {
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Time [s]'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Boiler Temperature [C]'
+            }
+          }]
+        },
+        showLines: true,
+        maintainAspectRatio: false
+      },
+      graphOptionsD: {
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Time [s]'
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Duty [%]'
+            }
+          }]
+        },
         showLines: true,
         maintainAspectRatio: false
       }
@@ -83,12 +125,29 @@ export default {
           // Calculate duration for each session
           this.sessions.forEach((item, index) => {
             const startDateTime = new Date(item.t_start)
-            const endDateTime = new Date(item.t_end)
+            let endDateTime = new Date(item.t_end)
+            if (item.t_end == null) {
+              endDateTime = Date.now()
+            }
             const deltaMinutes = Math.ceil((endDateTime - startDateTime) / (1000 * 60))
-            item.duration = deltaMinutes
+            const minutes = deltaMinutes % 60
+            const hours = (deltaMinutes - minutes) / 60
+            item.duration = hours.toString() + ':' + (minutes < 10 ? '0' : '') + minutes.toString()
           })
         })
         .catch(error => console.log(error))
+    },
+    deleteSessions () {
+      this.selected.forEach((item, index) => {
+        // Delete from databse
+        axios.delete('/api/v1/session/' + item.id + '/')
+          .then(response => {
+            console.log(response.data)
+          })
+          .catch(error => console.log(error))
+        // Remove from list on webpage
+        this.loadSessions()
+      })
     },
     viewData () {
       // Get session id's
@@ -103,34 +162,41 @@ export default {
         .then(response => {
           this.graphLoaded = false
           console.log(response.data)
-          this.graphData = {
+          this.graphDataT = {
+            datasets: []
+          } // Reset
+          this.graphDataD = {
             datasets: []
           } // Reset
 
           // Loop through sessions
           Object.keys(response.data).forEach((sessionKey, sessionIndex) => {
-            // const timeData = []
-            // const tempData = []
-            const dataSet = {
+            const dataSetT = {
               label: 'Session ' + sessionKey,
               showLine: true,
-              data: []
+              data: [],
+              fill: false
+            }
+            const dataSetD = {
+              label: 'Session ' + sessionKey,
+              showLine: true,
+              data: [],
+              fill: false
             }
             // Loop through responses
             response.data[sessionKey].forEach((responseItem, responseIndex) => {
-              // timeData.push((new Date(responseItem.t) - new Date(response.data[sessionKey][0].t)) / 1000) // Time in seconds since start
-              // tempData.push(responseItem.T_boiler)
-              dataSet.data.push({
-                x: (new Date(responseItem.t) - new Date(response.data[sessionKey][0].t)) / 1000,
+              const xPoint = (new Date(responseItem.t) - new Date(response.data[sessionKey][0].t)) / 1000
+              dataSetT.data.push({
+                x: xPoint,
                 y: responseItem.T_boiler
               })
+              dataSetD.data.push({
+                x: xPoint,
+                y: responseItem.duty
+              })
             })
-            // this.graphData.push({
-            //   id: sessionKey,
-            //   time: timeData,
-            //   temp: tempData
-            // })
-            this.graphData.datasets.push(dataSet)
+            this.graphDataT.datasets.push(dataSetT)
+            this.graphDataD.datasets.push(dataSetD)
           })
           this.graphLoaded = true
           this.showGraph = true

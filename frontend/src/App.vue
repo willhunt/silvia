@@ -26,6 +26,13 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.headers['Content-Type'] = 'application/json'
 axios.defaults.withCredentials = true
+axios.defaults.trailingSlash = true
+axios.interceptors.request.use((config) => {
+  if (config.addTrailingSlash && config.url[config.url.length - 1] !== '/') {
+    config.url += '/'
+  }
+  return config
+})
 
 export default {
   name: 'App',
