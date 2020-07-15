@@ -6,57 +6,39 @@
         <v-col cols="auto">
           <v-card-title>Sessions</v-card-title>
         </v-col>
-        <v-spacer></v-spacer>
+        <!-- <v-spacer></v-spacer>
         <v-col cols="auto">
           <v-btn icon @click="showTable = !showTable" >
             <v-icon>{{ showTable ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
           </v-btn>
-        </v-col>
+        </v-col> -->
       </v-row>
+      <v-data-table class="mx-4"
+        :headers="headers"
+        :items="sessions"
+        v-model="selected"
+        :sort-by="['start_date', 'start_time']"
+        :sort-desc="[true, true]"
+        show-select>
+      </v-data-table>
 
-      <v-expand-transition>
-        <div v-show="showTable">
-          <v-data-table class="mx-4"
-            :headers="headers"
-            :items="sessions"
-            v-model="selected"
-            :sort-by="['start_date', 'start_time']"
-            :sort-desc="[true, true]"
-            show-select>
-          </v-data-table>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn class="accent lighten-1" @click="viewData">Graph</v-btn>
-            <v-btn class="error" @click="deleteSessions">Delete</v-btn>
-            <v-btn class="secondary" @click="loadSessions">Reload</v-btn>
-          </v-card-actions>
-        </div>
-      </v-expand-transition>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn class="accent lighten-1" @click="viewData">Graph</v-btn>
+        <v-btn class="error" @click="deleteSessions">Delete</v-btn>
+        <v-btn class="secondary" @click="loadSessions">Reload</v-btn>
+      </v-card-actions>
     </v-card>
-
-    <div v-if="showGraph">
-      <v-card max-height="450" class="pa-6">
-        <response-chart v-if="graphLoaded" :chartdata="graphDataT" :chartOptions="graphOptionsT" class="">
-        </response-chart>
-      </v-card>
-      <v-card max-height="450" class="pa-6">
-        <response-chart v-if="graphLoaded" :chartdata="graphDataD" :chartOptions="graphOptionsD" class="">
-        </response-chart>
-      </v-card>
-    </div>
   </div>
 
 </template>
 
 <script>
 import axios from 'axios'
-import ResponseChart from '@/components/ResponseChart.vue'
 
 export default {
   name: 'Sessions',
   components: {
-    ResponseChart
   },
   data: function () {
     return {
@@ -68,52 +50,7 @@ export default {
         { text: 'Time', value: 'start_time' },
         { text: 'Duration', value: 'duration' },
         { text: 'Active', value: 'active' }
-      ],
-      showTable: true,
-      showGraph: false,
-      graphLoaded: false,
-      graphDataT: null,
-      graphDataD: null,
-      graphOptionsT: {
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Time [s]'
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Boiler Temperature [C]'
-            }
-          }]
-        },
-        showLines: true,
-        maintainAspectRatio: false
-      },
-      graphOptionsD: {
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Time [s]'
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Duty [%]'
-            }
-          }]
-        },
-        showLines: true,
-        maintainAspectRatio: false
-      }
+      ]
     }
   },
   methods: {
@@ -156,53 +93,7 @@ export default {
         sessionIds.push(item.id)
       })
 
-      const getParams = { params: { session: sessionIds.join(',') } }
-
-      axios.get('/api/v1/response/sessions/', getParams)
-        .then(response => {
-          this.graphLoaded = false
-          console.log(response.data)
-          this.graphDataT = {
-            datasets: []
-          } // Reset
-          this.graphDataD = {
-            datasets: []
-          } // Reset
-
-          // Loop through sessions
-          Object.keys(response.data).forEach((sessionKey, sessionIndex) => {
-            const dataSetT = {
-              label: 'Session ' + sessionKey,
-              showLine: true,
-              data: [],
-              fill: false
-            }
-            const dataSetD = {
-              label: 'Session ' + sessionKey,
-              showLine: true,
-              data: [],
-              fill: false
-            }
-            // Loop through responses
-            response.data[sessionKey].forEach((responseItem, responseIndex) => {
-              const xPoint = (new Date(responseItem.t) - new Date(response.data[sessionKey][0].t)) / 1000
-              dataSetT.data.push({
-                x: xPoint,
-                y: responseItem.T_boiler
-              })
-              dataSetD.data.push({
-                x: xPoint,
-                y: responseItem.duty
-              })
-            })
-            this.graphDataT.datasets.push(dataSetT)
-            this.graphDataD.datasets.push(dataSetD)
-          })
-          this.graphLoaded = true
-          this.showGraph = true
-          this.showTable = false
-        })
-        .catch(error => console.log(error))
+      this.$router.push({ name: 'Session', params: { sessionIds: sessionIds.join(',') } })
     }
   },
   created () {

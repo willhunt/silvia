@@ -9,6 +9,7 @@ Notes:
 
 // Pre-compile definitions
 #define TEMP_SENSOR_PIN A0
+#define WATER_SENSOR_PIN 7
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
@@ -21,9 +22,11 @@ Notes:
 #include "silvia_temperature_controller.h"
 #include "silvia_i2c.h"
 #include "silvia_output.h"
+#include "silvia_water_level.h"
 
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
+WaterLevelSensor water_sensor(WATER_SENSOR_PIN);
 
 // Temperature controller
 double T_boiler;
@@ -47,7 +50,7 @@ void setup(void) {
         Serial.begin(9600);
     }
 
-    i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid);
+    i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);
 }
 
 void loop(void)  {

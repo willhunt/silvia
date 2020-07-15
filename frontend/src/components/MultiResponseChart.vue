@@ -1,18 +1,17 @@
 <template>
   <div>
-    <v-card max-height="450" class="pa-6">
-      <response-chart v-if="graphLoaded" :chartdata="graphDataT" :chartOptions="graphOptionsT" class="">
+    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1200>
+      <response-chart :chartdata="graphDataT" :chartOptions="graphOptionsT" >
       </response-chart>
     </v-card>
-    <v-card max-height="450" class="pa-6">
-      <response-chart v-if="graphLoaded" :chartdata="graphDataD" :chartOptions="graphOptionsD" class="">
+    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1200>
+      <response-chart :chartdata="graphDataD" :chartOptions="graphOptionsD" >
       </response-chart>
     </v-card>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 import ResponseChart from '@/components/ResponseChart.vue'
 
 export default {
@@ -40,7 +39,8 @@ export default {
           }]
         },
         showLines: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        responsive: true
       },
       graphOptionsD: {
         scales: {
@@ -60,7 +60,8 @@ export default {
           }]
         },
         showLines: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        responsive: true
       }
     }
   },
@@ -69,14 +70,14 @@ export default {
   },
   computed: {
     graphDataT: function () {
-      this.generateGraphData('T_boiler')
+      return this.generateGraphData('T_boiler')
     },
     graphDataD: function () {
-      this.generateGraphData('duty')
+      return this.generateGraphData('duty')
     }
   },
   methods: {
-    generateGraphData(responseField) {
+    generateGraphData (responseField) {
       const graphData = {}
       graphData.datasets = []
       Object.keys(this.data).forEach((sessionKey, sessionIndex) => {
@@ -88,7 +89,7 @@ export default {
         }
         // Loop through responses and add data
         this.data[sessionKey].forEach((responseItem, responseIndex) => {
-          const xPoint = (new Date(responseItem.t) - new Date(response.data[sessionKey][0].t)) / 1000
+          const xPoint = (new Date(responseItem.t) - new Date(this.data[sessionKey][0].t)) / 1000
           dataset.data.push({
             x: xPoint,
             y: responseItem[responseField]
@@ -98,13 +99,12 @@ export default {
       })
       return graphData
     }
-  },
-  created () {
-    this.loadSessions()
   }
 }
 </script>
 
 <style scoped>
-
+.graphContainer {
+  position: 'relative'
+}
 </style>

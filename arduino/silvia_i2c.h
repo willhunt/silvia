@@ -10,6 +10,7 @@
 #include "silvia_output.h"
 #include "silvia_temperature_controller.h"
 #include "silvia_temperature_sensor.h"
+#include "silvia_water_sensor.h"
 
 
 struct responseFormat {
@@ -17,6 +18,7 @@ struct responseFormat {
   bool brew;
   double T_boiler;
   double duty;
+  bool water_level;
 };
 union responseData {
   responseFormat data;
@@ -41,6 +43,7 @@ receivedData received_data;
 int sizeof_received_data;
 
 TemperatureSensor* temp_sensor_ref;
+WaterLevelSensor* water_sensor_ref;
 PowerOutput* power_output_ref;
 RelayOutput* brew_output_ref;
 TemperatureController* temperature_controller_ref;
@@ -53,7 +56,8 @@ void i2cSetup(
   PowerOutput* power_output,
   RelayOutput* brew_output,
   TemperatureSensor* temperature_sensor,
-  TemperatureController* temperature_controller
+  TemperatureController* temperature_controller,
+  WaterLevelSensor* water_sensor
 );
 
 

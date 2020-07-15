@@ -133,12 +133,20 @@ class ResponseViewSet(viewsets.ModelViewSet):
         """
         session_ids_string = request.query_params.get('session', None)
         
+        if session_ids_string == "active":
+            session = SessionModel.objects.filter(active=True).order_by(-t_start)[0]
+            queryset = ResponseModel.objects.filter(t__range=(session.t_start, timezone.now()))
+            return Response(queryset)
+
         if session_ids_string is not None:
             session_ids = [int(x) for x in session_ids_string.split(',')]
             queryset_dict = {}
             for session_id in session_ids:
                 session = SessionModel.objects.get(id=session_id)
-                queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
+                if session.t_end is None:
+                    queryset = ResponseModel.objects.filter(t__range=(session.t_start, timezone.now()))
+                else:
+                    queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
                 queryset_dict[session_id] = self.serializer_class(queryset, many=True).data
             return Response(queryset_dict)
         return ResponseModel.objects.all()
@@ -149,7 +157,7 @@ class SessionViewSet(viewsets.ModelViewSet):
     API endpoint for on/off sessions to be viewed or edited
     """
     queryset = SessionModel.objects.all()
-    serializer_class = SessionSerializer
+    serializer_class = SessionSerializer       
 
 
 class ScheduleViewSet(viewsets.ModelViewSet):

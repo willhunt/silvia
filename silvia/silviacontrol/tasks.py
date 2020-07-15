@@ -26,6 +26,9 @@ else:
 
 @shared_task(base=QueueOnce)
 def async_get_response():
+    status = StatusModel.objects.get(id=1)
+    settings =  SettingsModel.objects.get(id=1)
+
     # Read temperature sensor
     if django_settings.SIMULATE_MACHINE == True:
         t = timezone.now()
@@ -33,14 +36,17 @@ def async_get_response():
         m = simulated_mass_sensor("simulated")
         # Get new PID
         duty, duty_pid = pid_update(T, t)
+        low_water = False
     else:
         # TEMPERATURE - from Microcontroller over I2C
         i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 6)
         t = timezone.now()
-        # Format '<2?2f' => Little endian, 2xbool, 2xfloat
-        i2c_extract = struct.unpack('<2?1f', bytes(i2c_block))
+        # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
+        i2c_extract = struct.unpack('<2?1f1?', bytes(i2c_block))
         T = i2c_extract[2]
         duty = i2c_extract[3]
+        duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
+        low_water = not i2c_extract[4]
 
         settings = SettingsModel.objects.get(id=1)
         display.showTemperature(T, settings.T_set)
@@ -54,17 +60,24 @@ def async_get_response():
         except:
             m = None
 
+    # Check if when brewing, mass is met
+    if status.brew:
+        if m is not None and m >= settings.m:
+            async_toggle_brew(False)
+
+
     # Record temperature if machine is on
-    status = StatusModel.objects.get(id=1)
     if status.on:
         response = ResponseModel.objects.create(
             T_boiler=T,
             duty=duty,
-            # Can't get these from Arduino PID library
-            # duty_p=duty_pid[0],
-            # duty_i=duty_pid[1],
-            # duty_d=duty_pid[2],
-            m=m
+            duty_p=duty_pid[0],
+            duty_i=duty_pid[1],
+            duty_d=duty_pid[2],
+            m=m,
+            T_setpoint=settings.T_set,
+            low_water=low_water
+            # brewing=status.brew # This is done via signal
         )
         response.save()
     return T
@@ -89,6 +102,8 @@ def async_power_machine(on):
     status.on = on
     status.brew = False # Always turn off brew when powering machine on/off
     status.save()
+    # Log response at this event
+    async_get_response()
 
 @shared_task
 def async_toggle_brew(brew):
@@ -112,10 +127,13 @@ def async_toggle_brew(brew):
     debug_log("Celery machine brewing: %s" % brew)
     status.brew = brew
     status.save()
+    # Log response at this event
+    async_get_response()
 
 @shared_task
 def async_update_microcontroller():
-    update_microcontroller()
+    if django_settings.SIMULATE_MACHINE == False:
+        update_microcontroller()
 
 def update_microcontroller(on=None, brew=None):
     status = StatusModel.objects.get(id=1)

@@ -1,12 +1,28 @@
 <template>
   <div class="machine-interface">
-    <div v-if="displayOption == 'machine'">
-      <MachineDisplay :machineOn="machineOn" :temperature="temperature" />
-    </div>
-    <div v-if="displayOption == 'graph'">
-      <GraphDisplay :temperatures="temperatures" />
+    <!-- Machine Image -->
+    <div class="machine-container">
+      <div v-if="displayOption == 'machine'">
+        <MachineDisplay :machineOn="machineOn" :temperature="temperature" />
+      </div>
+      <div v-if="displayOption == 'graph'">
+        <GraphDisplay :temperatures="temperatures" />
+      </div>
+      <v-btn v-if="displayOption == 'machine'" id="temp-btn" outlined :color="tempBtnColor" @click="changeDisplay">
+        {{ temperature | temperatureDisplayFilter }}&#8451;
+      </v-btn>
+      <v-btn id="water-btn" fab small outlined :color="waterLevelColor">
+          <v-icon>mdi-water</v-icon>
+      </v-btn>
+      <v-btn v-if="machineBrewing" id="brew-btn" class="" outlined text color="secondary">
+        <v-col>
+          <v-row class="pb-1" justify="center">{{ m_current | temperatureDisplayFilter }}g</v-row>
+          <v-row class="" justify="center">{{ t_elapsed }}s</v-row>
+        </v-col>
+      </v-btn>
     </div>
     <br>
+    <!-- Controls -->
     <v-row align="center">
       <!-- <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn> -->
       <v-col cols="auto">
@@ -24,9 +40,11 @@
       <v-col cols="auto">
         <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
           <div v-if="displayOption == 'machine'">
-            <v-icon class="mr-2">mdi-chart-line</v-icon>
+            <v-icon>mdi-chart-line</v-icon>
           </div>
-          {{ temperature | temperatureDisplayFilter }}&#8451;
+          <div v-else>
+            <v-icon>mdi-file-presentation-box</v-icon>
+          </div>
         </v-btn>
       </v-col>
     </v-row>
@@ -37,7 +55,7 @@
               No scale detected
             </div>
             <div v-else>
-              {{ m_current | temperatureDisplayFilter }}g
+              {{ m_current | temperatureDisplayFilter }}g / {{ m_setpoint }}g
             </div>
           </v-progress-linear>
     </v-row></div>
@@ -67,7 +85,9 @@ export default {
       t_update: 10,
       m_current: null, // Brewed coffee mass (g)
       m_setpoint: 20,
-      n_datapoints: 10
+      n_datapoints: 10,
+      low_water: false,
+      sessionData: null
     }
   },
   props: {
@@ -83,6 +103,20 @@ export default {
     },
     brewProgress: function () {
       return 100 * this.m_current / this.m_setpoint
+    },
+    waterLevelColor: function () {
+      return this.low_water ? 'error' : 'success'
+    },
+    t_elapsed: function () {
+      return 0
+    }
+  },
+  watch: {
+    m_current: function (newMass, oldMass) {
+      // When brewing finishes update status
+      if (newMass >= this.m_setpoint) {
+        eventBus.$emit('updateOnOff')
+      }
     }
   },
   methods: {
@@ -100,6 +134,7 @@ export default {
       eventBus.$emit('toggleBrew')
     },
     updateResponse () {
+      // Get latest response only
       axios.get('/api/v1/response/latest/')
         .then(response => {
           console.log(response.data)
@@ -109,6 +144,18 @@ export default {
             this.temperatures.pop(0)
           }
           this.m_current = response.data.m
+          this.low_water = response.data.low_water
+        })
+        .catch(error => console.log(error))
+    },
+    getSessionResponse () {
+      // Get all responses from current session
+      const getParams = { params: { session: 'active' } }
+
+      axios.get('/api/v1/response/sessions/', getParams)
+        .then(response => {
+          console.log(response.data)
+          this.plotData = response.data
         })
         .catch(error => console.log(error))
     },
@@ -140,5 +187,42 @@ export default {
 <style scoped>
 .machine-interface {
   margin: auto;
+}
+
+.machine-container {
+  position: relative;
+}
+
+#temp-btn {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: rgb(236, 236, 236);
+}
+
+#water-btn {
+  position: absolute;
+  /* top: 10%;
+  left: 83%; */
+  top: 92.1%;
+  left: 90%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: rgb(236, 236, 236);
+}
+
+#brew-btn {
+  position: absolute;
+  /* top: 10%;
+  left: 83%; */
+  top: 75%;
+  left: 31.5%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: rgb(236, 236, 236);
+  height: 50px;
+  text-transform: none !important;
 }
 </style>

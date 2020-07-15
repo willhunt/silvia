@@ -46,7 +46,7 @@ def sim_T_boiler(response):
         duty = response.duty
     Qdot_elec = Edot_max * duty / 100 #* response.brewing
     Qdot_conv = h_conv * A * (T_amb - T_last)  # Positive into system
-    T_new = (Qdot_elec + Qdot_conv) * (t_new - t_last).total_seconds() / (m * c_p) + T_last
+    T_new = (Qdot_elec + Qdot_conv) * (timezone.now() - t_last).total_seconds() / (m * c_p) + T_last
 
     return T_new
 
@@ -79,8 +79,7 @@ def simulated_mass_sensor(select="random"):
     if select is "random":
         return random.randrange(0, 20)
     elif select is "simulated":
-        responses = ResponseModel.objects.order_by('-t')
-        last_response = responses[0]
+        last_response = ResponseModel.objects.order_by('-t')[0]
         if last_response.brewing:
             return last_response.m + 2
         else:

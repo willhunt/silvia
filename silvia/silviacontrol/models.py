@@ -14,7 +14,7 @@ class SettingsModel(models.Model):
     k_i = models.FloatField(default=0)  # Integral gain
     # Setpoints
     T_set = models.FloatField(default=95)  # Temperature setpoint [degC]
-    V = models.FloatField(default=200)  # Double espresso volume [ml]
+    m = models.FloatField(default=20)  # Extraction mass [g]
     # Sampling times
     t_update = models.IntegerField(default=5)  # Time delay between client side updates [s]
     t_sample = models.IntegerField(default=5)  # Time delay between server side sampling [s]
@@ -79,13 +79,14 @@ class ResponseModel(models.Model):
     """
     t = models.DateTimeField(auto_now=True)
     T_boiler = models.FloatField()
-    T_amb = models.FloatField(blank=True, null=True)
+    T_setpoint = models.FloatField(blank=True, null=True)
     duty = models.FloatField(default=0)
     duty_p = models.FloatField(blank=True, null=True)
-    duty_i = models.FloatField(blank=True, null=True)
+    duty_i = models.FloatField(blank=True, null=True)   
     duty_d = models.FloatField(blank=True, null=True)
     m = models.FloatField(default=0, null=True)
     brewing = models.BooleanField(default=False)
+    low_water = models.BooleanField(default=False)
 
     # @classmethod
     # def create(cls, T_boiler=None, t=None, T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 

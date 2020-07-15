@@ -92,11 +92,14 @@ def save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
-    try:
-        status = StatusModel.objects.filter(id=1)
-        instance.brewing = status.brew
-    except:
-        instance.brewing = False
+    # try:
+    #     status = StatusModel.objects.get(id=1)
+    #     instance.brewing = status.brew
+    # except:
+    #     instance.brewing = False
+
+    status = StatusModel.objects.get(id=1)
+    instance.brewing = status.brew
 
 
 @receiver(post_save, sender=SettingsModel)

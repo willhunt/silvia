@@ -4,6 +4,7 @@ import Home from '@/views/Home.vue'
 import NotFound from '@/views/404.vue'
 
 // Lazy loading
+const Session = () => import('@/views/Session.vue')
 const Sessions = () => import('@/views/Sessions.vue')
 const Info = () => import('@/views/Info.vue')
 const Settings = () => import('@/views/Settings.vue')
@@ -18,6 +19,13 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: { title: 'Silvia' }
+  },
+  {
+    path: '/session/:sessionIds',
+    name: 'Session',
+    component: Session,
+    meta: { title: 'Session' },
+    props: true
   },
   {
     path: '/sessions',

@@ -21,4 +21,7 @@ You will need to install the board manager as described on the [Github page](htt
 
 Useful information about the board can be found here: [/oneguyoneblog.com](https://oneguyoneblog.com/2018/12/28/wemos-d1-esp-wroom-02-arduino-ide/)
 
-Tp flash the Arduino select "WeMos D1 R1" as the board in the IDE board manager.
+To flash the Arduino select "WeMos D1 R1" as the board in the IDE board manager.
+
+## Notes on pins
+I had real trouble getting the HX711 library to work due to the selection of available pins on the board. Using the D8 (GPIO 15) worked but if connected the board would not start up. Most combinations of pins tried caused the board to constantly reset during the `setup()` stage. Int he end D4 (GPIO 2) which is connected to an on board LED and D9 (GPIO 3) worked.

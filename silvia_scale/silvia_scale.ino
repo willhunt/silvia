@@ -6,8 +6,8 @@
 #include "silvia_scale_loadcell.h"
 #include "silvia_scale_timer.h"
 
-#define SCALE_DOUT_PIN 4
-#define SCALE_CLK_PIN 8
+#define SCALE_DOUT_PIN 2 // D4
+#define SCALE_CLK_PIN 3 // D9
 #define TIMER_START_PIN 13     // D7
 #define TIMER_RESET_PIN 12     // D6
 #define LOADCELL_TARE_PIN 14  // D5
