@@ -6,8 +6,11 @@
 
 ```bash
 yarn dev
-yarn build
+yarn docs:build
 ```
 
-For more details, please head VuePress's [documentation](https://v1.vuepress.vuejs.org/).
+## Deployment
 
+```bash
+./deploy
+```
