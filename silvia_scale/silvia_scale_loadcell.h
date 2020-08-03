@@ -2,15 +2,15 @@
 #define SILVIA_SCALE_LOADCELL_H
 
 #include <Arduino.h>
-#include "HX711.h"
-// https://github.com/bogde/HX711
+//#include "HX711.h"
+#include <HX711_ADC.h>
 
 #define CALIBRATION_FACTOR 420.0983
 
 //extern HX711 loadcell;
 
 void loadcellSetup(int dout_pin, int clk_pin, int tare_pin);
-void loadcellTare();
+void ICACHE_RAM_ATTR loadcellTare();
 float getMass();
 
 #endif // SILVIA_SCALE_LOADCELL_H

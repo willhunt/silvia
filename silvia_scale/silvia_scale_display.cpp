@@ -2,11 +2,14 @@
 
 SSD1306Brzo display(0x3c, 5, 4);  // ADDRESS, SDA, SCL
 uint8_t progress = 0;
+int display_update_interval = 100;  // millis
+unsigned long display_last_update;
 
 void displaySetup() {
   display.init();
   display.clear();
 //  display.flipScreenVertically();
+  display_last_update = millis();
 }
 
 void displayWelcome() {
@@ -82,7 +85,11 @@ void displayTimer(int milliseconds) {
 }
 
 void displayStatus(float mass, int milliseconds) {
-  display.clear();
-  displayMass(mass);
-  displayTimer(milliseconds);
+  unsigned long time_now = millis();
+  if (time_now - display_last_update > display_update_interval) {
+    display.clear();
+    displayMass(mass);
+    displayTimer(milliseconds);
+    display_last_update = time_now;
+  }
 }

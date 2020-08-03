@@ -47,5 +47,5 @@ void loop() {
   displayStatus(mass, milliseconds);
 //  displayMass(mass);
   
-  delay(500);
+//  delay(100);
 }
