@@ -39,7 +39,7 @@ def async_get_response():
         low_water = False
     else:
         # TEMPERATURE - from Microcontroller over I2C
-        i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 7)
+        i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         i2c_extract = struct.unpack('<2?2f1?', bytes(i2c_block))
