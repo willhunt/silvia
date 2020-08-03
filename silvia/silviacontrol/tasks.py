@@ -42,7 +42,7 @@ def async_get_response():
         i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 7)
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
-        i2c_extract = struct.unpack('<2?1f1?', bytes(i2c_block))
+        i2c_extract = struct.unpack('<2?2f1?', bytes(i2c_block))
         T = i2c_extract[2]
         duty = i2c_extract[3]
         duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
