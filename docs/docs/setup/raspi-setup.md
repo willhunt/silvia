@@ -184,6 +184,7 @@ Change this line
 SUBSYSTEM=="ic2-dev", GROUP="i2c", MODE="0660"
 ```
 to this:
+```
 SUBSYSTEM=="ic2-dev", GROUP="i2c", MODE="0666"
 ```
 
