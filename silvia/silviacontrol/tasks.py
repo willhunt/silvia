@@ -23,7 +23,7 @@ if django_settings.SIMULATE_MACHINE == False:
 
     # Delay required before updating screen otherwise it pushes image to bottom for some
     # reason possibly as it is usually updated just after an i2c call to the Arduino
-    display_update_delay = 0.3  # [s]
+    display_update_delay = 0.4  # [s]
 # For testing
 else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
