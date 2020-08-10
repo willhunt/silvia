@@ -16,7 +16,7 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
     def __init__(self, i2c_address):
         # self.i2c = busio.I2C(SCL, SDA)
         self.i2c = board.I2C()
-        super().__init__(128, 128, self.i2c, addr=i2c_address)
+        super().__init__(128, 64, self.i2c, addr=i2c_address)
         self.fill(0)
         self.show()
     

@@ -49,7 +49,7 @@ def async_get_response():
         low_water = not i2c_extract[4]
 
         settings = SettingsModel.objects.get(id=1)
-        if settings.on:
+        if status.on:
             display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
