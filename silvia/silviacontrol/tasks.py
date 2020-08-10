@@ -28,7 +28,7 @@ else:
 @shared_task(base=QueueOnce)
 def async_get_response():
     status = StatusModel.objects.get(id=1)
-    settings =  SettingsModel.objects.get(id=1)
+    settings = SettingsModel.objects.get(id=1)
 
     # Read temperature sensor
     if django_settings.SIMULATE_MACHINE == True:
@@ -51,7 +51,7 @@ def async_get_response():
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
-            sleep(1)
+            time.sleep(1)
             display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
