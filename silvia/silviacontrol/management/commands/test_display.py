@@ -11,5 +11,6 @@ class Command(BaseCommand):
 
             display = SilviaDisplay(0x3C)
             display.welcome()
+            display.showTemperature(20, 100)
         else:
             debug_log("Nothing to display in simulation mode")
