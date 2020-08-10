@@ -20,6 +20,8 @@ if django_settings.SIMULATE_MACHINE == False:
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
+
+    display_update_delay = 1  # [s]
 # For testing
 else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
@@ -51,7 +53,7 @@ def async_get_response():
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
-            time.sleep(0.1)
+            time.sleep(display_update_delay)
             display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
@@ -99,10 +101,10 @@ def async_power_machine(on):
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller(on=on, brew=False)
         if on:
-            time.sleep(0.1)
+            time.sleep(display_update_delay)
             display.welcome()
         else:
-            time.sleep(0.1)
+            time.sleep(display_update_delay)
             display.off()
 
     debug_log("Celery machine on: %s" % on)
