@@ -98,8 +98,8 @@ def async_power_machine(on):
         update_microcontroller(on=on, brew=False)
         if on:
             display.welcome()
-        # else:
-        #     display.off()
+        else:
+            display.off()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
