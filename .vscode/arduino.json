@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "sketch": "arduino/silvia_main.ino",
-    "port": "/dev/ttyUSB0",
+    "port": "/dev/ttyACM0",
     "programmer": "AVRISP mkII"
 }

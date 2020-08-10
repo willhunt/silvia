@@ -5,6 +5,6 @@ WaterLevelSensor::WaterLevelSensor(int sensor_pin) {
   pinMode(sensor_pin, INPUT);
 };
 
-bool getLevel() {
-  return digitalWrite(sensor_pin_);
+bool WaterLevelSensor::getLevel() {
+  return digitalRead(sensor_pin_);
 }; 

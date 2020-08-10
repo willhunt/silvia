@@ -77,7 +77,7 @@ $ sshfs pi@192.168.0.6:/home ~/remote_code -o debug
 
 ## Install requirements
 ```bash
-$ sudo apt install git python3-venv libopenjp2-7 apache2 apache2-dev libapache2-mod-wsgi-py3 rabbitmq-server redis-server -y
+$ sudo apt install git python3-venv libopenjp2-7 libtiff5 apache2 apache2-dev libapache2-mod-wsgi-py3 redis-server i2c-tools -y
 ```
 
 ## Download files

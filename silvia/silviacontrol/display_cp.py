@@ -53,3 +53,4 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
 
         self.image(image)
         self.show()
+
