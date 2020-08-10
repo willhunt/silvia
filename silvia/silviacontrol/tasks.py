@@ -49,7 +49,8 @@ def async_get_response():
         low_water = not i2c_extract[4]
 
         settings = SettingsModel.objects.get(id=1)
-        display.showTemperature(T, settings.T_set)
+        if settings.on:
+            display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
@@ -95,7 +96,10 @@ def async_power_machine(on):
 
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller(on=on, brew=False)
-        display.welcome()
+        if on:
+            display.welcome()
+        else:
+            display.off()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
@@ -147,4 +151,3 @@ def update_microcontroller(on=None, brew=None):
     block_data = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(block_data)) )
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
-    
