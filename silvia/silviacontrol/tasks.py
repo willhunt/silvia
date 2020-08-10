@@ -6,6 +6,7 @@ from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
+import time
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
