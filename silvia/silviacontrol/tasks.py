@@ -21,7 +21,7 @@ if django_settings.SIMULATE_MACHINE == False:
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
 
-    display_update_delay = 0.5  # [s]
+    display_update_delay = 0.2  # [s]
 # For testing
 else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
