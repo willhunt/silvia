@@ -97,10 +97,9 @@ def async_power_machine(on):
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller(on=on, brew=False)
         if on:
-            display.poweron()
             display.welcome()
-        else:
-            display.poweroff()
+        # else:
+        #     display.off()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
