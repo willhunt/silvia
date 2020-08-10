@@ -51,7 +51,7 @@ def async_get_response():
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
-            time.sleep(1)
+            time.sleep(0.1)
             display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
@@ -98,10 +98,12 @@ def async_power_machine(on):
 
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller(on=on, brew=False)
-        # if on:
-            # display.welcome()
-        # else:
-            # display.off()
+        if on:
+            time.sleep(0.1)
+            display.welcome()
+        else:
+            time.sleep(0.1)
+            display.off()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
