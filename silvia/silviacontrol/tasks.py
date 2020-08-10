@@ -50,6 +50,7 @@ def async_get_response():
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
+            sleep(1)
             display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
