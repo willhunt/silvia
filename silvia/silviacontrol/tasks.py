@@ -109,7 +109,7 @@ def async_power_machine(on):
             async_display_welcome.delay()
         else:
             # time.sleep(display_update_delay)
-            display.off()
+            async_display_off.delay()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
@@ -172,3 +172,8 @@ def async_display_welcome():
 def async_display_temperature(T, T_set):
     time.sleep(display_update_delay)
     display.showTemperature(T, T_set)
+
+@shared_task
+def async_display_off():
+    time.sleep(display_update_delay)
+    display.off()
