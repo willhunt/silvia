@@ -164,8 +164,9 @@ def update_microcontroller(on=None, brew=None):
 
 @shared_task
 def async_display_welcome():
-    # time.sleep(display_update_delay)
+    time.sleep(display_update_delay)
     display.welcome()
+    time.sleep(2)
 
 @shared_task
 def async_display_temperature(T, T_set):
