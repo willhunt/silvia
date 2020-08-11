@@ -63,7 +63,7 @@ def async_get_response():
         if status.on:
             # time.sleep(display_update_delay)
             # display.showTemperature(T, settings.T_set)
-            async_display_temperature.delay(T, settings.T_set)
+            # async_display_temperature.delay(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
@@ -111,12 +111,12 @@ def async_power_machine(on):
         update_microcontroller_serial(on=on, brew=False)
         if on:
             # time.sleep(display_update_delay)
-            # display.welcome()
-            async_display_welcome.delay()
+            display.welcome()
+            # async_display_welcome.delay()
         else:
             # time.sleep(display_update_delay)
-            # display.off()
-            async_display_off.delay()
+            display.off()
+            # async_display_off.delay()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
