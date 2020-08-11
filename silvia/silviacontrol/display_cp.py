@@ -36,6 +36,8 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
 
 
     def showTemperature(self, T, T_set):
+        self.fill(0)
+        self.show()
         image = Image.new('1', (self.width, self.height))
         # Get drawing object to draw on image.
         drawing = ImageDraw.Draw(image)
