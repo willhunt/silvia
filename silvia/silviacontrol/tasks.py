@@ -62,8 +62,8 @@ def async_get_response():
         settings = SettingsModel.objects.get(id=1)
         if status.on:
             # time.sleep(display_update_delay)
-            display.showTemperature(T, settings.T_set)
-            # async_display_temperature.delay(T, settings.T_set)
+            # display.showTemperature(T, settings.T_set)
+            async_display_temperature.delay(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
