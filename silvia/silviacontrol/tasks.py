@@ -117,6 +117,7 @@ def async_power_machine(on):
     status = StatusModel.objects.get(id=1)
 
     # Purge celery queues
+    # Without this the screen update has many problems causing flickering or image shift
     app.control.purge()
 
     if django_settings.SIMULATE_MACHINE == False:
