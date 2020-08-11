@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from celery_once import QueueOnce
+from silvia.celery import app
 from .models import StatusModel, ResponseModel, SettingsModel
 from .utils import debug_log
 from django.conf import settings as django_settings
@@ -115,6 +116,9 @@ def async_power_machine(on):
     Modes: 0 Status, 1 Settings
     """
     status = StatusModel.objects.get(id=1)
+
+    # Purge celery queues
+    app.control.purge()
 
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller_serial(on=on, brew=False)
