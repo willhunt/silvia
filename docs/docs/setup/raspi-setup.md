@@ -166,6 +166,7 @@ $ sudo chown www-data:www-data ~/.virtualenvs/venv-silvia
 $ sudo groupadd server_group
 $ sudo adduser pi server_group
 $ sudo adduser www-data server_group
+$ sudo adduser www-data dialout
 $ sudo chgrp server_group ~/silvia/silvia/db.sqlite3
 $ sudo chgrp server_group ~/silvia/silvia/
 ```

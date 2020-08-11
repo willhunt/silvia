@@ -10,13 +10,15 @@ import time
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
-    from smbus2 import SMBus
+    import serial
     from.display_cp import SilviaDisplay
-    import requests
+    # import requests
 
     # I2C variables
-    i2c_addr_arduino = 0x8
-    i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+    # i2c_addr_arduino = 0x8
+    # i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+    serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=1)
+    serial_arduino.flush()
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
@@ -44,14 +46,17 @@ def async_get_response():
         low_water = False
     else:
         # TEMPERATURE - from Microcontroller over I2C
-        i2c_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
+        # data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
+        serial_arduino.write("?".encode('utf-8'))
+        data_block = serial_arduino.read(size=11)
+
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
-        i2c_extract = struct.unpack('<2?2f1?', bytes(i2c_block))
-        T = i2c_extract[2]
-        duty = i2c_extract[3]
+        data_list = struct.unpack('<2?2f1?', bytes(data_block))
+        T = data_list[2]
+        duty = data_list[3]
         duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
-        low_water = not i2c_extract[4]
+        low_water = not data_list[4]
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
@@ -135,7 +140,7 @@ def async_toggle_brew(brew):
             requests.get("http://192.168.0.12/brewstop")
         
         # Turn machine on
-        update_microcontroller(brew=brew)
+        update_microcontroller_serial(brew=brew)
 
 
     debug_log("Celery machine brewing: %s" % brew)
@@ -147,9 +152,23 @@ def async_toggle_brew(brew):
 @shared_task
 def async_update_microcontroller():
     if django_settings.SIMULATE_MACHINE == False:
-        update_microcontroller()
+        update_microcontroller_serial()
 
-def update_microcontroller(on=None, brew=None):
+# def update_microcontroller_i2c(on=None, brew=None):
+#     status = StatusModel.objects.get(id=1)
+#     settings = SettingsModel.objects.get(id=1)
+    
+#     if on is None:
+#         on = status.on
+#     if brew is None:
+#         brew = status.brew
+#     # Send i2C data to arduino
+#     # Structure packed here and unpacked using 'union' on Arduino
+#     data_block = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+#     debug_log( "Data to send: {}".format(list(data_block)) )
+#     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
+
+def update_microcontroller_serial(on=None, brew=None):
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
     
@@ -159,9 +178,9 @@ def update_microcontroller(on=None, brew=None):
         brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    block_data = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-    debug_log( "Data to send: {}".format(list(block_data)) )
-    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(block_data))
+    data_block = struct.pack('<1c2?4f', "x", on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    debug_log( "Data to send: {}".format(list(data_block)) )
+    serial_arduino.write(list(data_block))
 
 @shared_task
 def async_display_welcome():

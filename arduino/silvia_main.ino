@@ -13,16 +13,17 @@ Notes:
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
-#define DISPLAY_SDA_PIN 2
-#define DISPLAY_SCL_PIN 3
-#define I2C_ADDR 0x8
+// #define DISPLAY_SDA_PIN 2
+// #define DISPLAY_SCL_PIN 3
+// #define I2C_ADDR 0x8
 
 // Imports
 #include "silvia_temperature_sensor.h"
 #include "silvia_temperature_controller.h"
-#include "silvia_i2c.h"
+// #include "silvia_i2c.h"
 #include "silvia_output.h"
 #include "silvia_water_sensor.h"
+#include "silvia_pi_serial.h"
 
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
@@ -50,11 +51,14 @@ void setup(void) {
         Serial.begin(9600);
     }
 
-    i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);
+    // i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);
+    pi_serial_setup(&power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);
 }
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+
+    check_serial_calls();
 
     if (power_output.getStatus()) {
         pid.Compute();  // Method includes sampling time check
