@@ -10,23 +10,30 @@ import time
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
-    import serial
     from.display_cp import SilviaDisplay
     import requests
 
-    # I2C variables
-    # i2c_addr_arduino = 0x8
-    # i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
-    serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=2)
-    serial_arduino.flush()
+    if django_settings.ARDUINO_COMMS == "i2c":
+        from smbus2 import SMBus
+
+        # I2C variables
+        i2c_addr_arduino = 0x8
+        i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
+    elif django_settings.ARDUINO_COMMS == "serial":
+        import serial
+
+        serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=2)
+        serial_arduino.flush()
+    else:
+        raise NotImplementedError("ARDUINO_COMMS not recognised")
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
-
     # Delay required before updating screen otherwise it pushes image to bottom for some
     # reason possibly as it is usually updated just after an i2c call to the Arduino
     display_update_delay = 0.3  # [s]
-# For testing
+
+# For testing without raspberry pi/espresso machine
 else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
 
@@ -45,10 +52,11 @@ def async_get_response():
         duty, duty_pid = pid_update(T, t)
         low_water = False
     else:
-        # TEMPERATURE - from Microcontroller over I2C
-        # data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
-        serial_arduino.write("R".encode())
-        data_block = serial_arduino.read(size=11)
+        if django_settings.ARDUINO_COMMS == "i2c":
+            data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
+        elif django_settings.ARDUINO_COMMS == "serial":
+            serial_arduino.write("R".encode())
+            data_block = serial_arduino.read(size=11)
         print(data_block)
 
         t = timezone.now()
@@ -154,21 +162,24 @@ def async_toggle_brew(brew):
 @shared_task
 def async_update_microcontroller():
     if django_settings.SIMULATE_MACHINE == False:
-        update_microcontroller_serial()
+        if django_settings.ARDUINO_COMMS == "i2c":
+            update_microcontroller_i2c()
+        elif django_settings.ARDUINO_COMMS == "serial":
+            update_microcontroller_serial()
 
-# def update_microcontroller_i2c(on=None, brew=None):
-#     status = StatusModel.objects.get(id=1)
-#     settings = SettingsModel.objects.get(id=1)
+def update_microcontroller_i2c(on=None, brew=None):
+    status = StatusModel.objects.get(id=1)
+    settings = SettingsModel.objects.get(id=1)
     
-#     if on is None:
-#         on = status.on
-#     if brew is None:
-#         brew = status.brew
-#     # Send i2C data to arduino
-#     # Structure packed here and unpacked using 'union' on Arduino
-#     data_block = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
-#     debug_log( "Data to send: {}".format(list(data_block)) )
-#     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
+    if on is None:
+        on = status.on
+    if brew is None:
+        brew = status.brew
+    # Send i2C data to arduino
+    # Structure packed here and unpacked using 'union' on Arduino
+    data_block = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    debug_log( "Data to send: {}".format( list(data_block) ) )
+    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
 
 def update_microcontroller_serial(on=None, brew=None):
     status = StatusModel.objects.get(id=1)
