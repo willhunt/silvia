@@ -171,14 +171,14 @@ def async_update_microcontroller():
 def update_microcontroller_serial(on=None, brew=None):
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
-    
+
     if on is None:
         on = status.on
     if brew is None:
         brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<1c2?4f', "x", on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<1c2?4f', "x".encode('utf-8'), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(data_block)) )
     serial_arduino.write(list(data_block))
 
