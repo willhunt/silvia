@@ -30,9 +30,6 @@ if django_settings.SIMULATE_MACHINE == False:
 
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
-    # Delay required before updating screen otherwise it pushes image to bottom for some
-    # reason possibly as it is usually updated just after an i2c call to the Arduino
-    display_update_delay = 0.3  # [s]
 
 # For testing without raspberry pi/espresso machine
 else:
@@ -70,9 +67,7 @@ def async_get_response():
 
         settings = SettingsModel.objects.get(id=1)
         if status.on:
-            # time.sleep(display_update_delay)
             display.showTemperature(T, settings.T_set)
-            # async_display_temperature.delay(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
@@ -123,13 +118,9 @@ def async_power_machine(on):
     if django_settings.SIMULATE_MACHINE == False:
         update_microcontroller_serial(on=on, brew=False)
         if on:
-            # time.sleep(display_update_delay)
             display.welcome()
-            # async_display_welcome.delay()
         else:
-            # time.sleep(display_update_delay)
             display.off()
-            # async_display_off.delay()
 
     debug_log("Celery machine on: %s" % on)
     status.on = on
@@ -198,19 +189,3 @@ def update_microcontroller_serial(on=None, brew=None):
     data_block = struct.pack('<1c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(data_block)) )
     serial_arduino.write(list(data_block))
-
-@shared_task
-def async_display_welcome():
-    time.sleep(display_update_delay)
-    display.welcome()
-    time.sleep(2)
-
-@shared_task
-def async_display_temperature(T, T_set):
-    time.sleep(display_update_delay)
-    display.showTemperature(T, T_set)
-
-@shared_task
-def async_display_off():
-    time.sleep(display_update_delay)
-    display.off()
