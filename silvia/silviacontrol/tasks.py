@@ -49,6 +49,7 @@ def async_get_response():
         # data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
         serial_arduino.write("?".encode('utf-8'))
         data_block = serial_arduino.read(size=11)
+        print(data_block)
 
         t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
