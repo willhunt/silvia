@@ -2,7 +2,7 @@
 
 git fetch --all
 git reset --hard origin/serial-comms
-git checkout master
+git checkout serial-comms
 chmod g+w silvia/db.sqlite3 silvia/celery.sqlite
 chgrp server_group silvia/db.sqlite3 silvia/celery.sqlite
 chmod +x update_branch.sh
