@@ -73,7 +73,6 @@ def async_get_response():
             # time.sleep(display_update_delay)
             display.showTemperature(T, settings.T_set)
             # async_display_temperature.delay(T, settings.T_set)
-            pass
 
         # MASS - from Scale over HTTP
         try:
