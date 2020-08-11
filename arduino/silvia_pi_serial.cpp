@@ -31,11 +31,11 @@ void check_serial_calls() {
   if (Serial.available() > 0) {
     char first_byte = Serial.read();
 
-    if (first_byte == "?") {
+    if (first_byte == 'R') {
       Serial.flush();
       send_serial_response();
     }
-    else if (first_byte == "x") {
+    else if (first_byte == 'X') {
       int index = 0;
       while (Serial.available() && index < sizeof_received_data) {
         // loop through all but the last
