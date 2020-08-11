@@ -12,7 +12,7 @@ import time
 if django_settings.SIMULATE_MACHINE == False:
     import serial
     from.display_cp import SilviaDisplay
-    # import requests
+    import requests
 
     # I2C variables
     # i2c_addr_arduino = 0x8
@@ -107,7 +107,7 @@ def async_power_machine(on):
     status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
-        update_microcontroller(on=on, brew=False)
+        update_microcontroller_serial(on=on, brew=False)
         if on:
             time.sleep(display_update_delay)
             display.welcome()

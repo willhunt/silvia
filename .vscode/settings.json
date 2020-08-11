@@ -3,5 +3,8 @@
     "files.associations": {
         "*.cpp": "cpp",
         "numeric": "cpp"
-    }
+    },
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_django"]
 }
+
+    
