@@ -2,7 +2,7 @@
 #define SILVIA_WATER_SENSOR_H
 
 #ifndef DEBUG
-#define DEBUG true
+#define DEBUG false
 #endif  // DEBUG
 
 #include <Arduino.h>

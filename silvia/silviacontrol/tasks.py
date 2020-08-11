@@ -17,7 +17,7 @@ if django_settings.SIMULATE_MACHINE == False:
     # I2C variables
     # i2c_addr_arduino = 0x8
     # i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
-    serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=1)
+    serial_arduino = serial.Serial('/dev/ttyACM1', 57600, timeout=1)
     serial_arduino.flush()
 
     i2c_addr_oled = 0x3C

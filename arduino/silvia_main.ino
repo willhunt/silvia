@@ -47,9 +47,9 @@ RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
 void setup(void) {
     // Setup serial
-    if (DEBUG) {
-        Serial.begin(9600);
-    }
+    // if (DEBUG) {
+    //     Serial.begin(9600);
+    // }
 
     // i2cSetup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);
     pi_serial_setup(&power_output, &brew_output, &temperature_sensor, &pid, &water_sensor);

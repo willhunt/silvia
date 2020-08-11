@@ -23,6 +23,8 @@ void pi_serial_setup(
   temperature_controller_ref = temperature_controller;
   sizeof_received_data = sizeof(receivedFormat);
   sizeof_response_data = sizeof(responseData);
+
+  Serial.begin(57600);
 }
 
 void check_serial_calls() {
