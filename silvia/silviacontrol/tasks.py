@@ -155,12 +155,12 @@ def async_toggle_brew(brew):
     async_get_response()
 
 @shared_task
-def async_update_microcontroller():
+def async_update_microcontroller(on=None, brew=None):
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
-            update_microcontroller_i2c()
+            update_microcontroller_i2c(on, brew)
         elif django_settings.ARDUINO_COMMS == "serial":
-            update_microcontroller_serial()
+            update_microcontroller_serial(on=, brew)
 
 def update_microcontroller_i2c(on=None, brew=None):
     status = StatusModel.objects.get(id=1)
