@@ -112,7 +112,7 @@ def async_power_machine(on):
     # Purge celery queues
     # Without this the screen update has many problems causing flickering or image shift
     app.control.purge()
-    
+
     status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
@@ -142,10 +142,16 @@ def async_toggle_brew(brew):
     if django_settings.SIMULATE_MACHINE == False:
         # Reset scale
         if brew:
-            requests.get("http://192.168.0.12/brewstart")
+            try:
+                requests.get("http://192.168.0.12/brewstart")
+            except ConnectionRefusedError:
+                debug_log("No connection to scale")
         else:
-            requests.get("http://192.168.0.12/brewstop")
-        
+            try:
+                requests.get("http://192.168.0.12/brewstop")
+            except ConnectionRefusedError:
+                debug_log("No connection to scale")
+
         # Turn machine on
         async_update_microcontroller(brew=brew)
 
