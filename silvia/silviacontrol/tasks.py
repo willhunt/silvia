@@ -116,7 +116,7 @@ def async_power_machine(on):
     app.control.purge()
 
     if django_settings.SIMULATE_MACHINE == False:
-        update_microcontroller_serial(on=on, brew=False)
+        update_microcontroller(on=on, brew=False)
         if on:
             display.welcome()
         else:
@@ -145,7 +145,7 @@ def async_toggle_brew(brew):
             requests.get("http://192.168.0.12/brewstop")
         
         # Turn machine on
-        update_microcontroller_serial(brew=brew)
+        update_microcontroller(brew=brew)
 
 
     debug_log("Celery machine brewing: %s" % brew)
@@ -154,8 +154,7 @@ def async_toggle_brew(brew):
     # Log response at this event
     async_get_response()
 
-@shared_task
-def async_update_microcontroller():
+def update_microcontroller():
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
             update_microcontroller_i2c()
