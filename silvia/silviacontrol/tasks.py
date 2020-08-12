@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+# import time
 from celery import shared_task
 from celery_once import QueueOnce
 from silvia.celery import app
@@ -7,7 +8,6 @@ from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
-import time
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
@@ -109,11 +109,11 @@ def async_power_machine(on):
     [Byte 1, Byte2, ...] = [Mode, Setting1, Setting2, ...]
     Modes: 0 Status, 1 Settings
     """
-    status = StatusModel.objects.get(id=1)
-
     # Purge celery queues
     # Without this the screen update has many problems causing flickering or image shift
     app.control.purge()
+    
+    status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
         async_update_microcontroller(on=on, brew=False)
@@ -135,6 +135,8 @@ def async_toggle_brew(brew):
     Args
         on [Bool]: True = start brewing, False = stop brewing
     """
+    app.control.purge()
+
     status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
