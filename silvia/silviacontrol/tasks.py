@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-# import time
+import time
 from celery import shared_task
 from celery_once import QueueOnce
 from silvia.celery import app
@@ -28,6 +28,7 @@ if django_settings.SIMULATE_MACHINE == False:
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
 
+    time.sleep(1)
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
 
@@ -57,7 +58,7 @@ def async_get_response():
             data_block = serial_arduino.read(size=11)
         print(data_block)
 
-        t = timezone.now()
+        # t = timezone.now()
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f1?', bytes(data_block))
         T = data_list[2]
@@ -135,7 +136,7 @@ def async_toggle_brew(brew):
     Args
         on [Bool]: True = start brewing, False = stop brewing
     """
-    app.control.purge()
+    # app.control.purge()
 
     status = StatusModel.objects.get(id=1)
 
