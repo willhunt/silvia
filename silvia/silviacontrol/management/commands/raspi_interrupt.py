@@ -36,8 +36,8 @@ class Command(BaseCommand):
             button_brew.when_released = trigger_celery_brew_stop
 
             # Test function
-            button_response = Button(14)
-            button_response.when_pressed = trigger_celery_response
+            # button_response = Button(14)
+            # button_response.when_pressed = trigger_celery_response
 
             # Wait for events
             self.stdout.write(self.style.SUCCESS('Waiting for button press...'))
