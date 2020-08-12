@@ -196,5 +196,5 @@ def update_microcontroller_serial(on=None, brew=None):
     # Structure packed here and unpacked using 'union' on Arduino
     data_block = struct.pack('<1c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(data_block)) )
-    serial_arduino.write(list(data_block))
+    # serial_arduino.write(list(data_block))
     serial_arduino.write(data_block)
