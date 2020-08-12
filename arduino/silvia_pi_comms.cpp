@@ -101,10 +101,10 @@ void receiveEvent(int numBytes) {
         // loop through all but the last
         // Data here is written directly to memory location for use in PID
         received_data.buffer[index] = (byte)Wire.read();
-        Serial.print(received_data.buffer[index]);
+        // Serial.print(received_data.buffer[index]);
         index++;
       }
-      Serial.println("--end");
+      // Serial.println("--end");
 
       if (DEBUG) {
         Serial.print("    Brew: "); Serial.println(received_data.data.brew);

@@ -28,7 +28,6 @@ if django_settings.SIMULATE_MACHINE == False:
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
 
-    time.sleep(1)
     i2c_addr_oled = 0x3C
     display = SilviaDisplay(i2c_addr_oled)
 
@@ -198,3 +197,4 @@ def update_microcontroller_serial(on=None, brew=None):
     data_block = struct.pack('<1c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(list(data_block)) )
     serial_arduino.write(list(data_block))
+    serial_arduino.write(data_block)

@@ -186,4 +186,4 @@ WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
 # SIMULATE_MACHINE = True
 SIMULATE_MACHINE = False
 
-ARDUINO_COMMS = "i2c"  # "serial" or "i2c"
+ARDUINO_COMMS = "serial"  # "serial" or "i2c"
