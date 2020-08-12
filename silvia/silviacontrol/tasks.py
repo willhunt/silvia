@@ -144,12 +144,12 @@ def async_toggle_brew(brew):
         if brew:
             try:
                 requests.get("http://192.168.0.12/brewstart")
-            except ConnectionError:
+            except ConnectionError, ConnectionRefusedError:
                 debug_log("No connection to scale")
         else:
             try:
                 requests.get("http://192.168.0.12/brewstop")
-            except ConnectionError:
+            except ConnectionError, ConnectionRefusedError:
                 debug_log("No connection to scale")
 
         # Turn machine on
