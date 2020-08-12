@@ -1,4 +1,15 @@
-#include "silvia_i2c.h"
+#include "silvia_pi_i2c.h"
+
+responseData response_data;
+receivedData received_data;
+int sizeof_received_data;
+int sizeof_response_data;
+
+TemperatureSensor* temp_sensor_ref;
+WaterLevelSensor* water_sensor_ref;
+PowerOutput* power_output_ref;
+RelayOutput* brew_output_ref;
+TemperatureController* temperature_controller_ref;
 
 void receiveEvent(int numBytes) {
   if (DEBUG) {
@@ -60,7 +71,7 @@ void requestEvent() {
   response_data.data.duty = temperature_controller_ref->getDuty();
   response_data.data.water_level = water_sensor_ref->getLevel();
   // Write bytes to i2c address
-  Wire.write(response_data.buffer, sizeof(responseData));
+  Wire.write(response_data.buffer, sizeof_response_data);
 }
 
 void i2cSetup(
@@ -76,6 +87,7 @@ void i2cSetup(
   brew_output_ref = brew_output;
   temperature_controller_ref = temperature_controller;
   sizeof_received_data = sizeof(receivedFormat);
+  sizeof_response_data = sizeof(responseData);
 
   Wire.begin(i2c_addr);
   Wire.onReceive(receiveEvent);

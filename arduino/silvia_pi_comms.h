@@ -1,9 +1,5 @@
-#ifndef SILVIA_I2C_H
-#define SILVIA_I2C_H
-
-#ifndef DEBUG
-#define DEBUG false
-#endif  // DEBUG
+#ifndef SILVIA_PI_COMMS_H
+#define SILVIA_PI_COMMS_H
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -12,6 +8,9 @@
 #include "silvia_temperature_sensor.h"
 #include "silvia_water_sensor.h"
 
+#ifndef DEBUG
+#define DEBUG false
+#endif  // DEBUG
 
 struct responseFormat {
   bool power;
@@ -38,20 +37,7 @@ union receivedData {
   byte buffer[sizeof(receivedFormat)];
 };
 
-responseData response_data;
-receivedData received_data;
-int sizeof_received_data;
-
-TemperatureSensor* temp_sensor_ref;
-WaterLevelSensor* water_sensor_ref;
-PowerOutput* power_output_ref;
-RelayOutput* brew_output_ref;
-TemperatureController* temperature_controller_ref;
-
-void receiveEvent(int numBytes);
-void requestEvent();
-
-void i2cSetup(
+void pi_comms_setup(
   int i2c_addr, 
   PowerOutput* power_output,
   RelayOutput* brew_output,
@@ -59,6 +45,12 @@ void i2cSetup(
   TemperatureController* temperature_controller,
   WaterLevelSensor* water_sensor
 );
+void update_data_buffer();
+// Serial
+void check_serial_calls();
+void send_serial_response();
+// I2C
+void receiveEvent(int numBytes);
+void requestEvent();
 
-
-#endif // SILVIA_I2C_H
+#endif // SILVIA_PI_COMMS_H
