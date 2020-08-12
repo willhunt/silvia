@@ -66,8 +66,8 @@ def async_get_response():
         low_water = not data_list[4]
 
         settings = SettingsModel.objects.get(id=1)
-        # if status.on:
-        #     display.showTemperature(T, settings.T_set)
+        if status.on:
+            display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
