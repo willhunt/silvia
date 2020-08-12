@@ -160,7 +160,7 @@ def async_update_microcontroller(on=None, brew=None):
         if django_settings.ARDUINO_COMMS == "i2c":
             update_microcontroller_i2c(on, brew)
         elif django_settings.ARDUINO_COMMS == "serial":
-            update_microcontroller_serial(on=, brew)
+            update_microcontroller_serial(on, brew)
 
 def update_microcontroller_i2c(on=None, brew=None):
     status = StatusModel.objects.get(id=1)
