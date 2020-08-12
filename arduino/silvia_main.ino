@@ -8,17 +8,19 @@ Notes:
 */
 
 // Pre-compile definitions
+#define DEBUG false
+// Pins
 #define TEMP_SENSOR_PIN A0
 #define WATER_SENSOR_PIN 7
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
+// #define DISPLAY_SDA_PIN 2
+// #define DISPLAY_SCL_PIN 3
 
 // #define PI_COMMS_SERIAL
 // #define PI_COMMS_I2C
 
-#define DISPLAY_SDA_PIN 2
-#define DISPLAY_SCL_PIN 3
 #define I2C_ADDR 0x8
 
 // Imports
