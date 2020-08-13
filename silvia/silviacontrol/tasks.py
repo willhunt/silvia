@@ -198,3 +198,5 @@ def update_microcontroller_serial(on=None, brew=None):
     debug_log( "Data to send: {}".format(data_block) )
     # serial_arduino.write(list(data_block))
     serial_arduino.write(data_block)
+    response = serial_arduino.readline()
+    debug_log("Response: {}".format(response))

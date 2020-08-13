@@ -75,6 +75,7 @@ void check_serial_calls() {
         else
           brew_output_ref->off();
       }
+      Serial.println("Completed execution task");
     }
   }
 }
