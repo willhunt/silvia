@@ -48,48 +48,6 @@ class StatusViewSet(viewsets.ModelViewSet):
     queryset = StatusModel.objects.all()
     serializer_class = StatusSerializer
 
-    def update(self, request, pk=None):
-        print(request.data)
-        data=request.data
-        # Get current status
-        last_status = StatusModel.objects.get(id=1)
-         # Start or end session based upon status change
-        if data["on"] and not last_status.on:  # If machine is being turned on
-            # Actually turn machine on
-            async_power_machine.delay(True)
-
-            # Create a new session
-            session = SessionModel()
-            session.save()
-
-            # If simulating, set temperature to 20degC
-            if settings.SIMULATE_MACHINE:
-                response = ResponseModel.objects.create(
-                    T_boiler=20,
-                    duty=0,
-                    duty_p=0,
-                    duty_i=0,
-                    duty_d=0
-                )
-                response.save()
-
-        elif last_status.on and not data["on"]:  # If machine is being turned off
-            # Actually turn machine off
-            async_power_machine.delay(False)
-
-            # Get current session
-            session = SessionModel.objects.filter(active=True).order_by('-id')[0]
-            session.set_end_time()
-            session.save()
-
-        elif not last_status.brew and data["brew"]:  # If brewing is starting
-            async_toggle_brew(True)
-
-        elif last_status.brew and not data["brew"]:  # If brewing  is stopped
-            async_toggle_brew(False)
-
-        return super().update(request, pk)
-
     @action(methods=['get', 'put'], detail=True)  # Detail/instance or collection/list
     def update_session(self, request, pk=None):
         print("use this like root/api/v1/status/1/update_session, might be useful")

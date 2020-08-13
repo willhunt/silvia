@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
+from celery.contrib.abortable import AbortableTask
 from celery_once import QueueOnce
 from silvia.celery import app
 from .models import StatusModel, ResponseModel, SettingsModel
@@ -11,6 +12,7 @@ import struct
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
     from.display_cp import SilviaDisplay
+    import time
     import requests
 
     if django_settings.ARDUINO_COMMS == "i2c":
@@ -118,7 +120,7 @@ def async_power_machine(on):
     # Without this the screen update has many problems causing flickering or image shift
     app.control.purge()
 
-    status = StatusModel.objects.get(id=1)
+    # status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
         async_update_microcontroller(on=on, brew=False)
@@ -128,11 +130,11 @@ def async_power_machine(on):
             display.off()
 
     debug_log("Celery machine on: %s" % on)
-    status.on = on
-    status.brew = False # Always turn off brew when powering machine on/off
-    status.save()
+    # status.on = on
+    # status.brew = False # Always turn off brew when powering machine on/off
+    # status.save()
     # Log response at this event
-    async_get_response()
+    # async_get_response()
 
 @shared_task
 def async_toggle_brew(brew):
@@ -142,7 +144,7 @@ def async_toggle_brew(brew):
     """
     # app.control.purge()
 
-    status = StatusModel.objects.get(id=1)
+    # status = StatusModel.objects.get(id=1)
 
     if django_settings.SIMULATE_MACHINE == False:
         # Reset scale
@@ -162,10 +164,10 @@ def async_toggle_brew(brew):
 
 
     debug_log("Celery machine brewing: %s" % brew)
-    status.brew = brew
-    status.save()
+    # status.brew = brew
+    # status.save()
     # Log response at this event
-    async_get_response()
+    # async_get_response()
 
 @shared_task
 def async_update_microcontroller(on=None, brew=None):
@@ -208,3 +210,19 @@ def update_microcontroller_serial(on=None, brew=None):
     serial_arduino.write(data_block)
     response = serial_arduino.readline()
     debug_log("Response: {}".format(response))
+
+@shared_task(base=AbortableTask)
+def async_turn_display_on():
+    if django_settings.SIMULATE_MACHINE == False:
+        display.welcome()
+        # Loop and update display
+        while True:
+            settings = SettingsModel.objects.get(id=1)
+            latest_response = ResponseModel.objects.order_by('-t')[0]
+            if (timezone.now() - latest_response.t).total_seconds() > 10:
+                T = None
+            else:
+                T = latest_response.T_boiler
+            display.showTemperature(T, settings.T_set)
+            time.sleep(1)
+
