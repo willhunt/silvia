@@ -1,10 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
 from silviacontrol.tasks import async_power_machine, async_get_response, async_toggle_brew
-from .models import StatusModel, ResponseModel, SettingsModel
-from.display_cp import SilviaDisplay
+from silviacontrol.models import StatusModel, ResponseModel, SettingsModel
+from silviacontrol.display_cp import SilviaDisplay
+from silviacontrol.utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
-from silviacontrol.utils import debug_log
 import time
 
 
