@@ -60,7 +60,7 @@ void check_serial_calls() {
       //   temp_data += ".";
       //   index++;
       // }
-
+      int n = Serial.available();
       while (Serial.available() > 0) {
         temp_data += Serial.read();
         // temp_data += ".";
@@ -85,7 +85,8 @@ void check_serial_calls() {
           brew_output_ref->off();
       }
       // Send response to pi
-      Serial.println(temp_data);
+      Serial.print("Serial available after X: ");
+      Serial.println(n);
     }
   }
 }
