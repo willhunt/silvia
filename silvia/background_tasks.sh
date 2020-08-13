@@ -8,6 +8,8 @@ celery -A silvia beat --scheduler django_celery_beat.schedulers:DatabaseSchedule
 
 # Pi GPIO
 python manage.py raspi_interrupt &
+# Pi display
+python manage.py raspi_display &
 
 # Waits until process finishes (or Ctrl+c)
 wait
