@@ -21,9 +21,15 @@ if django_settings.SIMULATE_MACHINE == False:
         i2c_addr_arduino = 0x8
         i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
     elif django_settings.ARDUINO_COMMS == "serial":
+        import os
         import serial
 
-        serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=2)
+        if os.path.exists('/dev/ttyACM0') == True:
+            serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=2)
+        elif os.path.exists('/dev/ttyACM1') == True:
+            serial_arduino = serial.Serial('/dev/ttyACM1', 57600, timeout=2)
+        else:
+            raise serial.serialutil.SerialException("No serial connection to Arduino")    
         serial_arduino.flush()
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
