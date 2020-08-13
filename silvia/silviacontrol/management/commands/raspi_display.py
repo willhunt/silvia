@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand, CommandError
-from silviacontrol.tasks import async_power_machine, async_get_response, async_toggle_brew
 from silviacontrol.models import StatusModel, ResponseModel, SettingsModel, SessionModel
 from silviacontrol.utils import debug_log
 from django.conf import settings as django_settings

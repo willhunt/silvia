@@ -2,7 +2,7 @@ from django.db.models.signals import post_init, pre_save, post_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings as django_settings
 from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel, SessionModel
-from .tasks import async_get_response, async_update_microcontroller, async_turn_display_on
+from .tasks import async_get_response, async_update_microcontroller, async_update_scale
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 @receiver(pre_save, sender=ScheduleModel)
@@ -93,14 +93,12 @@ def save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
-    # try:
-    #     status = StatusModel.objects.get(id=1)
-    #     instance.brewing = status.brew
-    # except:
-    #     instance.brewing = False
-
     status = StatusModel.objects.get(id=1)
-    instance.brewing = status.brew
+    # Check if brewing and mass target is reached
+    if status.brew:
+        if instance.m is not None and instance.m >= settings.m:
+            status.brew = False
+            status.save()
 
 
 @receiver(post_save, sender=SettingsModel)
@@ -178,9 +176,9 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
 
     # Turn actual machine/brew on/off
     async_update_microcontroller.delay(instance.on, instance.brew)
-    
-    # Turn display on/off
-    if instance.on:
-        pass
+
+    # Turn scale on/off
+    if instance.brew != prior_status.brew:
+        async_update_scale.delay(instance.brew)
 
     

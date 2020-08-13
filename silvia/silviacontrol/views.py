@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
+from django.conf import settings
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,8 +11,6 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_power_machine, async_get_response, async_toggle_brew
-from django.conf import settings
 
 
 # Html Views -----------
@@ -66,9 +65,6 @@ class ResponseViewSet(viewsets.ModelViewSet):
             response = ResponseModel.objects.order_by('-t')[0]
             # if (timezone.now() - response.t).total_seconds() > 10:
             #     response = None
-
-            # Just for testing purposes fire task here
-            # async_get_response.delay()
 
             return response
         else:

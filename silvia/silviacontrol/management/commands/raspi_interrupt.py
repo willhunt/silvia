@@ -1,29 +1,24 @@
 from django.core.management.base import BaseCommand, CommandError
-from silviacontrol.tasks import async_power_machine, async_toggle_brew
 from silviacontrol.models import StatusModel
 from django.conf import settings as django_settings
 from silviacontrol.utils import debug_log
 
 def trigger_machine_on():
-    # async_power_machine.delay(True)
     status = StatusModel.objects.get(pk=1)
     status.on = True
     status.save()
 
 def trigger_machine_off():
-    # async_power_machine.delay(False)
     status = StatusModel.objects.get(pk=1)
     status.on = False
     status.save()
 
 def trigger_brew_start():
-    # async_toggle_brew.delay(True)
     status = StatusModel.objects.get(pk=1)
     status.brew = True
     status.save()
 
 def trigger_brew_stop():
-    # async_toggle_brew.delay(False)
     status = StatusModel.objects.get(pk=1)
     status.brew = False
     status.save()
