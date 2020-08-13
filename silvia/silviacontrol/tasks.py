@@ -37,8 +37,7 @@ if django_settings.SIMULATE_MACHINE == False:
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
 
-    i2c_addr_oled = 0x3C
-    display = SilviaDisplay(i2c_addr_oled)
+    display = SilviaDisplay(0x3C)
 
 # For testing without raspberry pi/espresso machine
 else:
@@ -75,8 +74,6 @@ def async_get_response():
         low_water = not data_list[4]
 
         settings = SettingsModel.objects.get(id=1)
-        # if status.on:
-            # display.showTemperature(T, settings.T_set)
 
         # MASS - from Scale over HTTP
         try:
