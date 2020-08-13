@@ -92,7 +92,7 @@ class ResponseViewSet(viewsets.ModelViewSet):
         session_ids_string = request.query_params.get('session', None)
         
         if session_ids_string == "active":
-            session = SessionModel.objects.filter(active=True).order_by(-t_start)[0]
+            session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
             queryset = ResponseModel.objects.filter(t__range=(session.t_start, timezone.now()))
             return Response(queryset)
 

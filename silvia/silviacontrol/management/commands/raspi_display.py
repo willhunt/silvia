@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 if status.on:
                     # Display welcome screen if only just turned on
                     t_now = timezone.now()
-                    session = SessionModel.objects.filter(active=True).order_by(-t_start)[0]
+                    session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
                     if (t_now - session.t_start).total_seconds() < 2:
                         display.showWelcome()
                     else:
