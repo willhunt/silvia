@@ -52,21 +52,16 @@ void check_serial_calls() {
     else if (first_byte == 'X') {
       int index = 0;
       String temp_data = "";
-      // while (Serial.available() > 0 && index < sizeof_received_data) {
-      //   // loop through all but the last
-      //   // Data here is written directly to memory location for use in PID
-      //   received_data.buffer[index] = (byte)Serial.read();
-      //   // temp_data += received_data.buffer[index];
-      //   temp_data += ".";
-      //   index++;
-      // }
-      int n = Serial.available();
-      while (Serial.available() > 0) {
-        temp_data += Serial.read();
+      while (Serial.available() > 0 && index < sizeof_received_data) {
+        // loop through all but the last
+        // Data here is written directly to memory location for use in PID
+        received_data.buffer[index] = (byte)Serial.read();
+        temp_data += received_data.buffer[index];
         // temp_data += ".";
         index++;
       }
-      // Serial.flush();
+
+      Serial.flush();
 
       // Check if power needs to be toggled
       if (received_data.data.power != power_output_ref->getStatus()) {
@@ -85,10 +80,10 @@ void check_serial_calls() {
         else
           brew_output_ref->off();
       }
-      // Send response to pi
-      Serial.print("Serial available after X: ");
-      Serial.println(n);
 
+      // Send response to pi
+      Serial.print("Data received: ");
+      Serial.println(temp_data);
     }
   }
 }

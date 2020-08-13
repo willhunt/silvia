@@ -194,6 +194,9 @@ def update_microcontroller_i2c(on=None, brew=None):
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
 
 def update_microcontroller_serial(on=None, brew=None):
+    """
+    For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
+    """
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
