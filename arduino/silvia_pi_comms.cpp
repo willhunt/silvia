@@ -52,11 +52,18 @@ void check_serial_calls() {
     else if (first_byte == 'X') {
       int index = 0;
       String temp_data = "";
-      while (Serial.available() > 0 && index < sizeof_received_data) {
-        // loop through all but the last
-        // Data here is written directly to memory location for use in PID
-        received_data.buffer[index] = (byte)Serial.read();
-        temp_data += received_data.buffer[index];
+      // while (Serial.available() > 0 && index < sizeof_received_data) {
+      //   // loop through all but the last
+      //   // Data here is written directly to memory location for use in PID
+      //   received_data.buffer[index] = (byte)Serial.read();
+      //   // temp_data += received_data.buffer[index];
+      //   temp_data += ".";
+      //   index++;
+      // }
+
+      while (Serial.available() > 0) {
+        temp_data += Serial.read();
+        // temp_data += ".";
         index++;
       }
 
@@ -77,6 +84,7 @@ void check_serial_calls() {
         else
           brew_output_ref->off();
       }
+      // Send response to pi
       Serial.println(temp_data);
     }
   }

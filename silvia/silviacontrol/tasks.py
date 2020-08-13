@@ -24,13 +24,16 @@ if django_settings.SIMULATE_MACHINE == False:
         import os
         import serial
 
-        if os.path.exists('/dev/ttyACM0') == True:
-            serial_arduino = serial.Serial('/dev/ttyACM0', 57600, timeout=2)
-        elif os.path.exists('/dev/ttyACM1') == True:
-            serial_arduino = serial.Serial('/dev/ttyACM1', 57600, timeout=2)
+        for i in range(0, 3):
+            serial_path = "/dev/ttyACM{}".format(i)
+            if os.path.exists(serial_path) == True:
+                serial_arduino = serial.Serial(serial_path, 57600, timeout=2)
+                break
+        if serial_arduino:
+            serial_arduino.flush()
         else:
             raise serial.serialutil.SerialException("No serial connection to Arduino")    
-        serial_arduino.flush()
+        
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
 
