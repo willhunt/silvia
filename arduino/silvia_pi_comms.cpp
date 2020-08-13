@@ -25,7 +25,7 @@ void pi_comms_setup(
   sizeof_response_data = sizeof(responseData);
 
   // Serial
-  Serial.begin(57600);
+  Serial.begin(9600);
   // I2C
   Wire.begin(i2c_addr);
   Wire.onReceive(receiveEvent);
@@ -66,6 +66,7 @@ void check_serial_calls() {
         // temp_data += ".";
         index++;
       }
+      // Serial.flush();
 
       // Check if power needs to be toggled
       if (received_data.data.power != power_output_ref->getStatus()) {
@@ -87,6 +88,7 @@ void check_serial_calls() {
       // Send response to pi
       Serial.print("Serial available after X: ");
       Serial.println(n);
+
     }
   }
 }

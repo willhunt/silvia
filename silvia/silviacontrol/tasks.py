@@ -27,7 +27,7 @@ if django_settings.SIMULATE_MACHINE == False:
         for i in range(0, 3):
             serial_path = "/dev/ttyACM{}".format(i)
             if os.path.exists(serial_path) == True:
-                serial_arduino = serial.Serial(serial_path, 57600, timeout=2)
+                serial_arduino = serial.Serial(serial_path, 9600, timeout=2)
                 break
         if serial_arduino:
             serial_arduino.flush()
@@ -206,6 +206,6 @@ def update_microcontroller_serial(on=None, brew=None):
     data_block = struct.pack('<c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     # serial_arduino.write(list(data_block))
-    serial_arduino.write(bytearray(data_block))
+    serial_arduino.write(data_block)
     response = serial_arduino.readline()
     debug_log("Response: {}".format(response))
