@@ -88,15 +88,16 @@ def delete_schedule(sender, instance, **kwargs):
         print('No Crontab off')
 
 
-@receiver(pre_save, sender=ResponseModel)
+@receiver(post_save, sender=ResponseModel)
 def save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
     status = StatusModel.objects.get(id=1)
+    settings = SettingsModel.objects.get(id=1)
     # Check if brewing and mass target is reached
     if status.brew:
-        if instance.m is not None and instance.m >= django_settings.m:
+        if instance.m is not None and instance.m >= settings.m:
             status.brew = False
             status.save()
 

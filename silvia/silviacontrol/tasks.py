@@ -40,10 +40,14 @@ else:
 
 @shared_task(base=QueueOnce)
 def async_get_response():
+    """
+    Get sensor and PID data from microcontroller and wireless scale
+    Simulations used for testing
+    """
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
-    # Read temperature sensor
+    # Read simulated sesnors
     if django_settings.SIMULATE_MACHINE == True:
         t = timezone.now()
         T = simulated_temperature_sensor("simulated")
@@ -52,13 +56,13 @@ def async_get_response():
         duty, duty_pid = pid_update(T, t)
         low_water = False
     else:
+        # ARDUINO
         if django_settings.ARDUINO_COMMS == "i2c":
             data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
-        print(data_block)
-
+        debug_log(data_block)
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f1?', bytes(data_block))
         T = data_list[2]
@@ -66,9 +70,7 @@ def async_get_response():
         duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
         low_water = not data_list[4]
 
-        settings = SettingsModel.objects.get(id=1)
-
-        # MASS - from Scale over HTTP
+        # SCALE
         try:
             request_scale = requests.get("http://192.168.0.12/mass")
             # Decode data

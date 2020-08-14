@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card max-height="450" class="pa-6 mb-4" min-width=750 max-width=1600 >
-      <response-chart :chartdata="graphData" :chartOptions="graphOptions">
+      <response-chart :chartData="graphData" :chartOptions="graphOptions">
       </response-chart>
     </v-card>
   </div>
@@ -26,41 +26,52 @@ export default {
             scaleLabel: {
               display: true,
               labelString: 'Time [s]'
+            },
+            ticks: {
+              beginAtZero: true
             }
           }],
-          yAxes: [
-            {
-              id: 'temperature-axis',
-              position: 'left',
+          yAxes: [{
+            id: 'temperature-axis',
+            position: 'left',
+            display: true,
+            scaleLabel: {
               display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Boiler Temperature [C]'
-              }
+              labelString: ['Temperature [C]', 'Duty [%]']
             },
-            {
-              id: 'duty-axis',
-              position: 'right',
-              reverse: true,
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Duty [%]'
-              }
-            },
-            {
-              id: 'mass-axis',
-              position: 'right',
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Mass (g)'
-              },
-              ticks: {
-                suggestedMin: 0
-              }
+            ticks: {
+              beginAtZero: true,
+              suggestedMin: 0,
+              suggestedMax: 110
             }
-          ]
+          },
+          // {
+          //   id: 'duty-axis',
+          //   position: 'right',
+          //   reverse: true,
+          //   display: true,
+          //   scaleLabel: {
+          //     display: true,
+          //     labelString: 'Duty [%]'
+          //   },
+          //   ticks: {
+          //     suggestedMin: 0,
+          //     suggestedMax: 100
+          //   }
+          // },
+          {
+            id: 'mass-axis',
+            position: 'right',
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Mass (g)'
+            },
+            ticks: {
+              suggestedMin: 0,
+              suggestedMax: 30
+            }
+          }]
         },
         showLines: true,
         maintainAspectRatio: false,
@@ -82,15 +93,17 @@ export default {
         yAxisID: 'temperature-axis',
         showLine: true,
         data: [],
-        fill: false
+        fill: false,
+        borderColor: '#ff5a5f'
       }
       const datasetD = {
         label: 'Duty',
         xAxisID: 'time-axis',
-        yAxisID: 'duty-axis',
+        yAxisID: 'temperature-axis',
         showLine: true,
         data: [],
-        fill: false
+        fill: false,
+        borderColor: '#eabe7c'
       }
       const datasetS = {
         label: 'Setpoint',
@@ -98,7 +111,8 @@ export default {
         yAxisID: 'temperature-axis',
         showLine: true,
         data: [],
-        fill: false
+        fill: false,
+        borderColor: '#769fb6'
       }
       const datasetM = {
         label: 'Extraction',
@@ -106,7 +120,8 @@ export default {
         yAxisID: 'mass-axis',
         showLine: true,
         data: [],
-        fill: false
+        fill: false,
+        borderColor: '#7fd1b9'
       }
 
       // Loop through responses and add data

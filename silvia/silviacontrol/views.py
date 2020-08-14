@@ -89,8 +89,7 @@ class ResponseViewSet(viewsets.ModelViewSet):
         
         if session_ids_string == "active":
             session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
-            queryset = ResponseModel.objects.filter(t__range=(session.t_start, timezone.now()))
-            return Response(queryset)
+            session_ids_string = "{}".format(session.id)
 
         if session_ids_string is not None:
             session_ids = [int(x) for x in session_ids_string.split(',')]
