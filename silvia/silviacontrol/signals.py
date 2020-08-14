@@ -87,9 +87,17 @@ def delete_schedule(sender, instance, **kwargs):
     except (AssertionError, AttributeError) as e:
         print('No Crontab off')
 
+@receiver(pre_save, sender=ResponseModel)
+def pre_save_response(sender, instance, raw, using, update_fields, **kwargs):
+    """
+    When creating response model check brewing status and add
+    """
+    status = StatusModel.objects.get(id=1)
+    # Set brewing in response
+    instance.brewing = status.brew
 
 @receiver(post_save, sender=ResponseModel)
-def save_response(sender, instance, raw, using, update_fields, **kwargs):
+def post_save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
