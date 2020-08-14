@@ -7,7 +7,7 @@
       </div>
       <div v-if="displayOption == 'graph'">
         <div v-if="sessionData == null">
-          <GraphDisplay :temperatures="temperatures" />
+          <single-response-chart :data="watchedData"></single-response-chart>
         </div>
         <div v-else>
           <single-response-chart :data="sessionData"></single-response-chart>
@@ -70,7 +70,6 @@
 
 <script>
 import MachineDisplay from '@/components/MachineDisplay.vue'
-import GraphDisplay from '@/components/GraphDisplay.vue'
 import SingleResponseChart from '@/components/SingleResponseChart.vue'
 import { eventBus } from '@/main'
 import axios from 'axios'
@@ -79,7 +78,6 @@ export default {
   name: 'MachineInterface',
   components: {
     MachineDisplay,
-    GraphDisplay,
     SingleResponseChart
   },
   data: function () {
@@ -94,7 +92,8 @@ export default {
       m_setpoint: 20,
       n_datapoints: 10,
       low_water: false,
-      sessionData: null
+      sessionData: null,
+      watchedData: { watched: [] }
     }
   },
   props: {
@@ -118,14 +117,6 @@ export default {
       return 0
     }
   },
-  // watch: {
-  //   m_current: function (newMass, oldMass) {
-  //     // When brewing finishes update status
-  //     if (newMass >= this.m_setpoint) {
-  //       eventBus.$emit('updateOnOff')
-  //     }
-  //   }
-  // },
   methods: {
     changeDisplay: function () {
       if (this.displayOption === 'machine') {
@@ -141,6 +132,7 @@ export default {
       eventBus.$emit('toggleBrew')
     },
     updateResponse () {
+      eventBus.$emit('updateOnOff')
       if (this.machineOn) {
         // Get all responses from current session
         const getParams = { params: { session: 'active' } }
@@ -166,6 +158,10 @@ export default {
             this.temperatures.push(response.data.T_boiler)
             while (this.temperatures.length > this.n_datapoints) {
               this.temperatures.shift()
+            }
+            this.watchedData.watched.push(response.data)
+            while (this.watchedData.watched.length > this.n_datapoints) {
+              this.watchedData.watched.shift()
             }
             this.m_current = response.data.m
             this.low_water = response.data.low_water

@@ -96,19 +96,12 @@ def pre_save_response(sender, instance, raw, using, update_fields, **kwargs):
     # Set brewing in response
     instance.brewing = status.brew
 
-@receiver(post_save, sender=ResponseModel)
-def post_save_response(sender, instance, raw, using, update_fields, **kwargs):
-    """
-    When creating response model check brewing status and add
-    """
-    status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
     # Check if brewing and mass target is reached
     if status.brew:
         if instance.m is not None and instance.m >= settings.m:
             status.brew = False
             status.save()
-
 
 @receiver(post_save, sender=SettingsModel)
 def save_settings(sender, instance, raw, using, update_fields, **kwargs):

@@ -81,7 +81,8 @@ def async_get_response():
             m = simulated_mass_sensor("simulated")
 
     # Record temperature if machine is on
-    if status.on:
+    # if status.on:
+    if True:
         response = ResponseModel.objects.create(
             T_boiler=T,
             duty=duty,

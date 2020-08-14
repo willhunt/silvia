@@ -80,7 +80,8 @@ export default {
     }
   },
   props: {
-    data: {}
+    data: {},
+    brewing: Boolean
   },
   computed: {
     graphData: function () {
@@ -125,8 +126,9 @@ export default {
       }
 
       // Loop through responses and add data
+      const xPoint0 = new Date(this.data[session][0].t)
       this.data[session].forEach((responseItem, responseIndex) => {
-        const xPoint = (new Date(responseItem.t) - new Date(this.data[session][0].t)) / 1000
+        const xPoint = (new Date(responseItem.t) - xPoint0) / 1000
         datasetT.data.push({
           x: xPoint,
           y: responseItem.T_boiler
