@@ -102,7 +102,7 @@ export default {
       axios.get('/api/v1/status/1/')
         .then(response => {
           this.machineOn = Boolean(response.data.on)
-          this.machineBrewing = Boolean(response.data.brewing)
+          this.machineBrewing = Boolean(response.data.brew)
         })
         .catch(error => console.log(error))
     })

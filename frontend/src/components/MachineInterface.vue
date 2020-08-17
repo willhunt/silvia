@@ -6,12 +6,18 @@
         <MachineDisplay :machineOn="machineOn" :temperature="temperature" />
       </div>
       <div v-if="displayOption == 'graph'">
-        <GraphDisplay :temperatures="temperatures" />
+        <div v-if="sessionData == null">
+          <!-- <single-response-chart :data="watchedData"></single-response-chart> -->
+          <v-btn color="secondary" @click="viewLastSession">Last Session</v-btn>
+        </div>
+        <div v-else>
+          <single-response-chart :data="sessionData"></single-response-chart>
+        </div>
       </div>
       <v-btn v-if="displayOption == 'machine'" id="temp-btn" outlined :color="tempBtnColor" @click="changeDisplay">
         {{ temperature | temperatureDisplayFilter }}&#8451;
       </v-btn>
-      <v-btn id="water-btn" fab small outlined :color="waterLevelColor">
+      <v-btn v-if="machineOn" id="water-btn" fab small outlined :color="waterLevelColor">
           <v-icon>mdi-water</v-icon>
       </v-btn>
       <v-btn v-if="machineBrewing" id="brew-btn" class="" outlined text color="secondary">
@@ -65,29 +71,32 @@
 
 <script>
 import MachineDisplay from '@/components/MachineDisplay.vue'
-import GraphDisplay from '@/components/GraphDisplay.vue'
+import SingleResponseChart from '@/components/SingleResponseChart.vue'
+import apiMixin from '@/mixins/apiMixin'
 import { eventBus } from '@/main'
 import axios from 'axios'
 
 export default {
   name: 'MachineInterface',
+  mixins: [apiMixin],
   components: {
     MachineDisplay,
-    GraphDisplay
+    SingleResponseChart
   },
   data: function () {
     return {
       temperature: 0,
       temperatures: [],
       displayOption: 'machine',
-      setpoint: 60,
+      T_setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
       t_update: 10,
       m_current: null, // Brewed coffee mass (g)
       m_setpoint: 20,
       n_datapoints: 10,
       low_water: false,
-      sessionData: null
+      sessionData: null,
+      watchedData: { watched: [] }
     }
   },
   props: {
@@ -96,7 +105,7 @@ export default {
   },
   computed: {
     tempBtnColor: function () {
-      if (Math.abs(this.setpoint - this.temperature) < 2) {
+      if (Math.abs(this.T_setpoint - this.temperature) < 2) {
         return 'success'
       }
       return 'secondary'
@@ -109,14 +118,6 @@ export default {
     },
     t_elapsed: function () {
       return 0
-    }
-  },
-  watch: {
-    m_current: function (newMass, oldMass) {
-      // When brewing finishes update status
-      if (newMass >= this.m_setpoint) {
-        eventBus.$emit('updateOnOff')
-      }
     }
   },
   methods: {
@@ -134,38 +135,61 @@ export default {
       eventBus.$emit('toggleBrew')
     },
     updateResponse () {
-      // Get latest response only
-      axios.get('/api/v1/response/latest/')
-        .then(response => {
-          console.log(response.data)
-          this.temperature = response.data.T_boiler
-          this.temperatures.push(response.data.T_boiler)
-          while (this.temperatures.length > this.n_datapoints) {
-            this.temperatures.pop(0)
-          }
-          this.m_current = response.data.m
-          this.low_water = response.data.low_water
-        })
-        .catch(error => console.log(error))
-    },
-    getSessionResponse () {
-      // Get all responses from current session
-      const getParams = { params: { session: 'active' } }
+      eventBus.$emit('updateOnOff')
+      if (this.machineOn) {
+        // Get all responses from current session
+        const getParams = { params: { session: 'active' } }
 
-      axios.get('/api/v1/response/sessions/', getParams)
-        .then(response => {
-          console.log(response.data)
-          this.plotData = response.data
-        })
-        .catch(error => console.log(error))
+        axios.get('/api/v1/response/sessions/', getParams)
+          .then(response => {
+            console.log(response.data)
+            // this.sessionData = response.data
+            this.sessionData = Object.assign({}, this.sessionData, response.data)
+            const latestSession = response.data[Object.keys(response.data)[0]]
+            const lastResponse = latestSession[latestSession.length - 1]
+            this.temperature = lastResponse.T_boiler
+            this.m_current = lastResponse.m
+            this.low_water = lastResponse.low_water
+          })
+          .catch(error => console.log(error))
+      } else { // If machine off just get temperature
+        // Get latest response only
+        axios.get('/api/v1/response/latest/')
+          .then(response => {
+            console.log(response.data)
+            this.temperature = response.data.T_boiler
+            this.temperatures.push(response.data.T_boiler)
+            while (this.temperatures.length > this.n_datapoints) {
+              this.temperatures.shift()
+            }
+            this.watchedData.watched.push(response.data)
+            while (this.watchedData.watched.length > this.n_datapoints) {
+              this.watchedData.watched.shift()
+            }
+            this.m_current = response.data.m
+            this.low_water = response.data.low_water
+          })
+          .catch(error => console.log(error))
+        this.sessionData = null
+      }
     },
     updateInterval () {
       axios.get('/api/v1/settings/1/')
         .then(response => {
           this.t_update = response.data.t_update
+          this.m_setpoint = response.data.m
+          this.T_setpoint = response.data.T_set
           this.intervalReference = setInterval(() => {
             this.updateResponse()
           }, 1000 * this.t_update)
+        })
+        .catch(error => console.log(error))
+    },
+    viewLastSession () {
+      axios.get('/api/v1/session/')
+        .then(response => {
+          const lastSession = response.data[response.data.length - 1]
+          this.$router.push({ name: 'Session', params: { sessionIds: lastSession.id.toString() } })
         })
         .catch(error => console.log(error))
     }

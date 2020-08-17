@@ -81,7 +81,7 @@ def simulated_mass_sensor(select="random"):
     elif select is "simulated":
         last_response = ResponseModel.objects.order_by('-t')[0]
         if last_response.brewing:
-            return last_response.m + 2
+            return last_response.m + 4
         else:
             return 0
     elif select is "off":

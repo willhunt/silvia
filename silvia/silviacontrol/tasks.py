@@ -1,8 +1,6 @@
 from __future__ import absolute_import, unicode_literals
-import time
 from celery import shared_task
 from celery_once import QueueOnce
-from silvia.celery import app
 from .models import StatusModel, ResponseModel, SettingsModel
 from .utils import debug_log
 from django.conf import settings as django_settings
@@ -11,19 +9,18 @@ import struct
 
 # For real machine
 if django_settings.SIMULATE_MACHINE == False:
-    from.display_cp import SilviaDisplay
+    # Scale
     import requests
-
+    from .simulation import simulated_mass_sensor
+    # Arduino Comms
     if django_settings.ARDUINO_COMMS == "i2c":
         from smbus2 import SMBus
-
         # I2C variables
         i2c_addr_arduino = 0x8
         i2c_bus = SMBus(1)  # Indicates /dev/ic2-1
     elif django_settings.ARDUINO_COMMS == "serial":
         import os
         import serial
-
         for i in range(0, 3):
             serial_path = "/dev/ttyACM{}".format(i)
             if os.path.exists(serial_path) == True:
@@ -33,12 +30,8 @@ if django_settings.SIMULATE_MACHINE == False:
             serial_arduino.flush()
         else:
             raise serial.serialutil.SerialException("No serial connection to Arduino")    
-        
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
-
-    i2c_addr_oled = 0x3C
-    display = SilviaDisplay(i2c_addr_oled)
 
 # For testing without raspberry pi/espresso machine
 else:
@@ -47,10 +40,14 @@ else:
 
 @shared_task(base=QueueOnce)
 def async_get_response():
+    """
+    Get sensor and PID data from microcontroller and wireless scale
+    Simulations used for testing
+    """
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
-    # Read temperature sensor
+    # Read simulated sesnors
     if django_settings.SIMULATE_MACHINE == True:
         t = timezone.now()
         T = simulated_temperature_sensor("simulated")
@@ -59,14 +56,13 @@ def async_get_response():
         duty, duty_pid = pid_update(T, t)
         low_water = False
     else:
+        # ARDUINO
         if django_settings.ARDUINO_COMMS == "i2c":
             data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
-        print(data_block)
-
-        # t = timezone.now()
+        debug_log(data_block)
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f1?', bytes(data_block))
         T = data_list[2]
@@ -74,27 +70,19 @@ def async_get_response():
         duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
         low_water = not data_list[4]
 
-        settings = SettingsModel.objects.get(id=1)
-        # if status.on:
-            # display.showTemperature(T, settings.T_set)
-
-        # MASS - from Scale over HTTP
+        # SCALE
         try:
             request_scale = requests.get("http://192.168.0.12/mass")
             # Decode data
             data_scale = request_scale.json()
             m = data_scale["mass"]
-        except:
-            m = None
-
-    # Check if when brewing, mass is met
-    if status.brew:
-        if m is not None and m >= settings.m:
-            async_toggle_brew(False)
-
+        except requests.exceptions.RequestException as e:
+            # m = None
+            m = simulated_mass_sensor("simulated")
 
     # Record temperature if machine is on
-    if status.on:
+    # if status.on:
+    if True:
         response = ResponseModel.objects.create(
             T_boiler=T,
             duty=duty,
@@ -104,50 +92,17 @@ def async_get_response():
             m=m,
             T_setpoint=settings.T_set,
             low_water=low_water
-            # brewing=status.brew # This is done via signal
         )
         response.save()
     return T
 
-@shared_task
-def async_power_machine(on):
-    """
-    Args
-        on [Bool]: True = machine on, False = machine off 
-    I2C
-    [Byte 1, Byte2, ...] = [Mode, Setting1, Setting2, ...]
-    Modes: 0 Status, 1 Settings
-    """
-    # Purge celery queues
-    # Without this the screen update has many problems causing flickering or image shift
-    app.control.purge()
-
-    status = StatusModel.objects.get(id=1)
-
-    if django_settings.SIMULATE_MACHINE == False:
-        async_update_microcontroller(on=on, brew=False)
-        if on:
-            display.welcome()
-        else:
-            display.off()
-
-    debug_log("Celery machine on: %s" % on)
-    status.on = on
-    status.brew = False # Always turn off brew when powering machine on/off
-    status.save()
-    # Log response at this event
-    async_get_response()
 
 @shared_task
-def async_toggle_brew(brew):
+def async_update_scale(brew):
     """
     Args
         on [Bool]: True = start brewing, False = stop brewing
     """
-    # app.control.purge()
-
-    status = StatusModel.objects.get(id=1)
-
     if django_settings.SIMULATE_MACHINE == False:
         # Reset scale
         if brew:
@@ -161,15 +116,6 @@ def async_toggle_brew(brew):
             except requests.exceptions.RequestException as e:
                 debug_log("No connection to scale")
 
-        # Turn machine on
-        async_update_microcontroller(brew=brew)
-
-
-    debug_log("Celery machine brewing: %s" % brew)
-    status.brew = brew
-    status.save()
-    # Log response at this event
-    async_get_response()
 
 @shared_task
 def async_update_microcontroller(on=None, brew=None):

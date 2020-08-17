@@ -20,7 +20,7 @@
       </v-row>
 
       <v-card-subtitle>Extraction Control</v-card-subtitle>
-      <v-text-field class="mx-4" label="Extraction Mass" type="number" v-model="settings.m_extract" suffix="g"></v-text-field>
+      <v-text-field class="mx-4" label="Extraction Mass" type="number" v-model="settings.m" suffix="g"></v-text-field>
 
       <v-card-subtitle>Update</v-card-subtitle>
       <v-text-field class="mx-4" label="Sampling Interval" type="number" v-model="settings.t_sample" suffix="s"></v-text-field>
