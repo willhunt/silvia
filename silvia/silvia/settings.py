@@ -185,5 +185,4 @@ WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
 # App in simulation mode or not
 # SIMULATE_MACHINE = True
 SIMULATE_MACHINE = False
-
 ARDUINO_COMMS = "i2c"  # "serial" or "i2c"
