@@ -7,7 +7,8 @@
       </div>
       <div v-if="displayOption == 'graph'">
         <div v-if="sessionData == null">
-          <single-response-chart :data="watchedData"></single-response-chart>
+          <!-- <single-response-chart :data="watchedData"></single-response-chart> -->
+          <v-btn color="secondary" @click="viewLastSession">Last Session</v-btn>
         </div>
         <div v-else>
           <single-response-chart :data="sessionData"></single-response-chart>
@@ -16,7 +17,7 @@
       <v-btn v-if="displayOption == 'machine'" id="temp-btn" outlined :color="tempBtnColor" @click="changeDisplay">
         {{ temperature | temperatureDisplayFilter }}&#8451;
       </v-btn>
-      <v-btn id="water-btn" fab small outlined :color="waterLevelColor">
+      <v-btn v-if="machineOn" id="water-btn" fab small outlined :color="waterLevelColor">
           <v-icon>mdi-water</v-icon>
       </v-btn>
       <v-btn v-if="machineBrewing" id="brew-btn" class="" outlined text color="secondary">
@@ -71,11 +72,13 @@
 <script>
 import MachineDisplay from '@/components/MachineDisplay.vue'
 import SingleResponseChart from '@/components/SingleResponseChart.vue'
+import apiMixin from '@/mixins/apiMixin'
 import { eventBus } from '@/main'
 import axios from 'axios'
 
 export default {
   name: 'MachineInterface',
+  mixins: [apiMixin],
   components: {
     MachineDisplay,
     SingleResponseChart
@@ -179,6 +182,14 @@ export default {
           this.intervalReference = setInterval(() => {
             this.updateResponse()
           }, 1000 * this.t_update)
+        })
+        .catch(error => console.log(error))
+    },
+    viewLastSession () {
+      axios.get('/api/v1/session/')
+        .then(response => {
+          const lastSession = response.data[response.data.length - 1]
+          this.$router.push({ name: 'Session', params: { sessionIds: lastSession.id.toString() } })
         })
         .catch(error => console.log(error))
     }
