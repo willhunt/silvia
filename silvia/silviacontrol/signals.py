@@ -1,7 +1,8 @@
 from django.db.models.signals import post_init, pre_save, post_delete, post_save
 from django.dispatch import receiver
-from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel
-from .tasks import async_get_response, async_update_microcontroller
+from django.conf import settings as django_settings
+from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel, SessionModel
+from .tasks import async_get_response, async_update_microcontroller, async_update_scale
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 @receiver(pre_save, sender=ScheduleModel)
@@ -86,21 +87,21 @@ def delete_schedule(sender, instance, **kwargs):
     except (AssertionError, AttributeError) as e:
         print('No Crontab off')
 
-
 @receiver(pre_save, sender=ResponseModel)
-def save_response(sender, instance, raw, using, update_fields, **kwargs):
+def pre_save_response(sender, instance, raw, using, update_fields, **kwargs):
     """
     When creating response model check brewing status and add
     """
-    # try:
-    #     status = StatusModel.objects.get(id=1)
-    #     instance.brewing = status.brew
-    # except:
-    #     instance.brewing = False
-
     status = StatusModel.objects.get(id=1)
+    # Set brewing in response
     instance.brewing = status.brew
 
+    settings = SettingsModel.objects.get(id=1)
+    # Check if brewing and mass target is reached
+    if status.brew:
+        if instance.m is not None and instance.m >= settings.m:
+            status.brew = False
+            status.save()
 
 @receiver(post_save, sender=SettingsModel)
 def save_settings(sender, instance, raw, using, update_fields, **kwargs):
@@ -136,6 +137,7 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
 def save_status(sender, instance, raw, using, update_fields, **kwargs):
     """
     When saving status model turn temperature update on/off
+    When saving status model create or end schedule as necessary
     """
     try:
         periodic_response = PeriodicTask.objects.get(name="Get Response")
@@ -143,3 +145,42 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
         periodic_response.save()
     except:
         raise ValueError("Save sample time to create 'Get Response' periodic task")
+
+    prior_status = StatusModel.objects.get(pk=1)
+
+    # Implement some rules on on/brew combinations
+    if instance.on != prior_status.on:  # Ensure brew off if changing on/off
+        instance.brew = False
+    elif instance.brew != prior_status.brew:  # Ensure machine on if changing brew
+        instance.on = True
+
+    if instance.on and not prior_status.on:  # Turning machine on
+        # Create a new session
+        session = SessionModel()
+        session.save()
+
+        # If simulating, set temperature to 20degC
+        if django_settings.SIMULATE_MACHINE:
+            response = ResponseModel.objects.create(
+                T_boiler=20,
+                duty=0,
+                duty_p=0,
+                duty_i=0,
+                duty_d=0
+            )
+            response.save()
+
+    elif prior_status.on and not instance.on:  # If machine is being turned off
+        # Get current session
+        session = SessionModel.objects.filter(active=True).order_by('-id')[0]
+        session.set_end_time()
+        session.save()
+
+    # Turn actual machine/brew on/off
+    async_update_microcontroller.delay(instance.on, instance.brew)
+
+    # Turn scale on/off
+    if instance.brew != prior_status.brew:
+        async_update_scale.delay(instance.brew)
+
+    

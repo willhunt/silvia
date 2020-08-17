@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1200>
-      <response-chart :chartdata="graphDataT" :chartOptions="graphOptionsT" >
+    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1600>
+      <response-chart :chartData="graphDataT" :chartOptions="graphOptionsT" >
       </response-chart>
     </v-card>
-    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1200>
-      <response-chart :chartdata="graphDataD" :chartOptions="graphOptionsD" >
+    <v-card max-height="450" class="graphContainer pa-6 mb-4" min-width=350 max-width=1600>
+      <response-chart :chartData="graphDataD" :chartOptions="graphOptionsD" >
       </response-chart>
     </v-card>
   </div>
@@ -21,6 +21,7 @@ export default {
   },
   data: function () {
     return {
+      colors: ['#ff5a5f', '#eabe7c', '#769fb6', '#7fd1b9', '#634b66'],
       graphOptionsT: {
         scales: {
           xAxes: [{
@@ -85,7 +86,8 @@ export default {
           label: 'Session ' + sessionKey,
           showLine: true,
           data: [],
-          fill: false
+          fill: false,
+          borderColor: this.colors[sessionIndex]
         }
         // Loop through responses and add data
         this.data[sessionKey].forEach((responseItem, responseIndex) => {

@@ -25,15 +25,16 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         self.font_sub = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 12)
         
     def welcome(self):
+        self.showWelcome()
+        time.sleep(2)
+        self.showBlank()
+
+    def showWelcome(self):
         image = Image.open(django_settings.STATIC_ROOT + '/silviacontrol/display/silvia_logo_128x64_inverted.png') \
                      .resize((self.width, self.height), Image.ANTIALIAS) \
                      .convert('1')
         self.image(image)
         self.show()
-        time.sleep(2)
-        self.fill(0)
-        self.show()
-
 
     def showTemperature(self, T, T_set):
         image = Image.new('1', (self.width, self.height))
@@ -60,6 +61,6 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         self.image(image)
         self.show()
 
-    def off(self):
+    def showBlank(self):
         self.fill(0)
         self.show()
