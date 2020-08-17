@@ -124,12 +124,12 @@ void receiveEvent(int numBytes) {
         // toggle power
         if (received_data.data.power) {
           if (DEBUG) {
-            Serial.print("Turn on");
+            Serial.println("Turn on");
           }
           power_output_ref->on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
           if (DEBUG) {
-            Serial.print("Turn off");
+            Serial.println("Turn off");
           }
           power_output_ref->off();
         }

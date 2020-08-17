@@ -1,6 +1,10 @@
 #ifndef SILVIA_TEMPERATURE_CONTROLLER_H
 #define SILVIA_TEMPERATURE_CONTROLLER_H
 
+#ifndef DEBUG
+#define DEBUG true
+#endif  // DEBUG
+
 #include <Arduino.h>
 #include <PID_v1.h>
 // #include <PID_AutoTune_v0.h>

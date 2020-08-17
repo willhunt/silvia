@@ -10,6 +10,8 @@ TemperatureController::TemperatureController(
 {
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);
+    tpc_window_start_ = millis();
+    tpc_window_size_ = 1000;
 }
 
 void TemperatureController::relayControl() {
@@ -19,16 +21,22 @@ void TemperatureController::relayControl() {
         // Increment in step of window size
         tpc_window_start_ += tpc_window_size_;
     }
-    if (*output_ > now - tpc_window_start_)
+    if (*output_ > now - tpc_window_start_) {
         digitalWrite(relay_pin_, HIGH);
-    else
+    } else {
         digitalWrite(relay_pin_, LOW);
+    }
 }
 
 void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd) {
     SetTunings(Kp, Ki, Kd);
     *setpoint_ = Setpoint;
     SetMode(AUTOMATIC);
+    
+    if (DEBUG) {
+        Serial.print("PID on, target: ");
+        Serial.println(*setpoint_);
+    }
 }
 
 void TemperatureController::off() {
