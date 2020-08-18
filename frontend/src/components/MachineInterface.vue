@@ -164,6 +164,36 @@ export default {
     toggleBrew () {
       eventBus.$emit('toggleBrew')
     },
+    toggleOverride () {
+      const getParams = {
+        params: {
+          overrideOn: !this.tuneMode,
+          heaterOn: false
+        }
+      }
+      axios.get('/api/v1/override/', getParams)
+        .then(response => {
+          this.tuneMode = !this.tuneMode
+          this.heaterOn = false
+        })
+        .catch(error => console.log(error))
+    },
+    toggleHeater () {
+      const getParams = {
+        params: {
+          overrideOn: this.tuneMode,
+          heaterOn: !this.heaterOn
+        }
+      }
+      axios.get('/api/v1/override/', getParams)
+        .then(response => {
+          this.heaterOn = !this.heaterOn
+        })
+        .catch(error => console.log(error))
+    },
+    autoTune () {
+      console.log('Autotune not yet implemented')
+    },
     updateResponse () {
       eventBus.$emit('updateOnOff')
       if (this.machineOn) {
@@ -229,17 +259,6 @@ export default {
           this.$router.push({ name: 'Session', params: { sessionIds: lastSession.id.toString() } })
         })
         .catch(error => console.log(error))
-    },
-    toggleHeater () {
-      const getParams = { params: { heaterOn: !this.heaterOn } }
-      axios.get('/api/v1/override/', getParams)
-        .then(response => {
-          this.heaterOn = !this.heaterOn
-        })
-        .catch(error => console.log(error))
-    },
-    autoTune () {
-      console.log('Autotune not yet implemented')
     }
   },
   created () {

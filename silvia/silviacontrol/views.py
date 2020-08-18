@@ -129,8 +129,8 @@ class ManualControlView(views.APIView):
         """
         Turn heater on/off
         """
-        override_on = self.request.query_params.get('override', False)
-        heater_on = self.request.query_params.get('heater', False)
-        brew_on = self.request.query_params.get('heater', False)
+        override_on = self.request.query_params.get('overrideOn', False)
+        heater_on = self.request.query_params.get('heaterOn', False)
+        brew_on = self.request.query_params.get('brewOn', False)
         async_override_i2c(overrideOn=override_on, heaterOn=heater_on, brewOn=brew_on)
         return Response({"heater": heater_on, "brew": brew_on})
