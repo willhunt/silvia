@@ -55,7 +55,7 @@
         </v-btn>
       </v-col>
       <v-col cols="auto" class="px-1">
-         <v-btn outlined color="secondary" @click="tuneMode = !tuneMode" fab small>
+         <v-btn outlined color="secondary" @click="toggleOverride" fab small>
           <v-icon>mdi-wrench</v-icon>
         </v-btn>
       </v-col>
