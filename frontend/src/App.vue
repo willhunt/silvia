@@ -59,13 +59,15 @@ export default {
     // Handle machine on/off globally
     eventBus.$on('toggleOnOff', () => {
       // Can send ajax request here
-      this.machineOn = !this.machineOn
-      this.machineBrewing = false
+      // this.machineOn = !this.machineOn
+      // this.machineBrewing = false
 
       const axiosData = {
         id: 1,
-        on: this.machineOn,
-        brew: this.machineBrewing
+        // on: this.machineOn,
+        // brew: this.machineBrewing
+        on: !this.machineOn,
+        brew: false
       }
 
       axios.put('/api/v1/status/1/', axiosData)
@@ -78,11 +80,12 @@ export default {
     // Handle machine brew on/off globally
     eventBus.$on('toggleBrew', () => {
       // Can send ajax request here
-      this.machineBrewing = !this.machineBrewing
+      // this.machineBrewing = !this.machineBrewing
 
       // Make sure machine is on if brewing!
       if (this.machineBrewing) {
-        this.machineOn = true
+        // this.machineOn = true
+        this.machineOn = !this.machineBrewing
       }
 
       const axiosData = {

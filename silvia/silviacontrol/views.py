@@ -11,6 +11,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
+from .tasks import async_override_i2c
 
 
 # Html Views -----------
@@ -128,5 +129,8 @@ class ManualControlView(views.APIView):
         """
         Turn heater on/off
         """
-        heater_on = self.request.query_params.get('heater', None)
-        return Response( {"heater": heater_on} )
+        override_on = self.request.query_params.get('override', False)
+        heater_on = self.request.query_params.get('heater', False)
+        brew_on = self.request.query_params.get('heater', False)
+        async_override_i2c(overrideOn=override_on, heaterOn=heater_on, brewOn=brew_on)
+        return Response({"heater": heater_on, "brew": brew_on})
