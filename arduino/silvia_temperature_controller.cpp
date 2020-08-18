@@ -48,5 +48,17 @@ double TemperatureController::getSetpoint() {
 }
 
 double TemperatureController::getDuty() {
-    return *output_;
+    return 100 * *output_ / tpc_window_size_;
+}
+
+int TemperatureController::getRelayPin() {
+    return relay_pin_;
+}
+
+void TemperatureController::overrideOutput(bool on) {
+    if (on) {
+        digitalWrite(relay_pin_, HIGH);
+    } else {
+        digitalWrite(relay_pin_, LOW);
+    }
 }

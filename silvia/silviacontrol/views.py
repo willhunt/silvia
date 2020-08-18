@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
 from django.conf import settings
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, views
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import (SettingsModel, StatusModel, SessionModel,
@@ -120,3 +120,13 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     queryset = ScheduleModel.objects.all()
     serializer_class = ScheduleSerializer
 
+class ManualControlView(views.APIView):
+    """
+    Non model based view for turning the heater on and off manually
+    """
+    def get(self, request, format=None):
+        """
+        Turn heater on/off
+        """
+        heater_on = self.request.query_params.get('heater', None)
+        return Response( {"heater": heater_on} )

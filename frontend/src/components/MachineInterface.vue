@@ -6,7 +6,7 @@
         <MachineDisplay :machineOn="machineOn" :temperature="temperature" />
       </div>
       <div v-if="displayOption == 'graph'">
-        <div v-if="sessionData == null">
+        <div v-if="sessionData == null" style="display: flex; justify-content: center; align-items: center; min-width: 350px">
           <!-- <single-response-chart :data="watchedData"></single-response-chart> -->
           <v-btn color="secondary" @click="viewLastSession">Last Session</v-btn>
         </div>
@@ -15,7 +15,8 @@
         </div>
       </div>
       <v-btn v-if="displayOption == 'machine'" id="temp-btn" outlined :color="tempBtnColor" @click="changeDisplay">
-        {{ temperature | temperatureDisplayFilter }}&#8451;
+        <div v-if="temperature == null">-</div>
+        <div v-else>{{ temperature | temperatureDisplayFilter }}&#8451;</div>
       </v-btn>
       <v-btn v-if="machineOn" id="water-btn" fab small outlined :color="waterLevelColor">
           <v-icon>mdi-water</v-icon>
@@ -35,16 +36,16 @@
         <v-switch color="secondary" :value="machineOn" @change="toggleOnOff" :label="`${machineOn ? 'On' : 'Off'}`"></v-switch>
       </v-col>
       <v-spacer></v-spacer>
-      <div v-if="machineOn">
+      <v-col cols="auto" class="px-1" v-if="machineOn">
         <div v-if="machineBrewing">
           <v-btn color="error" @click="toggleBrew">Cancel</v-btn>
         </div>
         <div v-else>
           <v-btn color="secondary" @click="toggleBrew">Brew</v-btn>
         </div>
-      </div>
-      <v-col cols="auto">
-        <v-btn outlined :color="tempBtnColor" @click="changeDisplay">
+      </v-col>
+      <v-col cols="auto" class="px-1">
+        <v-btn outlined :color="tempBtnColor" @click="changeDisplay" fab small>
           <div v-if="displayOption == 'machine'">
             <v-icon>mdi-chart-line</v-icon>
           </div>
@@ -53,18 +54,45 @@
           </div>
         </v-btn>
       </v-col>
+      <v-col cols="auto" class="px-1">
+         <v-btn outlined color="secondary" @click="tuneMode = !tuneMode" fab small>
+          <v-icon>mdi-wrench</v-icon>
+        </v-btn>
+      </v-col>
     </v-row>
 
-    <div v-if="machineOn"><v-row align="center">
-          <v-progress-linear :value="brewProgress" color="blue-grey" height="25" rounded>
-            <div v-if="m_current == null">
-              No scale detected
+    <div v-if="machineOn">
+      <v-row align="center">
+        <v-progress-linear :value="brewProgress" color="blue-grey" height="25" rounded>
+          <div v-if="m_current == null">
+            No scale detected
+          </div>
+          <div v-else>
+            {{ m_current | temperatureDisplayFilter }}g / {{ m_setpoint }}g
+          </div>
+        </v-progress-linear>
+      </v-row>
+    </div>
+
+    <div v-if="tuneMode">
+      <v-row align="center">
+        <v-col cols="auto" class="px-1">
+          <v-btn color="secondary" @click="toggleHeater">
+            <div v-if="heaterOn">
+              Heater Off
             </div>
             <div v-else>
-              {{ m_current | temperatureDisplayFilter }}g / {{ m_setpoint }}g
+              Heater On
             </div>
-          </v-progress-linear>
-    </v-row></div>
+          </v-btn>
+        </v-col>
+        <v-col cols="auto" class="px-1">
+          <v-btn color="secondary" @click="autoTune" disabled>
+            Autotune
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
 
   </div>
 </template>
@@ -86,7 +114,7 @@ export default {
   data: function () {
     return {
       temperature: 0,
-      temperatures: [],
+      // temperatures: [],
       displayOption: 'machine',
       T_setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
@@ -96,7 +124,9 @@ export default {
       n_datapoints: 10,
       low_water: false,
       sessionData: null,
-      watchedData: { watched: [] }
+      // watchedData: { watched: [] },
+      tuneMode: false,
+      heaterOn: false
     }
   },
   props: {
@@ -157,15 +187,22 @@ export default {
         axios.get('/api/v1/response/latest/')
           .then(response => {
             console.log(response.data)
-            this.temperature = response.data.T_boiler
-            this.temperatures.push(response.data.T_boiler)
-            while (this.temperatures.length > this.n_datapoints) {
-              this.temperatures.shift()
+            // Check if temperature is old
+            const deltaTime = (new Date() - new Date(response.data.t)) / 1000
+            // console.log(deltaTime)
+            if (deltaTime > 15) {
+              this.temperature = null
+            } else {
+              this.temperature = response.data.T_boiler
             }
-            this.watchedData.watched.push(response.data)
-            while (this.watchedData.watched.length > this.n_datapoints) {
-              this.watchedData.watched.shift()
-            }
+            // this.temperatures.push(response.data.T_boiler)
+            // while (this.temperatures.length > this.n_datapoints) {
+            //   this.temperatures.shift()
+            // }
+            // this.watchedData.watched.push(response.data)
+            // while (this.watchedData.watched.length > this.n_datapoints) {
+            //   this.watchedData.watched.shift()
+            // }
             this.m_current = response.data.m
             this.low_water = response.data.low_water
           })
@@ -192,6 +229,17 @@ export default {
           this.$router.push({ name: 'Session', params: { sessionIds: lastSession.id.toString() } })
         })
         .catch(error => console.log(error))
+    },
+    toggleHeater () {
+      const getParams = { params: { heaterOn: !this.heaterOn } }
+      axios.get('/api/v1/override/', getParams)
+        .then(response => {
+          this.heaterOn = !this.heaterOn
+        })
+        .catch(error => console.log(error))
+    },
+    autoTune () {
+      console.log('Autotune not yet implemented')
     }
   },
   created () {

@@ -52,7 +52,8 @@ void check_serial_calls() {
       if (received_data.data.power != power_output.getStatus()) {
         // toggle power
         if (received_data.data.power) {
-          power_output.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+          power_output.on();
+          pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
           // power_output_ref->off();
           power_output.off();
@@ -61,7 +62,7 @@ void check_serial_calls() {
       // Check if brew needs to be toggled
       if (received_data.data.brew != brew_output.getStatus()) {
         // toggle brew
-        if (received_data.data.brew);
+        if (received_data.data.brew)
           brew_output.on();
         else
           brew_output.off();
@@ -114,7 +115,8 @@ void receiveEvent(int numBytes) {
           if (DEBUG) {
             Serial.println("Turn on");
           }
-          power_output.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+          power_output.on();
+          pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
           if (DEBUG) {
             Serial.println("Turn off");
@@ -131,9 +133,28 @@ void receiveEvent(int numBytes) {
         else
           brew_output.off();
       }
-    } else if (i2c_register == 2) {
+    } else if (i2c_register == 2) { // Override request
+      bool overrideOn = (byte)Wire.read();
       bool heaterOn = (byte)Wire.read();
       bool brewOn = (byte)Wire.read();
+      if (overrideOn) {
+        mode = 2;  // Manual
+        pid.off();
+        power_output.on();
+        if (heaterOn) {
+          pid.overrideOutput(true);
+        }
+        if (brewOn) {
+          brew_output.on();
+        }
+      } else {
+        mode = 0; // PID
+        pid.overrideOutput(false);
+        brew_output.off();
+        if (power_output.getStatus()) {
+          pid.SetMode(AUTOMATIC);  // Resume with prior settings
+        }
+      }
     }
   }  // if(Wire.available)
 }

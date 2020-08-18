@@ -62,7 +62,7 @@ def async_get_response():
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
-        debug_log(data_block)
+        # debug_log(data_block)
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f1?', bytes(data_block))
         T = data_list[2]
@@ -137,6 +137,7 @@ def update_microcontroller_i2c(on=None, brew=None):
     # Structure packed here and unpacked using 'union' on Arduino
     data_block = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format( list(data_block) ) )
+    # Write to register 1
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
 
 def update_microcontroller_serial(on=None, brew=None):
@@ -150,7 +151,7 @@ def update_microcontroller_serial(on=None, brew=None):
         on = status.on
     if brew is None:
         brew = status.brew
-    # Send i2C data to arduino
+    # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
     data_block = struct.pack('<c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
@@ -158,3 +159,12 @@ def update_microcontroller_serial(on=None, brew=None):
     serial_arduino.write(data_block)
     response = serial_arduino.readline()
     debug_log("Response: {}".format(response))
+
+@shared_task
+def async_override_i2c(overrideOn=False, heaterOn=False, brewOn=False):
+    # Send i2C data to arduino
+    # Structure packed here and unpacked using 'union' on Arduino
+    data_block = struct.pack('<3?', overrideOn, heaterOn, brewOn)
+    debug_log( "Override data to send: {}".format( list(data_block) ) )
+    # Write to register 2
+    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))

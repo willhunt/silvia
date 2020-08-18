@@ -31,6 +31,8 @@ class TemperatureController : public PID {
     void off();
     double getSetpoint();
     double getDuty();
+    int getRelayPin();
+    void TemperatureController::overrideOutput(bool on);
 };
 
 

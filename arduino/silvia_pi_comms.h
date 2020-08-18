@@ -37,11 +37,18 @@ union receivedData {
   byte buffer[sizeof(receivedFormat)];
 };
 
+// Objects defined in silvia_main.ino
 extern TemperatureSensor temperature_sensor;
 extern WaterLevelSensor water_sensor;
-extern PowerOutput power_output;
+extern RelayOutput power_output;
 extern RelayOutput brew_output;
 extern TemperatureController pid;
+
+// Mode - defined in silvia_main.ino
+// 0 : PID
+// 1 : Manual
+// 2 : PID autotune
+extern int mode;
 
 void pi_comms_setup(int i2c_addr);
 void update_data_buffer();
