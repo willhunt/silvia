@@ -5,22 +5,7 @@ receivedData received_data;
 int sizeof_received_data;
 int sizeof_response_data;
 
-TemperatureSensor* temp_sensor_ref;
-WaterLevelSensor* water_sensor_ref;
-PowerOutput* power_output_ref;
-RelayOutput* brew_output_ref;
-TemperatureController* temperature_controller_ref;
-
-void pi_comms_setup(
-  int i2c_addr, PowerOutput* power_output, RelayOutput* brew_output,
-  TemperatureSensor* temperature_sensor, TemperatureController* temperature_controller,
-  WaterLevelSensor* water_sensor
-) {
-  temp_sensor_ref = temperature_sensor;
-  water_sensor_ref = water_sensor;
-  power_output_ref = power_output;
-  brew_output_ref = brew_output;
-  temperature_controller_ref = temperature_controller;
+void pi_comms_setup(int i2c_addr) {
   sizeof_received_data = sizeof(receivedFormat);
   sizeof_response_data = sizeof(responseData);
 
@@ -34,11 +19,11 @@ void pi_comms_setup(
 
 void update_data_buffer() {
   // Update values
-  response_data.data.T_boiler = temp_sensor_ref->getLatestTemperature();
-  response_data.data.power = power_output_ref->getStatus();
-  response_data.data.brew = brew_output_ref->getStatus();
-  response_data.data.duty = temperature_controller_ref->getDuty();
-  response_data.data.water_level = water_sensor_ref->getLevel();
+  response_data.data.T_boiler = temperature_sensor.getLatestTemperature();
+  response_data.data.power = power_output.getStatus();
+  response_data.data.brew = brew_output.getStatus();
+  response_data.data.duty = pid.getDuty();
+  response_data.data.water_level = water_sensor.getLevel();
 }
 
 void check_serial_calls() {
@@ -64,23 +49,23 @@ void check_serial_calls() {
       Serial.flush();
 
       // Check if power needs to be toggled
-      if (received_data.data.power != power_output_ref->getStatus()) {
+      if (received_data.data.power != power_output.getStatus()) {
         // toggle power
         if (received_data.data.power) {
-          power_output_ref->on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+          power_output.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
-          power_output_ref->off();
+          // power_output_ref->off();
+          power_output.off();
         }
       }
       // Check if brew needs to be toggled
-      if (received_data.data.brew != brew_output_ref->getStatus()) {
+      if (received_data.data.brew != brew_output.getStatus()) {
         // toggle brew
-        if (received_data.data.brew)
-          brew_output_ref->on();
+        if (received_data.data.brew);
+          brew_output.on();
         else
-          brew_output_ref->off();
+          brew_output.off();
       }
-
       // Send response to pi
       Serial.print("Data received: ");
       Serial.println(temp_data);
@@ -89,6 +74,9 @@ void check_serial_calls() {
 }
 
 void send_serial_response() {
+  if (DEBUG) {
+    Serial.println("Received request for sensor readings");
+  }
   update_data_buffer();
   // Write bytes to i2c address
   Serial.write(response_data.buffer, sizeof_response_data);
@@ -120,28 +108,32 @@ void receiveEvent(int numBytes) {
         Serial.print("    kp: "); Serial.println(received_data.data.kp);
       }
       // Check if power needs to be toggled
-      if (received_data.data.power != power_output_ref->getStatus()) {
+      if (received_data.data.power != power_output.getStatus()) {
         // toggle power
         if (received_data.data.power) {
           if (DEBUG) {
             Serial.println("Turn on");
           }
-          power_output_ref->on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+          power_output.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
           if (DEBUG) {
             Serial.println("Turn off");
           }
-          power_output_ref->off();
+          // power_output_ref->off();
+          power_output.off();
         }
       }
       // Check if brew needs to be toggled
-      if (received_data.data.brew != brew_output_ref->getStatus()) {
+      if (received_data.data.brew != brew_output.getStatus()) {
         // toggle brew
         if (received_data.data.brew)
-          brew_output_ref->on();
+          brew_output.on();
         else
-          brew_output_ref->off();
+          brew_output.off();
       }
+    } else if (i2c_register == 2) {
+      bool heaterOn = (byte)Wire.read();
+      bool brewOn = (byte)Wire.read();
     }
   }  // if(Wire.available)
 }

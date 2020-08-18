@@ -37,14 +37,13 @@ union receivedData {
   byte buffer[sizeof(receivedFormat)];
 };
 
-void pi_comms_setup(
-  int i2c_addr, 
-  PowerOutput* power_output,
-  RelayOutput* brew_output,
-  TemperatureSensor* temperature_sensor,
-  TemperatureController* temperature_controller,
-  WaterLevelSensor* water_sensor
-);
+extern TemperatureSensor temperature_sensor;
+extern WaterLevelSensor water_sensor;
+extern PowerOutput power_output;
+extern RelayOutput brew_output;
+extern TemperatureController pid;
+
+void pi_comms_setup(int i2c_addr);
 void update_data_buffer();
 // Serial
 void check_serial_calls();
