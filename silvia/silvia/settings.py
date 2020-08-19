@@ -183,8 +183,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Files served at root of a
 WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
 
 # App in simulation mode or not
-nodename = os.uname()[1]
-if nodename is "silvia":  # Raspberry pi
+os_details = os.uname()
+if os_details.nodename is "silvia":  # Raspberry pi
     SIMULATE_MACHINE = False
 else:  # Development machine
     SIMULATE_MACHINE = True
