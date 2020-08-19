@@ -18,9 +18,9 @@
         <div v-if="temperature == null">-</div>
         <div v-else>{{ temperature | temperatureDisplayFilter }}&#8451;</div>
       </v-btn>
-      <v-btn v-if="machineOn" id="water-btn" fab small outlined :color="waterLevelColor">
+      <!-- <v-btn v-if="machineOn" id="water-btn" fab small outlined :color="waterLevelColor">
           <v-icon>mdi-water</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-btn v-if="machineBrewing" id="brew-btn" class="" outlined text color="secondary">
         <v-col>
           <v-row class="pb-1" justify="center">{{ m_current | temperatureDisplayFilter }}g</v-row>
@@ -41,11 +41,16 @@
           <v-btn color="error" @click="toggleBrew">Cancel</v-btn>
         </div>
         <div v-else>
-          <v-btn color="secondary" @click="toggleBrew">Brew</v-btn>
+          <v-btn color="accent lighten-1" @click="toggleBrew">Brew</v-btn>
         </div>
       </v-col>
       <v-col cols="auto" class="px-1">
-        <v-btn outlined :color="tempBtnColor" @click="changeDisplay" fab small>
+        <v-btn v-if="machineOn" fab small outlined :color="waterLevelColor">
+            <v-icon>mdi-water</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="auto" class="px-1">
+        <v-btn :color="tempBtnColor" @click="changeDisplay" fab small elevation="1" outlined>
           <div v-if="displayOption == 'machine'">
             <v-icon>mdi-chart-line</v-icon>
           </div>
@@ -55,7 +60,7 @@
         </v-btn>
       </v-col>
       <v-col cols="auto" class="px-1">
-         <v-btn outlined color="secondary" @click="toggleOverride" fab small>
+         <v-btn color="secondary" @click="toggleOverride" fab small elevation="1" outlined>
           <v-icon>mdi-wrench</v-icon>
         </v-btn>
       </v-col>
@@ -74,7 +79,7 @@
       </v-row>
     </div>
 
-    <div v-if="tuneMode">
+    <div v-if="machineMode != 0">
       <v-row align="center">
         <v-col cols="auto" class="px-1">
           <v-btn color="secondary" @click="toggleHeater">
@@ -87,9 +92,29 @@
           </v-btn>
         </v-col>
         <v-col cols="auto" class="px-1">
-          <v-btn color="secondary" @click="autoTune" disabled>
-            Autotune
+          <v-btn color="accent lighten-1" @click="toggleAutoTune">
+            <div v-if="machineMode == 2">
+              Cancel Tuning
+            </div>
+            <div v-else>
+              Auto Tune
+            </div>
           </v-btn>
+        </v-col>
+        <v-col cols="auto" class="px-1">
+          <v-chip color="info">
+            <v-avatar left color="info darken-1">Kp</v-avatar>{{ Kp }}
+          </v-chip>
+        </v-col>
+        <v-col cols="auto" class="px-1">
+          <v-chip color="info">
+            <v-avatar left color="info darken-1">Ki</v-avatar>{{ Ki }}
+          </v-chip>
+        </v-col>
+        <v-col cols="auto" class="px-1">
+          <v-chip color="info">
+            <v-avatar left color="info darken-1">Kd</v-avatar>{{ Kd }}
+          </v-chip>
         </v-col>
       </v-row>
     </div>
@@ -114,7 +139,6 @@ export default {
   data: function () {
     return {
       temperature: 0,
-      // temperatures: [],
       displayOption: 'machine',
       T_setpoint: 60,
       intervalReference: null, // Varibale to hold setInterval for getting temperature,
@@ -125,13 +149,16 @@ export default {
       low_water: false,
       sessionData: null,
       // watchedData: { watched: [] },
-      tuneMode: false,
-      heaterOn: false
+      heaterOn: false,
+      Kp: 0,
+      Ki: 0,
+      Kd: 0
     }
   },
   props: {
     machineOn: Boolean,
-    machineBrewing: Boolean
+    machineBrewing: Boolean,
+    machineMode: Number
   },
   computed: {
     tempBtnColor: function () {
@@ -165,23 +192,12 @@ export default {
       eventBus.$emit('toggleBrew')
     },
     toggleOverride () {
-      const getParams = {
-        params: {
-          overrideOn: !this.tuneMode,
-          heaterOn: false
-        }
-      }
-      axios.get('/api/v1/override/', getParams)
-        .then(response => {
-          this.tuneMode = !this.tuneMode
-          this.heaterOn = false
-        })
-        .catch(error => console.log(error))
+      const mode = this.machineMode === 0 ? 1 : 0
+      eventBus.$emit('changeMode', mode)
     },
     toggleHeater () {
       const getParams = {
         params: {
-          overrideOn: this.tuneMode,
           heaterOn: !this.heaterOn
         }
       }
@@ -191,11 +207,15 @@ export default {
         })
         .catch(error => console.log(error))
     },
-    autoTune () {
-      console.log('Autotune not yet implemented')
+    toggleAutoTune () {
+      if (this.machineMode === 2) {
+        eventBus.$emit('changeMode', 1) // Manual
+      } else {
+        eventBus.$emit('changeMode', 2) // Auto tune
+      }
     },
     updateResponse () {
-      eventBus.$emit('updateOnOff')
+      eventBus.$emit('updateStatus')
       if (this.machineOn) {
         // Get all responses from current session
         const getParams = { params: { session: 'active' } }
@@ -225,10 +245,6 @@ export default {
             } else {
               this.temperature = response.data.T_boiler
             }
-            // this.temperatures.push(response.data.T_boiler)
-            // while (this.temperatures.length > this.n_datapoints) {
-            //   this.temperatures.shift()
-            // }
             // this.watchedData.watched.push(response.data)
             // while (this.watchedData.watched.length > this.n_datapoints) {
             //   this.watchedData.watched.shift()
@@ -246,6 +262,9 @@ export default {
           this.t_update = response.data.t_update
           this.m_setpoint = response.data.m
           this.T_setpoint = response.data.T_set
+          this.Kp = response.data.k_p
+          this.Ki = response.data.k_i
+          this.Kd = response.data.k_d
           this.intervalReference = setInterval(() => {
             this.updateResponse()
           }, 1000 * this.t_update)
@@ -265,7 +284,7 @@ export default {
     this.updateInterval()
     this.updateResponse()
     // Fire event to check on/off status
-    eventBus.$emit('updateOnOff')
+    eventBus.$emit('updateStatus')
   },
   destroyed () {
     console.log('Cancel temperature update')
@@ -286,7 +305,7 @@ export default {
 
 #temp-btn {
   position: absolute;
-  top: 25%;
+  top: 29%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -297,8 +316,9 @@ export default {
   position: absolute;
   /* top: 10%;
   left: 83%; */
-  top: 92.1%;
-  left: 90%;
+  /* top: 92.1%; */
+  top: 20%;
+  left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   background-color: rgb(236, 236, 236);

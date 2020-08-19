@@ -55,20 +55,36 @@ def async_get_response():
         # Get new PID
         duty, duty_pid = pid_update(T, t)
         low_water = False
+        mode = status.mode
     else:
         # ARDUINO
         if django_settings.ARDUINO_COMMS == "i2c":
-            data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 11)
+            # Read response, using register 0
+            data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 24)
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
         # debug_log(data_block)
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
-        data_list = struct.unpack('<2?2f1?', bytes(data_block))
+        data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
         T = data_list[2]
         duty = data_list[3]
-        duty_pid = [0, 0, 0]  # Can't get these from Arduino PID library
+        duty_pid = [None, None, None]  # Can't get these from Arduino PID library
         low_water = not data_list[4]
+        mode = data_list[5]
+
+        # Check if autotune has finished, if so update gains
+        last_response = ResponseModel.objects.order_by('-t')[0]
+        if (mode !=2) and (last_response.mode == 2):
+            # Update gains
+            settings.k_p = data_list[6]
+            settings.k_i = data_list[7]
+            settings.k_d = data_list[8]
+            settings.save()
+            # Save new status
+            status.mode = mode
+            status.save()
+
 
         # SCALE
         try:
@@ -80,20 +96,26 @@ def async_get_response():
             # m = None
             m = simulated_mass_sensor("simulated")
 
+
     # Record temperature if machine is on
-    # if status.on:
-    if True:
+    if status.on:
+    # if True:
         response = ResponseModel.objects.create(
             T_boiler=T,
             duty=duty,
             duty_p=duty_pid[0],
             duty_i=duty_pid[1],
             duty_d=duty_pid[2],
+            k_p=settings.k_p,
+            k_i=settings.k_i,
+            k_d=settings.k_d,
             m=m,
             T_setpoint=settings.T_set,
-            low_water=low_water
+            low_water=low_water,
+            mode=mode
         )
         response.save()
+
     return T
 
 
@@ -118,14 +140,14 @@ def async_update_scale(brew):
 
 
 @shared_task
-def async_update_microcontroller(on=None, brew=None):
+def async_update_microcontroller(on=None, brew=None, mode=0):
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
-            update_microcontroller_i2c(on, brew)
+            update_microcontroller_i2c(on, brew, mode)
         elif django_settings.ARDUINO_COMMS == "serial":
-            update_microcontroller_serial(on, brew)
+            update_microcontroller_serial(on, brew, mode)
 
-def update_microcontroller_i2c(on=None, brew=None):
+def update_microcontroller_i2c(on=None, brew=None, mode=0):
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
     
@@ -135,12 +157,12 @@ def update_microcontroller_i2c(on=None, brew=None):
         brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<2?4f', on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format( list(data_block) ) )
     # Write to register 1
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
 
-def update_microcontroller_serial(on=None, brew=None):
+def update_microcontroller_serial(on=None, brew=None, mode=0):
     """
     For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
     """
@@ -153,7 +175,7 @@ def update_microcontroller_serial(on=None, brew=None):
         brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<c2?4f', "X".encode(), on, brew, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<c2?4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     # serial_arduino.write(list(data_block))
     serial_arduino.write(data_block)
@@ -161,10 +183,25 @@ def update_microcontroller_serial(on=None, brew=None):
     debug_log("Response: {}".format(response))
 
 @shared_task
-def async_override_i2c(overrideOn=False, heaterOn=False, brewOn=False):
-    # Send i2C data to arduino
-    # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<3?', overrideOn, heaterOn, brewOn)
-    debug_log( "Override data to send: {}".format( list(data_block) ) )
-    # Write to register 2
-    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
+def async_override_i2c(heaterOn=False):
+    """
+    Control override/manual mode of arduino
+    """
+    if django_settings.SIMULATE_MACHINE == False:
+        # Structure packed here and unpacked using 'union' on Arduino
+        data_block = struct.pack('<?', heaterOn)
+        debug_log( "Override data to send: {}".format( list(data_block) ) )
+        # Write to register 2
+        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
+
+# @shared_task
+# def async_autotune_i2c(autotuneOn=False):
+#     """
+#     Control autotune mode of arduino
+#     """
+#     if django_settings.SIMULATE_MACHINE == False:
+#         # Structure packed here and unpacked using 'union' on Arduino
+#         data_block = struct.pack('<?', autotuneOn)
+#         debug_log( "Autotune data to send: {}".format( list(data_block) ) )
+#         # Write to register 3
+#         i2c_bus.write_i2c_block_data(i2c_addr_arduino, 3, list(data_block))

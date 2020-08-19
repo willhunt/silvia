@@ -71,10 +71,14 @@ void loop(void)  {
     if (T_boiler > SAFETY_TEMPERATURE) {
         digitalWrite(HEAT_RELAY_PIN, LOW);
     } else {
-        if (power_output.getStatus()) {
-            if (mode == 0) { // PID mode
-                pid.Compute();  // Method includes sampling time check
-                pid.relayControl();
+        if (power_output.getStatus() && mode == 0) { // PID mode
+            pid.Compute();  // Method includes sampling time check
+            pid.relayControl();
+        } else if (mode == 2) { // autotune
+            bool still_tuning = pid.tune();
+            // When tuning is finished it will restart the PID with new gains
+            if (!still_tuning) {
+                mode = 0;
             }
         }
     }

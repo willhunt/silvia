@@ -13,7 +13,6 @@ from .utils import debug_log
 import json
 from .tasks import async_override_i2c
 
-
 # Html Views -----------
 def index(request):
     return HttpResponse("You're at Silvia Mission Control")
@@ -123,15 +122,38 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
 class ManualControlView(views.APIView):
     """
-    Non model based view for turning the heater on and off manually
+    Non-model based view for turning the heater on and off manually
     """
     def get(self, request, format=None):
         """
         Turn heater on/off
         """
         debug_log("Manual control get request")
-        override_on = self.request.query_params.get('overrideOn', False)
-        heater_on = self.request.query_params.get('heaterOn', False)
-        brew_on = self.request.query_params.get('brewOn', False)
-        async_override_i2c.delay(overrideOn=override_on, heaterOn=heater_on, brewOn=brew_on)
-        return Response({"heater": heater_on, "brew": brew_on})
+        heater_on = string2bool(self.request.query_params.get('heaterOn', False))
+        # If machine is off and heater is activated, it must be turned on
+        status = StatusModel.objects.get(pk=1)
+        if heater_on and not status.on:
+            status.on = True
+            status.mode = 1
+            status.save()
+        async_override_i2c.delay(heaterOn=heater_on,)
+        return Response({"heater": heater_on})
+
+# class AutoTuneView(views.APIView):
+#     """
+#     Non-model based view for autotuning the pid (via microcontroller)
+#     """
+#     def get(self, request, format=None):
+#         """
+#         Turn autotune on/off
+#         """
+#         debug_log("Autotune get request")
+#         autotune_on = string2bool(self.request.query_params.get('autotuneOn', False))
+#         async_autotune_i2c.delay(autotuneOn=autotune_on)
+#         return Response({"autotune": autotune_on})
+
+def string2bool(input_string):
+    """
+    Converts string to boolena by checking if texts meaning is True, otherwise returns False.
+    """
+    return input_string in ['true', 'True', 'Yes', '1']

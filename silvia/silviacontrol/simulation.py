@@ -107,6 +107,7 @@ def pid_update(T_boiler, t):
     t_delta = (timezone.now() - t).total_seconds()
     error_delta = error - (setting.T_set - response.T_boiler)
 
+    duty_i_last = 0 if response.duty_i is None else response.duty_i
     duty_p = error * setting.k_p
     duty_i = (response.duty_i + error) * setting.k_i
     if duty_i > lim[1]:

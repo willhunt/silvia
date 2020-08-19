@@ -6,5 +6,6 @@ WaterLevelSensor::WaterLevelSensor(int sensor_pin) {
 };
 
 bool WaterLevelSensor::getLevel() {
+  // Returns True if water in tank
   return digitalRead(sensor_pin_);
 }; 

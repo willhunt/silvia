@@ -5,7 +5,7 @@
     <v-content>
       <v-container fluid class="mt-5">
         <v-row align="center" justify="center">
-          <router-view :machineOn="machineOn" :machineBrewing="machineBrewing"></router-view>
+          <router-view :machineOn="machineOn" :machineBrewing="machineBrewing" :machineMode="machineMode"></router-view>
         </v-row>
       </v-container>
     </v-content>
@@ -44,7 +44,8 @@ export default {
   data: function () {
     return {
       machineOn: false,
-      machineBrewing: false
+      machineBrewing: false,
+      machineMode: 0
     }
   },
 
@@ -101,11 +102,28 @@ export default {
         .catch(error => console.log(error))
     })
 
-    eventBus.$on('updateOnOff', () => {
+    // Handle mode change globally
+    eventBus.$on('changeMode', (mode) => {
+      const axiosData = {
+        id: 1,
+        brew: this.machineBrewing,
+        on: this.machineOn,
+        mode: mode
+      }
+
+      axios.put('/api/v1/status/1/', axiosData)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => console.log(error))
+    })
+
+    eventBus.$on('updateStatus', () => {
       axios.get('/api/v1/status/1/')
         .then(response => {
           this.machineOn = Boolean(response.data.on)
           this.machineBrewing = Boolean(response.data.brew)
+          this.machineMode = Number(response.data.mode)
         })
         .catch(error => console.log(error))
     })

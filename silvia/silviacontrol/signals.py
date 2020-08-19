@@ -176,11 +176,21 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
         session.set_end_time()
         session.save()
 
-    # Turn actual machine/brew on/off
-    async_update_microcontroller.delay(instance.on, instance.brew)
+    # Turn actual machine/brew on/off or mode change
+    async_update_microcontroller.delay(instance.on, instance.brew, instance.mode)
 
     # Turn scale on/off
     if instance.brew != prior_status.brew:
         async_update_scale.delay(instance.brew)
 
-    
+    # Modes
+    # Changing to autotune mode
+    # if (instance.mode == 2) and (instance.mode != prior_status.mode):
+    #     async_autotune_i2c.delay(autotuneOn=True)
+    # # Changing out of autotune mode
+    # elif (prior_status.mode == 2) and (instance.mode != prior_status.mode):
+    #     # This will fire after Arduino has stopped autotuning but should not have a negative affect
+    #     async_autotune_i2c.delay(autotuneOn=False)
+    # # Changing to manual mode
+    # elif (instance.mode == 1) and (instance.mode != prior_status.mode):
+

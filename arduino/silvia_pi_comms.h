@@ -18,6 +18,10 @@ struct responseFormat {
   double T_boiler;
   double duty;
   bool water_level;
+  char mode;
+  double Kp;
+  double Ki;
+  double Kd;
 };
 union responseData {
   responseFormat data;
@@ -27,6 +31,7 @@ union responseData {
 struct receivedFormat {
   bool power;
   bool brew;
+  char mode;
   double setpoint;
   double kp;
   double ki;

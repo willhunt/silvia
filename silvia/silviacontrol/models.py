@@ -27,14 +27,20 @@ class SettingsModel(models.Model):
 class StatusModel(models.Model):
     """
     Machine status model
+
+    Modes:
+        0 : PID control
+        1 : Manual/override
+        2 : PID auto tune
     """
     on = models.BooleanField(default=False)  # Machine on or off
     brew = models.BooleanField(default=False)  # Machine currently brewing
+    mode = models.IntegerField(default=0)  # Operational mode
 
     def __repr__(self):
         status = "On" if self.on else "Off"
         brewing = "Brewing" if self.brew else "Not brewing"
-        repr_str = ('Status: %s, %s' % (status, brewing))
+        repr_str = "Status: {0}, {1}, M{2}".format(status, brewing, self.mode)
         return repr_str
 
 
@@ -84,29 +90,13 @@ class ResponseModel(models.Model):
     duty_p = models.FloatField(blank=True, null=True)
     duty_i = models.FloatField(blank=True, null=True)   
     duty_d = models.FloatField(blank=True, null=True)
+    k_p = models.FloatField(blank=True, null=True)
+    k_i = models.FloatField(blank=True, null=True)   
+    k_d = models.FloatField(blank=True, null=True)
     m = models.FloatField(default=0, null=True)
     brewing = models.BooleanField(default=False)
     low_water = models.BooleanField(default=False)
-
-    # @classmethod
-    # def create(cls, T_boiler=None, t=None, T_amb=None, duty=None, duty_pid=[None, None, None], Vdot=None): 
-    #     """
-    #     ARUMENTS:
-    #     T_boiler (Float): Boiler temperature [degC]
-    #     t (datetime): Time of temperature reading
-    #     duty (Float): Controller output duty (0-1)
-    #     duty_pid (list of Float): Controller output breakdown (0-1) [duty_p, duty_i, duty_d]
-    #     Vdot (Float): Pump flow rate [l/mim]
-    #     """
-    #     try:
-    #         status = StatusModel.objects.filter(id=1)
-    #         brewing = status.brew
-    #     except:
-    #         brewing = False
-    #     if t is None:
-    #         t = timezone.now()
-
-    #     return cls(T_boiler=T_boiler, t=t, duty=duty, duty_pid=duty_pid, Vdot=Vdot)
+    mode = models.IntegerField(default=0)
 
     @property
     def response_date(self):

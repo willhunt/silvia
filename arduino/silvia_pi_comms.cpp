@@ -24,6 +24,10 @@ void update_data_buffer() {
   response_data.data.brew = brew_output.getStatus();
   response_data.data.duty = pid.getDuty();
   response_data.data.water_level = water_sensor.getLevel();
+  response_data.data.mode = mode;
+  response_data.data.Kp = pid.GetKp();
+  response_data.data.Ki = pid.GetKi();
+  response_data.data.Kd = pid.GetKd();
 }
 
 void check_serial_calls() {
@@ -87,11 +91,13 @@ void receiveEvent(int numBytes) {
   if (DEBUG) {
     Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
   }
-
   // Check register
   if (Wire.available()) {
     // Get register (1st byte sent)
     int i2c_register = (byte)Wire.read();
+    if (DEBUG) {
+      Serial.print("    Register: "); Serial.println(i2c_register);
+    }
     // Register 1 to update
     if (i2c_register == 1) {
       int index = 0;
@@ -99,14 +105,22 @@ void receiveEvent(int numBytes) {
         // loop through all but the last
         // Data here is written directly to memory location for use in PID
         received_data.buffer[index] = (byte)Wire.read();
-        // Serial.print(received_data.buffer[index]);
         index++;
       }
-      // Serial.println("--end");
-
       if (DEBUG) {
         Serial.print("    Brew: "); Serial.println(received_data.data.brew);
-        Serial.print("    kp: "); Serial.println(received_data.data.kp);
+        Serial.print("    Mode: "); Serial.println(received_data.data.mode);
+      }
+      // Mode change
+      if (received_data.data.mode == 0) { // Change to PID or PID settings
+        mode = 0;
+        pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+      } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
+        mode = 1;
+        pid.off();
+      } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
+        mode = 2;
+        pid.off();
       }
       // Check if power needs to be toggled
       if (received_data.data.power != power_output.getStatus()) {
@@ -127,35 +141,21 @@ void receiveEvent(int numBytes) {
       }
       // Check if brew needs to be toggled
       if (received_data.data.brew != brew_output.getStatus()) {
-        // toggle brew
-        if (received_data.data.brew)
+        // Toggle brew if either in manual mode or water in tank
+        if (received_data.data.brew && ( (mode == 1) || water_sensor.getLevel() ))  
           brew_output.on();
         else
           brew_output.off();
       }
     } else if (i2c_register == 2) { // Override request
-      bool overrideOn = (byte)Wire.read();
       bool heaterOn = (byte)Wire.read();
-      bool brewOn = (byte)Wire.read();
-      if (overrideOn) {
-        mode = 2;  // Manual
-        pid.off();
-        power_output.on();
+      if (mode == 1) {  // Check in manual mode
         if (heaterOn) {
+          power_output.on();
           pid.overrideOutput(true);
         }
-        if (brewOn) {
-          brew_output.on();
-        }
-      } else {
-        mode = 0; // PID
-        pid.overrideOutput(false);
-        brew_output.off();
-        if (power_output.getStatus()) {
-          pid.SetMode(AUTOMATIC);  // Resume with prior settings
-        }
       }
-    }
+    } 
   }  // if(Wire.available)
 }
 

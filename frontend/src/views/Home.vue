@@ -1,7 +1,7 @@
 <template>
 
   <div class="home">
-    <MachineInterface :machineOn="machineOn" :machineBrewing="machineBrewing"/>
+    <MachineInterface :machineOn="machineOn" :machineBrewing="machineBrewing" :machineMode="machineMode" />
   </div>
 
 </template>
@@ -17,7 +17,8 @@ export default {
   },
   props: {
     machineOn: Boolean,
-    machineBrewing: Boolean
+    machineBrewing: Boolean,
+    machineMode: Number
   }
 }
 
