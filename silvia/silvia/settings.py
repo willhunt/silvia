@@ -184,7 +184,7 @@ WHITENOISE_ROOT = os.path.join(STATIC_ROOT, 'silviacontrol/vue')
 
 # App in simulation mode or not
 os_details = os.uname()
-if os_details.nodename is "silvia":  # Raspberry pi
+if os_details.nodename == "silvia":  # Raspberry pi
     SIMULATE_MACHINE = False
 else:  # Development machine
     SIMULATE_MACHINE = True
