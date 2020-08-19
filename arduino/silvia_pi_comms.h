@@ -18,7 +18,7 @@ struct responseFormat {
   double T_boiler;
   double duty;
   bool water_level;
-  char mode;
+  signed char mode;
   double Kp;
   double Ki;
   double Kd;
