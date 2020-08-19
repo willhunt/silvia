@@ -9,7 +9,7 @@
 #include "silvia_water_sensor.h"
 
 #ifndef DEBUG
-#define DEBUG false
+#define DEBUG true
 #endif  // DEBUG
 
 struct responseFormat {

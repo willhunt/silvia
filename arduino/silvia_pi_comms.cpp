@@ -108,6 +108,7 @@ void receiveEvent(int numBytes) {
         index++;
       }
       if (DEBUG) {
+        Serial.print("    Power: "); Serial.println(received_data.data.power);
         Serial.print("    Brew: "); Serial.println(received_data.data.brew);
         Serial.print("    Mode: "); Serial.println(received_data.data.mode);
       }
@@ -130,13 +131,14 @@ void receiveEvent(int numBytes) {
             Serial.println("Turn on");
           }
           power_output.on();
-          pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+          // pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
         } else {
           if (DEBUG) {
             Serial.println("Turn off");
           }
           // power_output_ref->off();
           power_output.off();
+          pid.off();
         }
       }
       // Check if brew needs to be toggled

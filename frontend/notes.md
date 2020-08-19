@@ -23,7 +23,7 @@ Test production using `http-server`:
 ```bash
 $ cd frontend
 $ npm run build
-$ http-server ./build
+$ http-server ../silvia/silviacontrol/static/silviacontrol/vue
 ```
 
 # Generate PWA assets

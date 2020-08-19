@@ -157,7 +157,7 @@ def update_microcontroller_i2c(on=None, brew=None, mode=0):
         brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<2?c4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format( list(data_block) ) )
     # Write to register 1
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
@@ -175,7 +175,7 @@ def update_microcontroller_serial(on=None, brew=None, mode=0):
         brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<c2?4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<c2?c4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     # serial_arduino.write(list(data_block))
     serial_arduino.write(data_block)
