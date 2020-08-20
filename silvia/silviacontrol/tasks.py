@@ -64,22 +64,19 @@ def async_get_response():
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
+
         debug_log( "Data received: {}".format( list(data_block) ) )
-        # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
-        T = data_list[2]
-        duty = data_list[3]
+        [power, brew, T, duty, low_water, mode, Kp, Ki, Kd] = data_list   
         duty_pid = [None, None, None]  # Can't get these from Arduino PID library
-        low_water = not data_list[4]
-        mode = data_list[5]
 
         # Check if autotune has finished, if so update gains
         last_response = ResponseModel.objects.order_by('-t')[0]
         if (mode !=2) and (last_response.mode == 2):
             # Update gains
-            settings.k_p = data_list[6]
-            settings.k_i = data_list[7]
-            settings.k_d = data_list[8]
+            settings.k_p = Kp
+            settings.k_i = Ki
+            settings.k_d = Kd
             settings.save()
             # Save new status
             status.mode = mode
@@ -157,7 +154,7 @@ def update_microcontroller_i2c(on=None, brew=None, mode=0):
         brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<2?i4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format( list(data_block) ) )
     # Write to register 1
     i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
@@ -175,7 +172,7 @@ def update_microcontroller_serial(on=None, brew=None, mode=0):
         brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<c2?c4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<c2?B4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     # serial_arduino.write(list(data_block))
     serial_arduino.write(data_block)
