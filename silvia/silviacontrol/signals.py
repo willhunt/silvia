@@ -139,6 +139,16 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     When saving status model turn temperature update on/off
     When saving status model create or end schedule as necessary
     """
+    prior_status = StatusModel.objects.get(pk=1)
+    # Fill in values not sent
+    if not hasattr(instance, "on"):
+        instance.on = prior_status.on
+    if not hasattr(instance, "brew"):
+        instance.brew = prior_status.brew
+    if not hasattr(instance, "mode"):
+        instance.mode = prior_status.mode
+
+    # Turn on/off periodic response
     try:
         periodic_response = PeriodicTask.objects.get(name="Get Response")
         periodic_response.enabled = instance.on
@@ -146,26 +156,17 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     except:
         raise ValueError("Save sample time to create 'Get Response' periodic task")
 
-    prior_status = StatusModel.objects.get(pk=1)
-    # Fill in values not sent
-    if not instance.on:
-        instance.on = prior_status.on
-    if not instance.brew:
-        instance.brew = prior_status.brew
-    if not instance.mode:
-        instance.mode = prior_status.mode
-
     # Implement some rules on on/brew combinations
     if instance.on != prior_status.on:  # Ensure brew off if changing on/off
         instance.brew = False
     elif instance.brew != prior_status.brew:  # Ensure machine on if changing brew
         instance.on = True
 
+    # Start/stop sessions
     if instance.on and not prior_status.on:  # Turning machine on
         # Create a new session
         session = SessionModel()
         session.save()
-
         # If simulating, set temperature to 20degC
         if django_settings.SIMULATE_MACHINE:
             response = ResponseModel.objects.create(
@@ -176,7 +177,6 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
                 duty_d=0
             )
             response.save()
-
     elif prior_status.on and not instance.on:  # If machine is being turned off
         # Get current session
         session = SessionModel.objects.filter(active=True).order_by('-id')[0]
@@ -189,15 +189,3 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     # Turn scale on/off
     if instance.brew != prior_status.brew:
         async_update_scale.delay(instance.brew)
-
-    # Modes
-    # Changing to autotune mode
-    # if (instance.mode == 2) and (instance.mode != prior_status.mode):
-    #     async_autotune_i2c.delay(autotuneOn=True)
-    # # Changing out of autotune mode
-    # elif (prior_status.mode == 2) and (instance.mode != prior_status.mode):
-    #     # This will fire after Arduino has stopped autotuning but should not have a negative affect
-    #     async_autotune_i2c.delay(autotuneOn=False)
-    # # Changing to manual mode
-    # elif (instance.mode == 1) and (instance.mode != prior_status.mode):
-
