@@ -155,6 +155,8 @@ void receiveEvent(int numBytes) {
         if (heaterOn) {
           power_output.on();
           pid.overrideOutput(true);
+        } else {
+          pid.overrideOutput(false);
         }
       }
     } 
