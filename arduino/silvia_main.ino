@@ -36,7 +36,7 @@ Notes:
 // 0 : PID
 // 1 : Manual
 // 2 : PID autotune
-int mode = 0;
+unsigned char mode = 0;
 
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);

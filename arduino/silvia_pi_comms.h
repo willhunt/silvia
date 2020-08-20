@@ -53,7 +53,7 @@ extern TemperatureController pid;
 // 0 : PID
 // 1 : Manual
 // 2 : PID autotune
-extern int mode;
+extern unsigned char mode;
 
 void pi_comms_setup(int i2c_addr);
 void update_data_buffer();
