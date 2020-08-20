@@ -82,5 +82,5 @@ void loop(void)  {
             }
         }
     }
-    check_serial_calls();
+    // check_serial_calls();
 }

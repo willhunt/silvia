@@ -64,7 +64,7 @@ def async_get_response():
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
-        # debug_log(data_block)
+        debug_log( "Data received: {}".format( list(data_block) ) )
         # Format '<2?2f' => Little endian, 2xbool, 2xfloat, 1xbool
         data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
         T = data_list[2]
