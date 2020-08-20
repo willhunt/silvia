@@ -147,6 +147,13 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
         raise ValueError("Save sample time to create 'Get Response' periodic task")
 
     prior_status = StatusModel.objects.get(pk=1)
+    # Fill in values not sent
+    if not instance.on:
+        instance.on = prior_status.on
+    if not instance.brew:
+        instance.brew = prior_status.brew
+    if not instance.mode:
+        instance.mode = prior_status.mode
 
     # Implement some rules on on/brew combinations
     if instance.on != prior_status.on:  # Ensure brew off if changing on/off
