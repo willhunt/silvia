@@ -194,3 +194,40 @@ Then add users to i2c group
 $ sudo adduser pi i2c
 $ sudo adduser www-data i2c
 ```
+## Arduino Flashing
+Install arduino command line (cli) tool to flash it from the raspberry pi
+Reference [https://siytek.com/arduino-cli-raspberry-pi/](https://siytek.com/arduino-cli-raspberry-pi/)
+
+Install
+```bash
+$ cd ~
+$ curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+```
+Add to shell path
+```bash
+$ nano ~/.bashrc
+```
+Add this at the end:
+```
+export PATH=$PATH:/home/pi/bin
+```
+```bash
+sudo reboot
+```
+Reconnect, then create a configuration file, update board index and libraries:
+```bash
+$ arduino-cli config init
+$ arduino-cli core update-index
+$ arduino-cli core install arduino:avr
+$ arduino-cli lib install PID
+$ cd ~/Arduino/libraries
+$ git clone https://github.com/br3ttb/Arduino-PID-AutoTune-Library.git
+$ mv Arduino-PID-AutoTune-Library/PID_AutoTune_v0 .
+$ sudo rm -r Arduino-PID-AutoTune-Library/
+```
+Upload sketch to Arduino:
+```bash
+$ cd ~/silvia
+$ chmod +x update_arduino.sh 
+$ ./update_arduino.sh
+```
