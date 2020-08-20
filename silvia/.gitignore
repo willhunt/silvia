@@ -67,3 +67,6 @@ celerybeat-schedule.db
 .venv
 venv/
 ENV/
+
+# Static files
+staticfiles/
