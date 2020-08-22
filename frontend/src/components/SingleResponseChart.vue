@@ -1,8 +1,23 @@
 <template>
   <div>
-    <v-card max-height="450" class="pa-6 mb-4" min-width=750 max-width=1600 >
-      <response-chart :chartData="graphData" :chartOptions="graphOptions">
-      </response-chart>
+    <v-card class="mb-4" min-width=750 max-width=1600>
+      <response-chart class="px-6 pt-6 pb-1" :chartData="graphData" :chartOptions="graphOptions"></response-chart>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="info" @click="dataHidden=!dataHidden">data</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-if="!dataHidden" class="mx-auto mb-4" min-width=750 max-width=1600>
+      <v-data-table class="mx-4"
+        :headers="headers"
+        :items="tableData"
+        dense>
+      </v-data-table>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="secondary" disabled>export</v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -45,20 +60,6 @@ export default {
               suggestedMax: 110
             }
           },
-          // {
-          //   id: 'duty-axis',
-          //   position: 'right',
-          //   reverse: true,
-          //   display: true,
-          //   scaleLabel: {
-          //     display: true,
-          //     labelString: 'Duty [%]'
-          //   },
-          //   ticks: {
-          //     suggestedMin: 0,
-          //     suggestedMax: 100
-          //   }
-          // },
           {
             id: 'mass-axis',
             position: 'right',
@@ -76,7 +77,14 @@ export default {
         showLines: true,
         maintainAspectRatio: false,
         responsive: true
-      }
+      },
+      dataHidden: true,
+      headers: [
+        { text: 'Time Stamp', value: 'ts' },
+        { text: 'Time', value: 't' },
+        { text: 'Duty', value: 'duty' },
+        { text: 'Temperature', value: 'T_boiler' }
+      ]
     }
   },
   props: {
@@ -151,6 +159,25 @@ export default {
       graphData.datasets.push(datasetS)
       graphData.datasets.push(datasetM)
       return graphData
+    },
+    tableData: function () {
+      const session = Object.keys(this.data)[0]
+      const tableData = []
+      const t0 = new Date(this.data[session][0].t)
+      this.data[session].forEach((responseItem, responseIndex) => {
+        tableData.push({
+          ts: responseItem.t,
+          t: (new Date(responseItem.t) - t0) / 1000,
+          duty: responseItem.duty,
+          T_boiler: responseItem.T_boiler
+        })
+      })
+      return tableData
+    }
+  },
+  methods: {
+    showData: function () {
+      this.hideData = false
     }
   }
 }
