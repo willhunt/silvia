@@ -90,8 +90,8 @@ def async_get_response():
             data_scale = request_scale.json()
             m = data_scale["mass"]
         except requests.exceptions.RequestException as e:
-            # m = None
-            m = simulated_mass_sensor("simulated")
+            m = None
+            # m = simulated_mass_sensor("simulated")
 
 
     # Record temperature if machine is on
