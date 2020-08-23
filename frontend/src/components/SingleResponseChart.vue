@@ -16,7 +16,7 @@
       </v-data-table>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="secondary" disabled>export</v-btn>
+        <v-btn color="secondary" @click="exportData">export</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -178,6 +178,18 @@ export default {
   methods: {
     showData: function () {
       this.hideData = false
+    },
+    exportData: function () {
+      // window.localStorage.setItem('data', JSON.stringify(this.tableData))
+      const data = JSON.stringify(this.tableData)
+      const blob = new Blob([data], { type: 'text/plain' })
+      const e = document.createEvent('MouseEvents')
+      const a = document.createElement('a')
+      a.download = 'data.json'
+      a.href = window.URL.createObjectURL(blob)
+      a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+      e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+      a.dispatchEvent(e)
     }
   }
 }
