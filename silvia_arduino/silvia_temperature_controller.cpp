@@ -32,7 +32,7 @@ void TemperatureController::relayControl() {
         // Increment in step of window size
         tpc_window_start_ += tpc_window_size_;
     }
-    if (*output_ > now - tpc_window_start_) {
+    if (*output_ >= now - tpc_window_start_) {
         digitalWrite(relay_pin_, HIGH);
     } else {
         digitalWrite(relay_pin_, LOW);
