@@ -42,8 +42,8 @@ class Command(BaseCommand):
             button_brew.when_released = trigger_brew_stop
 
             # Check button state and update database
-            on = button_power.is_pressed()
-            brew = button_brew.is_pressed()
+            on = button_power.is_pressed
+            brew = button_brew.is_pressed
             status = StatusModel.objects.get(pk=1)
             status.on = on
             status.brew = brew
