@@ -30,13 +30,10 @@ void TemperatureController::relayControl() {
         // Increment in step of window size
         tpc_window_start_ += tpc_window_size_;
     }
-    Serial.println("Relay control");
     if (*output_ >= now - tpc_window_start_) {
         digitalWrite(relay_pin_, HIGH);
-        Serial.println("Relay high");
     } else {
         digitalWrite(relay_pin_, LOW);
-        Serial.println("Relay low");
     }
 }
 

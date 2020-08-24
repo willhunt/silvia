@@ -155,9 +155,9 @@ void receiveEvent(int numBytes) {
           brew_output.off();
       }
     } else if (i2c_register == 2) { // Override request
-      int heaterOn = (byte)Wire.read();
+      bool heaterOn = (bool)Wire.read();
       if (mode == 1) {  // Check in manual mode
-        if (heaterOn == 1) {
+        if (heaterOn) {
           power_output.on();
           pid.overrideOutput(true);
         } else {
