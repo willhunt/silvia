@@ -74,7 +74,7 @@ void TemperatureController::overrideOutput(bool on) {
     if (on) {
         *output_ = tpc_window_size_;
     } else {
-        *output_ = 0;
+        *output_ = 0.0;
     }
 }
 
