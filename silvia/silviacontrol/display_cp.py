@@ -35,7 +35,10 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
                      .resize((self.width, self.height), Image.ANTIALIAS) \
                      .convert('1')
         self.image(image)
-        self.show()
+        try:
+            self.show()
+        except Exception as e:
+            debug_log("Screen connection error")
 
     def showTemperature(self, T, T_set):
         image = Image.new('1', (self.width, self.height))

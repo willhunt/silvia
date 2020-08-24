@@ -69,11 +69,13 @@ void loop(void)  {
 
     // Ensure temperature never goes above safety level
     if (T_boiler > SAFETY_TEMPERATURE) {
-        digitalWrite(HEAT_RELAY_PIN, LOW);
+        pid_output = 0.0;
+        if (DEBUG) {
+            Serial.println("Over temperature limit");
+        }
     } else {
         if (power_output.getStatus() && mode == 0) { // PID mode
             pid.Compute();  // Method includes sampling time check
-            pid.relayControl();
         } else if (mode == 2) { // autotune
             bool still_tuning = pid.tune();
             // When tuning is finished it will restart the PID with new gains
@@ -85,5 +87,6 @@ void loop(void)  {
             }
         }
     }
+    pid.relayControl();
     // check_serial_calls();
 }

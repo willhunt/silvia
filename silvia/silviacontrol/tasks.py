@@ -38,7 +38,7 @@ else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
 
 
-@shared_task(base=QueueOnce)
+@shared_task(base=QueueOnce, once={'graceful': True})
 def async_get_response():
     """
     Get sensor and PID data from microcontroller and wireless scale
