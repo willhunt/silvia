@@ -22,6 +22,7 @@ TemperatureController::TemperatureController(
     auto_tuner_->SetNoiseBand(ATUNE_NOISE);
     auto_tuner_->SetOutputStep(ATUNE_STEP);
     auto_tuner_->SetLookbackSec((int)ATUNE_LOOKBACK);
+    auto_tuner_->SetControlType(1); //PID 
 }
 
 void TemperatureController::relayControl() {
@@ -81,6 +82,11 @@ void TemperatureController::setupTuner() {
     // Set output to a start guess
     *output_ = tpc_window_size_;
     resume();
+}
+
+void TemperatureController::cancelTuner() {
+    // Set output to a start guess
+    auto_tuner_->Cancel();
 }
 
 bool TemperatureController::tune() {

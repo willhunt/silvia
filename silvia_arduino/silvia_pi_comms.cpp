@@ -114,9 +114,13 @@ void receiveEvent(int numBytes) {
       }
       // Mode change
       if (received_data.data.mode == 0) { // Change to PID or PID settings
+        if (mode = 2)
+          pid.cancelTuner();
         mode = 0;
         pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
       } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
+        if (mode = 2)
+          pid.cancelTuner();
         mode = 1;
         pid.off();
       } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
