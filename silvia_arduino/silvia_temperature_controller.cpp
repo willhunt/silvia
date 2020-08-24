@@ -80,7 +80,7 @@ void TemperatureController::overrideOutput(bool on) {
 void TemperatureController::setupTuner() {
     // Set output to a start guess
     *output_ = 100.0;
-    // off();
+    resume();
 }
 
 bool TemperatureController::tune() {

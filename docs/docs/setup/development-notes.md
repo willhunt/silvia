@@ -58,6 +58,8 @@ Then view serial output:
 ```bash
 $ screen /dev/ttyACM0 9600
 ```
+To stop:
+'CTRL+a' and then 'k' then 'y'
 
 ## Scale
 
