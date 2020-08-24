@@ -79,6 +79,9 @@ void loop(void)  {
             // When tuning is finished it will restart the PID with new gains
             if (!still_tuning) {
                 mode = 0;
+                if (DEBUG) {
+                    Serial.println("Tuning finished");
+                }
             }
         }
     }

@@ -85,6 +85,7 @@ bool TemperatureController::tune() {
         return false;
     }
     tuning_in_progress_ = true;
+    return tuning_in_progress_;
 }
 
 bool TemperatureController::getTuningInProgress() {

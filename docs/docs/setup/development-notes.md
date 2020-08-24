@@ -49,6 +49,15 @@ Check log errors usuing:
 $ nano /var/log/apache2/error.log
 ```
 
+## Arduino from Pi
+See serial output. If not installed, install screen:
+```bash
+$ sudo apt install screen
+```
+Then view serial output:
+```bash
+$ screen /dev/ttyACM0 9600
+```
 
 ## Scale
 
