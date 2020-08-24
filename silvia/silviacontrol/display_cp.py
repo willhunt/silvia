@@ -1,4 +1,5 @@
 from django.conf import settings as django_settings
+from silviacontrol.utils import debug_log
 from board import SCL, SDA
 import busio
 import board
@@ -59,7 +60,10 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
             "[{0:.0f}{1}C]".format(T_set, u'\N{DEGREE SIGN}'), font=self.font_sub, fill=255)
 
         self.image(image)
-        self.show()
+        try:
+            self.show()
+        except Exception as e:
+            debug_log("Screen connection error")
 
     def showBlank(self):
         self.fill(0)

@@ -82,13 +82,13 @@
     <div v-if="machineMode != 0">
       <v-row align="center">
         <v-col cols="auto" class="px-1">
-          <v-btn color="secondary" @click="toggleHeater">
-            <div v-if="heaterOn">
-              Heater Off
-            </div>
-            <div v-else>
-              Heater On
-            </div>
+          <v-btn color="secondary" @click="toggleHeaterOn">
+            Heat On
+          </v-btn>
+        </v-col>
+        <v-col cols="auto" class="px-1">
+          <v-btn color="secondary" @click="toggleHeaterOff">
+            Heat Off
           </v-btn>
         </v-col>
         <v-col cols="auto" class="px-1">
@@ -204,6 +204,30 @@ export default {
       axios.get('/api/v1/override/', getParams)
         .then(response => {
           this.heaterOn = !this.heaterOn
+        })
+        .catch(error => console.log(error))
+    },
+    toggleHeaterOn () {
+      const getParams = {
+        params: {
+          heaterOn: true
+        }
+      }
+      axios.get('/api/v1/override/', getParams)
+        .then(response => {
+          this.heaterOn = true
+        })
+        .catch(error => console.log(error))
+    },
+    toggleHeaterOff () {
+      const getParams = {
+        params: {
+          heaterOn: false
+        }
+      }
+      axios.get('/api/v1/override/', getParams)
+        .then(response => {
+          this.heaterOn = false
         })
         .catch(error => console.log(error))
     },
