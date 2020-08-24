@@ -72,9 +72,9 @@ int TemperatureController::getRelayPin() {
 
 void TemperatureController::overrideOutput(bool on) {
     if (on) {
-        digitalWrite(relay_pin_, HIGH);
+        *output_ = tpc_window_size_;
     } else {
-        digitalWrite(relay_pin_, LOW);
+        *output_ = 0;
     }
 }
 
