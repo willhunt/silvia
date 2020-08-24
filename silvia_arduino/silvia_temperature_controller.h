@@ -5,9 +5,9 @@
 #define DEBUG true
 #endif  // DEBUG
 
-#define ATUNE_NOISE 1
-#define ATUNE_STEP 50
-#define ATUNE_LOOKBACK 20
+#define ATUNE_NOISE 0.5 // Temperature noise band
+#define ATUNE_STEP 20 // Change in temperature
+#define ATUNE_LOOKBACK 100 // Timestep for peak identification
 
 #include <Arduino.h>
 #include <PID_v1.h>
@@ -39,7 +39,8 @@ class TemperatureController : public PID {
     double getSetpoint();
     double getDuty();
     int getRelayPin();
-    void TemperatureController::overrideOutput(bool on);
+    void overrideOutput(bool on);
+    void setupTuner();
     bool tune();
     bool getTuningInProgress();
 };

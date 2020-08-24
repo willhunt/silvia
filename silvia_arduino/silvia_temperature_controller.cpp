@@ -13,13 +13,15 @@ TemperatureController::TemperatureController(
     tpc_window_start_ = millis();
     tpc_window_size_ = 1000;
 
+    // Save private members for reference
+    output_ = Output;
+    setpoint_ = Setpoint;
+
     // Autotuner
     auto_tuner_ = new PID_ATune(Input, Output);
     auto_tuner_->SetNoiseBand(ATUNE_NOISE);
     auto_tuner_->SetOutputStep(ATUNE_STEP);
     auto_tuner_->SetLookbackSec((int)ATUNE_LOOKBACK);
-    // Set output to a start guess
-    *Output = 100.0;
 }
 
 void TemperatureController::relayControl() {
@@ -75,6 +77,12 @@ void TemperatureController::overrideOutput(bool on) {
     }
 }
 
+void TemperatureController::setupTuner() {
+    // Set output to a start guess
+    *output_ = 100.0;
+    // off();
+}
+
 bool TemperatureController::tune() {
     // byte val = (auto_tuner_->Runtime());
     int val = auto_tuner_->Runtime();
@@ -82,9 +90,9 @@ bool TemperatureController::tune() {
         // Turn pid back on with tuned values (and existing setpoint)
         on(getSetpoint(), auto_tuner_->GetKp(), auto_tuner_->GetKi(), auto_tuner_->GetKd());
         tuning_in_progress_ = false;
-        return false;
+    } else {
+        tuning_in_progress_ = true;
     }
-    tuning_in_progress_ = true;
     return tuning_in_progress_;
 }
 

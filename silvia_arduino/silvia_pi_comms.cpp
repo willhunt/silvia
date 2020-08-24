@@ -121,7 +121,7 @@ void receiveEvent(int numBytes) {
         pid.off();
       } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
         mode = 2;
-        pid.off();
+        pid.setupTuner();
       }
       // Check if power needs to be toggled
       if (received_data.data.power != power_output.getStatus()) {
