@@ -123,6 +123,7 @@ void receiveEvent(int numBytes) {
           pid.cancelTuner();
         mode = 1;
         pid.off();
+        pid.overrideOutput(false);
       } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
         mode = 2;
         pid.setupTuner();
