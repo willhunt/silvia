@@ -6,16 +6,14 @@ TemperatureController::TemperatureController(
     int relay_pin
 )   // Call base class constructor
     : PID(Input, Output, Setpoint, Kp, Ki, Kd, POn, ControllerDirection),
-    relay_pin_(relay_pin), tpc_window_start_(millis()), output_(Output), setpoint_(Setpoint)
+    relay_pin_(relay_pin),
+    tpc_window_start_(millis()),
+    output_(Output),
+    setpoint_(Setpoint),
+    tpc_window_size_(1000)
 {
     pinMode(relay_pin_, OUTPUT);
-    SetOutputLimits(0, tpc_window_size_);
-    tpc_window_start_ = millis();
-    tpc_window_size_ = 1000;
-
-    // Save private members for reference
-    output_ = Output;
-    setpoint_ = Setpoint;
+    SetOutputLimits(0, tpc_window_size_);    
 
     // Autotuner
     auto_tuner_ = new PID_ATune(Input, Output);
