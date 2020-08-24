@@ -60,7 +60,11 @@ def async_get_response():
         # ARDUINO
         if django_settings.ARDUINO_COMMS == "i2c":
             # Read response, using register 0
-            data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 24)
+            try:
+                data_block = i2c_bus.read_i2c_block_data(i2c_addr_arduino, 0, 24)
+            except Exception as e:
+                debug_log("Cannot write to microcontroller - response")
+                return False
         elif django_settings.ARDUINO_COMMS == "serial":
             serial_arduino.write("R".encode())
             data_block = serial_arduino.read(size=11)
@@ -157,7 +161,10 @@ def update_microcontroller_i2c(on=None, brew=None, mode=0):
     data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format( list(data_block) ) )
     # Write to register 1
-    i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
+    try:
+        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 1, list(data_block))
+    except Exception as e:
+        debug_log("Cannot write to microcontroller - update")
 
 def update_microcontroller_serial(on=None, brew=None, mode=0):
     """
@@ -189,16 +196,8 @@ def async_override_i2c(heaterOn=False):
         data_block = struct.pack('<?', heaterOn)
         debug_log( "Override data to send: {}".format( list(data_block) ) )
         # Write to register 2
-        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
-
-# @shared_task
-# def async_autotune_i2c(autotuneOn=False):
-#     """
-#     Control autotune mode of arduino
-#     """
-#     if django_settings.SIMULATE_MACHINE == False:
-#         # Structure packed here and unpacked using 'union' on Arduino
-#         data_block = struct.pack('<?', autotuneOn)
-#         debug_log( "Autotune data to send: {}".format( list(data_block) ) )
-#         # Write to register 3
-#         i2c_bus.write_i2c_block_data(i2c_addr_arduino, 3, list(data_block))
+        try:
+            i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
+        except Exception as e:
+            debug_log("Cannot write to microcontroller - override")
+        
