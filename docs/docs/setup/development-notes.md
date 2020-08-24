@@ -61,6 +61,13 @@ $ screen /dev/ttyACM0 9600
 To stop:
 'CTRL+a' and then 'k' then 'y'
 
+## Pi Errors
+I/O error fix (read only file system):
+```bash
+$ sudo touch /boot/forcefsck
+$ sudo shutdown -r now
+```
+
 ## Scale
 
 ### Display Images
