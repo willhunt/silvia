@@ -77,8 +77,8 @@ void TemperatureController::overrideOutput(bool on) {
 
 bool TemperatureController::tune() {
     // byte val = (auto_tuner_->Runtime());
-    byte val = auto_tuner_->Runtime();
-    if (val == 0) {  // Autotune has finished
+    int val = auto_tuner_->Runtime();
+    if (val == 1) {  // Autotune has finished
         // Turn pid back on with tuned values (and existing setpoint)
         on(getSetpoint(), auto_tuner_->GetKp(), auto_tuner_->GetKi(), auto_tuner_->GetKd());
         tuning_in_progress_ = false;
