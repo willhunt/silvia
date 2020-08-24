@@ -41,7 +41,7 @@ class TemperatureController : public PID {
     int getRelayPin();
     void overrideOutput(bool on);
     void setupTuner();
-    void cancelTuner()
+    void cancelTuner();
     bool tune();
     bool getTuningInProgress();
 };
