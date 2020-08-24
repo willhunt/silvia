@@ -79,7 +79,7 @@ void TemperatureController::overrideOutput(bool on) {
 
 void TemperatureController::setupTuner() {
     // Set output to a start guess
-    *output_ = 100.0;
+    *output_ = tpc_window_size_;
     resume();
 }
 
@@ -92,6 +92,7 @@ bool TemperatureController::tune() {
         tuning_in_progress_ = false;
     } else {
         tuning_in_progress_ = true;
+        relayControl();
     }
     return tuning_in_progress_;
 }
