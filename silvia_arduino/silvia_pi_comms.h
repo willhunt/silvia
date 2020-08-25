@@ -57,6 +57,8 @@ extern unsigned char mode;
 
 void pi_comms_setup(int i2c_addr);
 void update_data_buffer();
+void response_actions();
+void heater_on_request(bool heaterOn);
 // Serial
 void check_serial_calls();
 void send_serial_response();

@@ -66,7 +66,7 @@ def async_get_response():
                 debug_log("Cannot write to microcontroller - response")
                 return False
         elif django_settings.ARDUINO_COMMS == "serial":
-            serial_arduino.write("R".encode())
+            serial_arduino.write(struct.pack('<h', "R".encode()))
             data_block = serial_arduino.read(size=11)
 
         debug_log( "Data received: {}".format( list(data_block) ) )
@@ -86,7 +86,6 @@ def async_get_response():
             status.mode = mode
             status.save()
 
-
         # SCALE
         try:
             request_scale = requests.get("http://192.168.0.12/mass")
@@ -96,7 +95,6 @@ def async_get_response():
         except requests.exceptions.RequestException as e:
             m = None
             # m = simulated_mass_sensor("simulated")
-
 
     # Record temperature if machine is on
     if status.on:
@@ -179,20 +177,31 @@ def update_microcontroller_serial(on=None, brew=None, mode=0):
         brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<c2?B4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<h2?B4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
-    # serial_arduino.write(list(data_block))
-    serial_arduino.write(data_block)
-    response = serial_arduino.readline()
-    debug_log("Response: {}".format(response))
+    try:
+        serial_arduino.write(data_block)
+        response = serial_arduino.readline()
+        debug_log("Response: {}".format(response))
+    except Exception as e:
+        debug_log("Cannot write to microcontroller - update")
 
 @shared_task
+def async_override_microcontroller(heaterOn=False):
+    """
+    Control override/manual mode of arduino
+    """
+    if django_settings.SIMULATE_MACHINE == False:
+        if django_settings.ARDUINO_COMMS == "i2c":
+            async_override_i2c(heaterOn)
+        elif django_settings.ARDUINO_COMMS == "serial":
+            async_override_serial(heaterOn)
+
 def async_override_i2c(heaterOn=False):
     """
     Control override/manual mode of arduino
     """
     if django_settings.SIMULATE_MACHINE == False:
-        # Structure packed here and unpacked using 'union' on Arduino
         data_block = struct.pack('<?', heaterOn)
         debug_log( "Override data to send: {}".format( list(data_block) ) )
         # Write to register 2
@@ -201,3 +210,14 @@ def async_override_i2c(heaterOn=False):
         except Exception as e:
             debug_log("Cannot write to microcontroller - override")
         
+def async_override_serial(heaterOn=False):
+    """
+    Control override/manual mode of arduino
+    """
+    if django_settings.SIMULATE_MACHINE == False:
+        data_block = struct.pack('<h?', "O".encode(), heaterOn)
+        debug_log( "Override data to send: {}".format( list(data_block) ) )
+        try:
+            serial_arduino.write(data_block)
+        except Exception as e:
+            debug_log("Cannot write to microcontroller - override")

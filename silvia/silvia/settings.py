@@ -189,4 +189,4 @@ if os_details.nodename == "silvia":  # Raspberry pi
 else:  # Development machine
     SIMULATE_MACHINE = True
 
-ARDUINO_COMMS = "i2c"  # "serial" or "i2c"
+ARDUINO_COMMS = "serial"  # "serial" or "i2c"

@@ -35,6 +35,6 @@ class Command(BaseCommand):
                         display.showTemperature(T, settings.T_set)
                 else:  # Off
                     display.showBlank()
-                time.sleep(1)
+                time.sleep(2)
         else:
             debug_log("Pi display not used as in simulation mode")

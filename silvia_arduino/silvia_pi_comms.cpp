@@ -30,50 +30,94 @@ void update_data_buffer() {
   response_data.data.Kd = pid.GetKd();
 }
 
+void response_actions() {
+  if (DEBUG) {
+    Serial.print("    Power: "); Serial.println(received_data.data.power);
+    Serial.print("    Brew: "); Serial.println(received_data.data.brew);
+    Serial.print("    Mode: "); Serial.println(received_data.data.mode);
+  }
+  // Mode change
+  if (received_data.data.mode == 0) { // Change to PID or PID settings
+    if (mode = 2)
+      pid.cancelTuner();
+    mode = 0;
+    pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+  } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
+    if (mode = 2)
+      pid.cancelTuner();
+    mode = 1;
+    pid.off();
+    pid.overrideOutput(false);
+  } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
+    mode = 2;
+    pid.setupTuner();
+  }
+  // Check if power needs to be toggled
+  if (received_data.data.power != power_output.getStatus()) {
+    // toggle power
+    if (received_data.data.power) {
+      if (DEBUG) {
+        Serial.println("Turn on");
+      }
+      power_output.on();
+      // pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+    } else {
+      if (DEBUG) {
+        Serial.println("Turn off");
+      }
+      // power_output_ref->off();
+      power_output.off();
+      pid.off();
+    }
+  }
+  // Check if brew needs to be toggled
+  if (received_data.data.brew != brew_output.getStatus()) {
+    // Toggle brew if either in manual mode or water in tank
+    if (received_data.data.brew && ( (mode == 1) || water_sensor.getLevel() ))  
+      brew_output.on();
+    else
+      brew_output.off();
+  }
+}
+
+void heater_on_request(bool heaterOn) {
+  if (mode == 1) {  // Check in manual mode
+    if (heaterOn) {
+      power_output.on();
+      pid.overrideOutput(true);
+    } else {
+      pid.overrideOutput(false);
+    }
+  }
+}
+
 void check_serial_calls() {
   if (Serial.available() > 0) {
-    char first_byte = Serial.read();
-
+    int first_byte = Serial.read();
+    if (DEBUG) {
+      Serial.print("    First char: "); Serial.println(first_byte);
+    }
     if (first_byte == 'R') {
       Serial.flush();
       send_serial_response();
-    }
-    else if (first_byte == 'X') {
-      int index = 0;
-      String temp_data = "";
-      while (Serial.available() > 0 && index < sizeof_received_data) {
-        // loop through all but the last
-        // Data here is written directly to memory location for use in PID
-        received_data.buffer[index] = (byte)Serial.read();
-        temp_data += received_data.buffer[index];
-        // temp_data += ".";
-        index++;
-      }
-
+    } else if (first_byte == 'X') {
+      // int index = 0;
+      // // String temp_data = "";
+      // while (Serial.available() > 0 && index < sizeof_received_data) {
+      //   // loop through all but the last
+      //   // Data here is written directly to memory location for use in PID
+      //   char next_byte = Serial.read();
+      //   received_data.buffer[index] = next_byte;
+      //   // temp_data += next_byte;
+      //   // temp_data += ".";
+      //   index++;
+      // }
+      Serial.readBytes(received_data.buffer, sizeof_received_data);
       Serial.flush();
-
-      // Check if power needs to be toggled
-      if (received_data.data.power != power_output.getStatus()) {
-        // toggle power
-        if (received_data.data.power) {
-          power_output.on();
-          pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
-        } else {
-          // power_output_ref->off();
-          power_output.off();
-        }
-      }
-      // Check if brew needs to be toggled
-      if (received_data.data.brew != brew_output.getStatus()) {
-        // toggle brew
-        if (received_data.data.brew)
-          brew_output.on();
-        else
-          brew_output.off();
-      }
-      // Send response to pi
-      Serial.print("Data received: ");
-      Serial.println(temp_data);
+      response_actions();
+    } else if (first_byte == 'O') {
+      bool heaterOn = Serial.read();
+      heater_on_request(heaterOn);
     }
   }
 }
@@ -107,63 +151,10 @@ void receiveEvent(int numBytes) {
         received_data.buffer[index] = (byte)Wire.read();
         index++;
       }
-      if (DEBUG) {
-        Serial.print("    Power: "); Serial.println(received_data.data.power);
-        Serial.print("    Brew: "); Serial.println(received_data.data.brew);
-        Serial.print("    Mode: "); Serial.println(received_data.data.mode);
-      }
-      // Mode change
-      if (received_data.data.mode == 0) { // Change to PID or PID settings
-        if (mode = 2)
-          pid.cancelTuner();
-        mode = 0;
-        pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
-      } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
-        if (mode = 2)
-          pid.cancelTuner();
-        mode = 1;
-        pid.off();
-        pid.overrideOutput(false);
-      } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
-        mode = 2;
-        pid.setupTuner();
-      }
-      // Check if power needs to be toggled
-      if (received_data.data.power != power_output.getStatus()) {
-        // toggle power
-        if (received_data.data.power) {
-          if (DEBUG) {
-            Serial.println("Turn on");
-          }
-          power_output.on();
-          // pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
-        } else {
-          if (DEBUG) {
-            Serial.println("Turn off");
-          }
-          // power_output_ref->off();
-          power_output.off();
-          pid.off();
-        }
-      }
-      // Check if brew needs to be toggled
-      if (received_data.data.brew != brew_output.getStatus()) {
-        // Toggle brew if either in manual mode or water in tank
-        if (received_data.data.brew && ( (mode == 1) || water_sensor.getLevel() ))  
-          brew_output.on();
-        else
-          brew_output.off();
-      }
+      response_actions();
     } else if (i2c_register == 2) { // Override request
       bool heaterOn = (bool)Wire.read();
-      if (mode == 1) {  // Check in manual mode
-        if (heaterOn) {
-          power_output.on();
-          pid.overrideOutput(true);
-        } else {
-          pid.overrideOutput(false);
-        }
-      }
+      heater_on_request(heaterOn);
     } 
   }  // if(Wire.available)
 }

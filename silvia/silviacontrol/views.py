@@ -11,7 +11,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_override_i2c
+from .tasks import async_override_microcontroller
 
 # Html Views -----------
 def index(request):
@@ -136,21 +136,8 @@ class ManualControlView(views.APIView):
             status.on = True
             status.mode = 1
             status.save()
-        async_override_i2c.delay(heaterOn=heater_on,)
+        async_override_microcontroller.delay(heaterOn=heater_on)
         return Response({"heater": heater_on})
-
-# class AutoTuneView(views.APIView):
-#     """
-#     Non-model based view for autotuning the pid (via microcontroller)
-#     """
-#     def get(self, request, format=None):
-#         """
-#         Turn autotune on/off
-#         """
-#         debug_log("Autotune get request")
-#         autotune_on = string2bool(self.request.query_params.get('autotuneOn', False))
-#         async_autotune_i2c.delay(autotuneOn=autotune_on)
-#         return Response({"autotune": autotune_on})
 
 def string2bool(input_string):
     """

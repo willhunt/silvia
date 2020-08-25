@@ -73,20 +73,18 @@ void loop(void)  {
         if (DEBUG) {
             Serial.println("Over temperature limit");
         }
-    } else {
-        if (power_output.getStatus() && mode == 0) { // PID mode
-            pid.Compute();  // Method includes sampling time check
-        } else if (mode == 2) { // autotune
-            bool still_tuning = pid.tune();
-            // When tuning is finished it will restart the PID with new gains
-            if (!still_tuning) {
-                mode = 0;
-                if (DEBUG) {
-                    Serial.println("Tuning finished");
-                }
+    } else if (power_output.getStatus() && mode == 0) { // PID mode
+        pid.Compute();  // Method includes sampling time check
+    } else if (mode == 2) { // autotune
+        bool still_tuning = pid.tune();
+        // When tuning is finished it will restart the PID with new gains
+        if (!still_tuning) {
+            mode = 0;
+            if (DEBUG) {
+                Serial.println("Tuning finished");
             }
         }
     }
+    check_serial_calls();
     pid.relayControl();
-    // check_serial_calls();
 }
