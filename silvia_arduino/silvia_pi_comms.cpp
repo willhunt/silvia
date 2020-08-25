@@ -81,13 +81,17 @@ void response_actions() {
 }
 
 void heater_on_request(bool heaterOn) {
-  if (mode == 1) {  // Check in manual mode
-    if (heaterOn) {
-      power_output.on();
-      pid.overrideOutput(true);
-    } else {
-      pid.overrideOutput(false);
-    }
+  if (mode != 1) {  
+    if (mode = 2)
+      pid.cancelTuner();
+    mode = 1;
+    pid.off();
+  }
+  if (heaterOn) {
+    power_output.on();
+    pid.overrideOutput(true);
+  } else {
+    pid.overrideOutput(false);
   }
 }
 
