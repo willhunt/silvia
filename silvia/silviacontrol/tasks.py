@@ -66,8 +66,8 @@ def async_get_response():
                 debug_log("Cannot write to microcontroller - response")
                 return False
         elif django_settings.ARDUINO_COMMS == "serial":
-            serial_arduino.write(struct.pack('<h', "R".encode()))
-            data_block = serial_arduino.read(size=11)
+            serial_arduino.write(struct.pack('<h', 0))
+            data_block = serial_arduino.read(size=24)
 
         debug_log( "Data received: {}".format( list(data_block) ) )
         data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
@@ -177,7 +177,7 @@ def update_microcontroller_serial(on=None, brew=None, mode=0):
         brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<h2?B4f', "X".encode(), on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<h2?B4f', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     try:
         serial_arduino.write(data_block)
@@ -215,7 +215,7 @@ def async_override_serial(heaterOn=False):
     Control override/manual mode of arduino
     """
     if django_settings.SIMULATE_MACHINE == False:
-        data_block = struct.pack('<h?', "O".encode(), heaterOn)
+        data_block = struct.pack('<h?', 2, heaterOn)
         debug_log( "Override data to send: {}".format( list(data_block) ) )
         try:
             serial_arduino.write(data_block)

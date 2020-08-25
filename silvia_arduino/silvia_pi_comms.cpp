@@ -97,10 +97,10 @@ void check_serial_calls() {
     if (DEBUG) {
       Serial.print("    First char: "); Serial.println(first_byte);
     }
-    if (first_byte == 'R') {
+    if (first_byte == 0) {
       Serial.flush();
       send_serial_response();
-    } else if (first_byte == 'X') {
+    } else if (first_byte == 1) {
       // int index = 0;
       // // String temp_data = "";
       // while (Serial.available() > 0 && index < sizeof_received_data) {
@@ -115,7 +115,7 @@ void check_serial_calls() {
       Serial.readBytes(received_data.buffer, sizeof_received_data);
       Serial.flush();
       response_actions();
-    } else if (first_byte == 'O') {
+    } else if (first_byte == 2) {
       bool heaterOn = Serial.read();
       heater_on_request(heaterOn);
     }
