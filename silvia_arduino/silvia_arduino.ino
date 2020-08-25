@@ -8,7 +8,7 @@ Notes:
 */
 
 // Pre-compile definitions
-#define DEBUG true
+#define DEBUG false
 // Pins
 #define TEMP_SENSOR_PIN A0
 #define WATER_SENSOR_PIN 7

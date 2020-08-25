@@ -94,9 +94,6 @@ void heater_on_request(bool heaterOn) {
 void check_serial_calls() {
   if (Serial.available() > 0) {
     int first_byte = Serial.read();
-    if (DEBUG) {
-      Serial.print("    First char: "); Serial.println(first_byte);
-    }
     if (first_byte == 0) {
       Serial.flush();
       send_serial_response();
@@ -115,9 +112,11 @@ void check_serial_calls() {
       Serial.readBytes(received_data.buffer, sizeof_received_data);
       Serial.flush();
       response_actions();
+      Serial.println("Update received");
     } else if (first_byte == 2) {
       bool heaterOn = Serial.read();
       heater_on_request(heaterOn);
+      Serial.println("Override received");
     }
   }
 }

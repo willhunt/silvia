@@ -201,23 +201,23 @@ def async_override_i2c(heaterOn=False):
     """
     Control override/manual mode of arduino
     """
-    if django_settings.SIMULATE_MACHINE == False:
-        data_block = struct.pack('<?', heaterOn)
-        debug_log( "Override data to send: {}".format( list(data_block) ) )
-        # Write to register 2
-        try:
-            i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
-        except Exception as e:
-            debug_log("Cannot write to microcontroller - override")
+    data_block = struct.pack('<?', heaterOn)
+    debug_log( "Override data to send: {}".format( list(data_block) ) )
+    # Write to register 2
+    try:
+        i2c_bus.write_i2c_block_data(i2c_addr_arduino, 2, list(data_block))
+    except Exception as e:
+        debug_log("Cannot write to microcontroller - override")
         
 def async_override_serial(heaterOn=False):
     """
     Control override/manual mode of arduino
     """
-    if django_settings.SIMULATE_MACHINE == False:
-        data_block = struct.pack('<h?', 2, heaterOn)
-        debug_log( "Override data to send: {}".format( list(data_block) ) )
-        try:
-            serial_arduino.write(data_block)
-        except Exception as e:
-            debug_log("Cannot write to microcontroller - override")
+    data_block = struct.pack('<h?', 2, heaterOn)
+    debug_log( "Override data to send: {}".format( list(data_block) ) )
+    try:
+        serial_arduino.write(data_block)
+        response = serial_arduino.readline()
+        debug_log("Response: {}".format(response))
+    except Exception as e:
+        debug_log("Cannot write to microcontroller - override")
