@@ -2,7 +2,7 @@
 #define SILVIA_TEMPERATURE_CONTROLLER_H
 
 #ifndef DEBUG
-#define DEBUG true
+#define DEBUG false
 #endif  // DEBUG
 
 #define ATUNE_NOISE 0.5 // Temperature noise band
