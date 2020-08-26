@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u=-tzcj2zkg5y@w@(r0st)68(2-)6n02c-=3znme-yd4n&(kua'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -166,6 +166,10 @@ CELERY_ONCE = {
     'default_timeout': 60 * 60
   }
 }
+# Splits celery queue into 4, ['celery0', 'celery3', 'celery6', 'celery9']
+# CELERY_BROKER_TRANSPORT_OPTIONS = {
+#     'queue_order_strategy': 'priority',
+# }
 
 # CORS
 # CORS_ORIGIN_WHITELIST = [

@@ -96,7 +96,6 @@ bool TemperatureController::tune() {
         tuning_in_progress_ = false;
     } else {
         tuning_in_progress_ = true;
-        relayControl();
     }
     return tuning_in_progress_;
 }

@@ -56,6 +56,7 @@ def async_get_response():
         duty, duty_pid = pid_update(T, t)
         low_water = False
         mode = status.mode
+        debug_log("Simulated response: {}C".format(T))
     else:
         # ARDUINO
         if django_settings.ARDUINO_COMMS == "i2c":
@@ -119,7 +120,7 @@ def async_get_response():
     return T
 
 
-@shared_task
+@shared_task()
 def async_update_scale(brew):
     """
     Args
