@@ -24,7 +24,7 @@ if django_settings.SIMULATE_MACHINE == False:
         for i in range(0, 3):
             serial_path = "/dev/ttyACM{}".format(i)
             if os.path.exists(serial_path) == True:
-                serial_arduino = serial.Serial(serial_path, 9600, timeout=2)
+                serial_arduino = serial.Serial(serial_path, 57600, timeout=1)
                 break
         if serial_arduino:
             serial_arduino.flush()
@@ -141,21 +141,15 @@ def async_update_scale(brew):
 
 
 @shared_task
-def async_update_microcontroller(on=None, brew=None, mode=0):
+def async_update_microcontroller(on=False, brew=False, mode=0):
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
             update_microcontroller_i2c(on, brew, mode)
         elif django_settings.ARDUINO_COMMS == "serial":
             update_microcontroller_serial(on, brew, mode)
 
-def update_microcontroller_i2c(on=None, brew=None, mode=0):
-    status = StatusModel.objects.get(id=1)
+def update_microcontroller_i2c(on=False, brew=False, mode=0):
     settings = SettingsModel.objects.get(id=1)
-    
-    if on is None:
-        on = status.on
-    if brew is None:
-        brew = status.brew
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
     data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
@@ -166,17 +160,11 @@ def update_microcontroller_i2c(on=None, brew=None, mode=0):
     except Exception as e:
         debug_log("Cannot write to microcontroller - update")
 
-def update_microcontroller_serial(on=None, brew=None, mode=0):
+def update_microcontroller_serial(on=False, brew=False, mode=0):
     """
     For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
     """
-    status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
-
-    if on is None:
-        on = status.on
-    if brew is None:
-        brew = status.brew
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
     data_block = struct.pack('<b2?B4f', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)

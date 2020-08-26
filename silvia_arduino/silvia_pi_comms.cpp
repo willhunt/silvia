@@ -10,7 +10,7 @@ void pi_comms_setup(int i2c_addr) {
   sizeof_response_data = sizeof(responseData);
 
   // Serial
-  Serial.begin(9600);
+  Serial.begin(57600);
   // I2C
   Wire.begin(i2c_addr);
   Wire.onReceive(receiveEvent);

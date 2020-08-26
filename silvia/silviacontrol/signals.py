@@ -108,6 +108,7 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
     """
     When updating settings model update periodic task and arduino settings
     """
+    status = StatusModel.objects.get(pk=1)
     # See if periodic temperature update task exists
     try:
         periodic_response = PeriodicTask.objects.get(name="Get Response")
@@ -122,16 +123,14 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
             every=instance.t_sample,
             period='seconds'
         )
-        status = StatusModel.objects.get(pk=1)
         periodic_response = PeriodicTask.objects.create(
             name="Get Response",
             task="silviacontrol.tasks.async_get_response",
             enabled=status.on,
             interval=periodic_interval
         )
-
-    # Send to Arduino
-    async_update_microcontroller.delay()
+    # Send to Arduino (update settings, not status, current status values given)
+    async_update_microcontroller.delay(status.on, status.brew, status.mode)
 
 @receiver(pre_save, sender=StatusModel)
 def save_status(sender, instance, raw, using, update_fields, **kwargs):
