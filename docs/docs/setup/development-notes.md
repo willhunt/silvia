@@ -111,3 +111,10 @@ Migrate and recreate superuser
 $ python manage.py migrate
 $ python manage.py createsuperuser
 ```
+
+## Remove files from git based upon .gitignore changes
+```bash
+$ git rm -r --cached .
+$ git add .
+$ git commit -m "update files based upon .gitignore changes"
+```
