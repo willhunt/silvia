@@ -102,17 +102,6 @@ void check_serial_calls() {
       Serial.flush();
       send_serial_response();
     } else if (first_byte == 1) {
-      // int index = 0;
-      // // String temp_data = "";
-      // while (Serial.available() > 0 && index < sizeof_received_data) {
-      //   // loop through all but the last
-      //   // Data here is written directly to memory location for use in PID
-      //   char next_byte = Serial.read();
-      //   received_data.buffer[index] = next_byte;
-      //   // temp_data += next_byte;
-      //   // temp_data += ".";
-      //   index++;
-      // }
       Serial.readBytes(received_data.buffer, sizeof_received_data);
       Serial.flush();
       response_actions();
