@@ -1,12 +1,25 @@
 ## Setting up the Pi
 Follow these steps to set up a raspberry pi, download the code and setup the web server and message broker.
 
+## Quick Setup
+A quick setup can be done using a script. First setup wireless in raspi-config: 
+```bash
+$ sudo raspi-config
+```
+Then file is required.
+```bash
+$ git clone https://github.com/willhunt/silvia.git
+$ cd /silvia/pi_setup
+$ chmod +x raspi_setup.sh
+$ ./raspi_setup.sh
+```
+
 Some useful links for the following instructions are:
 * [raspberry-pi-network-server-guide-with-django-ssh](https://www.codingforentrepreneurs.com/blog/raspberry-pi-network-server-guide-with-django-ssh/)
 * [configuring-django-with-apache-on-a-raspberry-pi](https://mikesmithers.wordpress.com/2017/02/21/configuring-django-with-apache-on-a-raspberry-pi/)
 
 ## Pi Setup
-## Install operating system
+### Install operating system
 Setup a raspberry pi with Raspberry Pi OS Lite as described at [projects.raspberrypi.org](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up).
 
 ### Update pi
@@ -99,7 +112,7 @@ $ sudo nano .bashrc
 ```
 Add at end:
 ```
-source .virtualenvs/venv-silvia/bin/activate
+source ~/.virtualenvs/venv-silvia/bin/activate
 ```
 
 ## Setup Apache server
