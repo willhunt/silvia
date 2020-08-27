@@ -24,8 +24,8 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_on,
             name="on:{0} {1}".format(instance.id, instance.name),
             # name=('%s_on' % (instance.name)),  
-            task='silviacontrol.tasks.async_power_machine',
-            args='["True"]',
+            task='async_update_microcontroller.delay',
+            args='[True, False, 0]',
             enabled=instance.active
         )
         instance.schedule_on = schedule_on
@@ -50,8 +50,8 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_off,
             name="off:{0} {1}".format(instance.id, instance.name),
             # name=('%s_off' % (instance.name)),  
-            task='silviacontrol.tasks.async_power_machine',
-            args='["False"]',
+            task='async_update_microcontroller.delay',
+            args='[False, False, 0]',
             enabled=instance.active
         )
         instance.schedule_off = schedule_off
@@ -138,7 +138,13 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     When saving status model turn temperature update on/off
     When saving status model create or end schedule as necessary
     """
-    prior_status = StatusModel.objects.get(pk=1)
+    # Account for first creation
+    try:
+        prior_status = StatusModel.objects.get(pk=1)
+    except StatusModel.DoesNotExist as e:
+        print("No pre-save signal processing as no status model found")
+        return False
+
     # Fill in values not sent
     if not hasattr(instance, "on"):
         instance.on = prior_status.on

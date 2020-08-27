@@ -22,30 +22,27 @@ class SettingsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows settings to be viewed or edited
     """
-    # if not SettingsModel.objects.filter(id=1).exists():
-    try:
-        SettingsModel.objects.filter(id=1)
-    except:
-        # If there are no settings, create them
-        settings = SettingsModel()
-        settings.save()
     queryset = SettingsModel.objects.all()
     serializer_class = SettingsSerializer
 
+    def get_object(self):
+          if self.request.method == 'PUT':
+              obj, created = SettingsModel.objects.get_or_create(pk=1)
+              return obj
+          else:
+              return super(SettingsViewSet, self).get_object()
 
 class StatusViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows status to be viewed or edited
     """
-    # if not SettingsModel.objects.filter(id=1).exists():
-    try:
-        StatusModel.objects.filter(id=1)
-    except:
-        # If there are no settings, create them
-        status = StatusModel()
-        status.save()
     queryset = StatusModel.objects.all()
     serializer_class = StatusSerializer
+
+    def get_object(self):
+        obj, created = StatusModel.objects.get_or_create(pk=1)
+        return obj
+    
 
     @action(methods=['get', 'put'], detail=True)  # Detail/instance or collection/list
     def update_session(self, request, pk=None):
@@ -62,11 +59,13 @@ class ResponseViewSet(viewsets.ModelViewSet):
     def get_object(self):
         # Override get_object to see if request is for latest object
         if self.kwargs['pk'] == 'latest':
-            response = ResponseModel.objects.order_by('-t')[0]
-            # if (timezone.now() - response.t).total_seconds() > 10:
-            #     response = None
-
-            return response
+            try:
+                response = ResponseModel.objects.order_by('-t')[0]
+                # if (timezone.now() - response.t).total_seconds() > 10:
+                #     response = None
+                return response
+            except IndexError as e:
+                return None
         else:
             return super(ResponseViewSet, self).get_object()
 
@@ -88,8 +87,11 @@ class ResponseViewSet(viewsets.ModelViewSet):
         session_ids_string = request.query_params.get('session', None)
         
         if session_ids_string == "active":
-            session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
-            session_ids_string = "{}".format(session.id)
+            try:
+                session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
+                session_ids_string = "{}".format(session.id)
+            except IndexError as e:
+                return Response(data=None)
 
         if session_ids_string is not None:
             session_ids = [int(x) for x in session_ids_string.split(',')]

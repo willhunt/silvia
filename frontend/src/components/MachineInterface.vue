@@ -248,6 +248,9 @@ export default {
           .then(response => {
             console.log(response.data)
             // this.sessionData = response.data
+            if (response.data === '') {
+              return false
+            }
             this.sessionData = Object.assign({}, this.sessionData, response.data)
             const latestSession = response.data[Object.keys(response.data)[0]]
             const lastResponse = latestSession[latestSession.length - 1]

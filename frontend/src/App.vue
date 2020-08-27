@@ -59,10 +59,6 @@ export default {
   created () {
     // Handle machine on/off globally
     eventBus.$on('toggleOnOff', () => {
-      // Can send ajax request here
-      // this.machineOn = !this.machineOn
-      // this.machineBrewing = false
-
       const axiosData = {
         id: 1,
         // on: this.machineOn,
@@ -74,6 +70,7 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
+          eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })
@@ -88,6 +85,7 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
+          eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })
@@ -104,6 +102,7 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
+          eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })

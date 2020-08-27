@@ -72,3 +72,25 @@ $ sudo shutdown -r now
 
 ### Display Images
 XBM images can be converted at: [www.online-utility.org](https://www.online-utility.org/image/convert/to/XBM)
+
+## Changing Database to PostgreSQL
+```bash
+$ sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common libpq-dev python-dev -y
+$ pip install psycopg2
+$ cd ~/silvia/silvia
+$ python manage.py dumpdata --exclude=contenttypes --exclude=auth.Permission > datadump.json
+```
+Test connection:
+```bash
+$ sudo su - postgres
+$ psql
+$ CREATE DATABASE silviadatabase;
+$ CREATE USER databaseadmin WITH PASSWORD 'databasepwd';
+$ ALTER ROLE databaseadmin SET client_encoding TO 'utf8';
+$ ALTER ROLE databaseadmin SET default_transaction_isolation TO 'read committed';
+$ ALTER ROLE databaseadmin SET timezone TO 'GB';
+$ GRANT ALL PRIVILEGES ON DATABASE silviadatabase TO databaseadmin;
+$ \q
+$ exit
+```
+Change database settings in `settings.py`.
