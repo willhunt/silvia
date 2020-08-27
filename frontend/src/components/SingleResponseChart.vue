@@ -94,70 +94,72 @@ export default {
   computed: {
     graphData: function () {
       const graphData = {}
-      graphData.datasets = []
-      const session = Object.keys(this.data)[0]
-      const datasetT = {
-        label: 'Temperature',
-        xAxisID: 'time-axis',
-        yAxisID: 'temperature-axis',
-        showLine: true,
-        data: [],
-        fill: false,
-        borderColor: '#ff5a5f'
-      }
-      const datasetD = {
-        label: 'Duty',
-        xAxisID: 'time-axis',
-        yAxisID: 'temperature-axis',
-        showLine: true,
-        data: [],
-        fill: false,
-        borderColor: '#eabe7c'
-      }
-      const datasetS = {
-        label: 'Setpoint',
-        xAxisID: 'time-axis',
-        yAxisID: 'temperature-axis',
-        showLine: true,
-        data: [],
-        fill: false,
-        borderColor: '#769fb6'
-      }
-      const datasetM = {
-        label: 'Extraction',
-        xAxisID: 'time-axis',
-        yAxisID: 'mass-axis',
-        showLine: true,
-        data: [],
-        fill: false,
-        borderColor: '#7fd1b9'
-      }
+      if (this.data != null) {
+        graphData.datasets = []
+        const session = Object.keys(this.data)[0]
+        const datasetT = {
+          label: 'Temperature',
+          xAxisID: 'time-axis',
+          yAxisID: 'temperature-axis',
+          showLine: true,
+          data: [],
+          fill: false,
+          borderColor: '#ff5a5f'
+        }
+        const datasetD = {
+          label: 'Duty',
+          xAxisID: 'time-axis',
+          yAxisID: 'temperature-axis',
+          showLine: true,
+          data: [],
+          fill: false,
+          borderColor: '#eabe7c'
+        }
+        const datasetS = {
+          label: 'Setpoint',
+          xAxisID: 'time-axis',
+          yAxisID: 'temperature-axis',
+          showLine: true,
+          data: [],
+          fill: false,
+          borderColor: '#769fb6'
+        }
+        const datasetM = {
+          label: 'Extraction',
+          xAxisID: 'time-axis',
+          yAxisID: 'mass-axis',
+          showLine: true,
+          data: [],
+          fill: false,
+          borderColor: '#7fd1b9'
+        }
 
-      // Loop through responses and add data
-      const xPoint0 = new Date(this.data[session][0].t)
-      this.data[session].forEach((responseItem, responseIndex) => {
-        const xPoint = (new Date(responseItem.t) - xPoint0) / 1000
-        datasetT.data.push({
-          x: xPoint,
-          y: responseItem.T_boiler
+        // Loop through responses and add data
+        const xPoint0 = new Date(this.data[session][0].t)
+        this.data[session].forEach((responseItem, responseIndex) => {
+          const xPoint = (new Date(responseItem.t) - xPoint0) / 1000
+          datasetT.data.push({
+            x: xPoint,
+            y: responseItem.T_boiler
+          })
+          datasetD.data.push({
+            x: xPoint,
+            y: responseItem.duty
+          })
+          datasetS.data.push({
+            x: xPoint,
+            y: responseItem.T_setpoint
+          })
+          datasetM.data.push({
+            x: xPoint,
+            y: responseItem.m
+          })
         })
-        datasetD.data.push({
-          x: xPoint,
-          y: responseItem.duty
-        })
-        datasetS.data.push({
-          x: xPoint,
-          y: responseItem.T_setpoint
-        })
-        datasetM.data.push({
-          x: xPoint,
-          y: responseItem.m
-        })
-      })
-      graphData.datasets.push(datasetT)
-      graphData.datasets.push(datasetD)
-      graphData.datasets.push(datasetS)
-      graphData.datasets.push(datasetM)
+        graphData.datasets.push(datasetT)
+        graphData.datasets.push(datasetD)
+        graphData.datasets.push(datasetS)
+        graphData.datasets.push(datasetM)
+      }
       return graphData
     },
     tableData: function () {
