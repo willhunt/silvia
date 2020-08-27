@@ -75,7 +75,7 @@ XBM images can be converted at: [www.online-utility.org](https://www.online-util
 
 ## Changing Database to PostgreSQL
 ```bash
-$ sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common libpq-dev python-dev -y
+$ sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common python-dev -y
 $ pip install psycopg2
 $ cd ~/silvia/silvia
 $ python manage.py dumpdata --exclude=contenttypes --exclude=auth.Permission > datadump.json
@@ -93,4 +93,21 @@ $ GRANT ALL PRIVILEGES ON DATABASE silviadatabase TO databaseadmin;
 $ \q
 $ exit
 ```
-Change database settings in `settings.py`.
+Change database settings in `settings.py`:
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'silviadatabase',
+        'USER': 'databaseadmin',
+        'PASSWORD': 'databasepwd',
+        'HOST': '127.0.0.1',
+        'PORT': '',  # Default
+    }
+}
+```
+Migrate and recreate superuser
+```bash
+$ python manage.py migrate
+$ python manage.py createsuperuser
+```

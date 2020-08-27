@@ -70,3 +70,8 @@ ENV/
 
 # Static files
 staticfiles/
+
+# celery databse
+celery.sqlite
+# redis
+dump.rdb
