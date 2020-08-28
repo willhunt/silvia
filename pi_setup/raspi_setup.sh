@@ -69,7 +69,7 @@ sudo adduser www-data i2c
 printf "Setting up Arduino CLI...  "
 cd ~
 curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-echo "export PATH=$PATH:/home/pi/bin" >> ~/.bashrc
+echo "export PATH=\$PATH:/home/pi/bin" >> ~/.bashrc
 export PATH=$PATH:/home/pi/bin
 arduino-cli config init
 arduino-cli core update-index

@@ -105,7 +105,7 @@ void check_serial_calls() {
       response_actions();
       Serial.println("Update received");
     } else if (first_byte == 2) {
-      bool heaterOn = Serial.read();
+      bool heaterOn = (bool)Serial.read();
       heater_on_request(heaterOn);
       Serial.print("Override received, heaterOn: "); Serial.println(heaterOn);
     }
