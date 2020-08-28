@@ -14,7 +14,15 @@ $ cd /silvia/pi_setup
 $ chmod +x raspi_setup.sh
 $ ./raspi_setup.sh
 ```
+Then setup Django database
+```bash
+$ cd ~/silvia/silvia
+$ python manage.py migrate
+$ python manage.py createsuperuser
+```
+Then follow prompts.
 
+## Useful Links
 Some useful links for the following instructions are:
 * [raspberry-pi-network-server-guide-with-django-ssh](https://www.codingforentrepreneurs.com/blog/raspberry-pi-network-server-guide-with-django-ssh/)
 * [configuring-django-with-apache-on-a-raspberry-pi](https://mikesmithers.wordpress.com/2017/02/21/configuring-django-with-apache-on-a-raspberry-pi/)

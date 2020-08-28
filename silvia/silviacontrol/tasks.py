@@ -173,7 +173,7 @@ def update_microcontroller_serial(on=False, brew=False, mode=0):
         serial_arduino.write(data_block)
         response = serial_arduino.readline()
         serial_arduino.flush()
-        debug_log("Response: {}".format(response))
+        debug_log("Update response: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - update")
 
@@ -210,6 +210,6 @@ def async_override_serial(heaterOn=False):
         serial_arduino.write(data_block)
         response = serial_arduino.readline()
         serial_arduino.flush()
-        debug_log("Response: {}".format(response))
+        debug_log("Response to override: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
