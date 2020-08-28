@@ -195,6 +195,7 @@ def async_override_i2c(heaterOn=False):
     Control override/manual mode of arduino
     """
     data_block = struct.pack('<?', heaterOn)
+    debug_log( "heaterOn: {}".format(heaterOn) )
     debug_log( "Override data to send: {}".format( list(data_block) ) )
     # Write to register 2
     try:

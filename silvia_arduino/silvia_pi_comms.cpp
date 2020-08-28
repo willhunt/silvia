@@ -2,12 +2,15 @@
 
 responseData response_data;
 receivedData received_data;
+overrideData override_data;
 int sizeof_received_data;
 int sizeof_response_data;
+int sizeof_override_data;
 
 void pi_comms_setup(int i2c_addr) {
   sizeof_received_data = sizeof(receivedFormat);
   sizeof_response_data = sizeof(responseData);
+  sizeof_override_data = sizeof(overrideData);
 
   // Serial
   Serial.begin(57600);
@@ -105,9 +108,10 @@ void check_serial_calls() {
       response_actions();
       Serial.println("Update received");
     } else if (first_byte == 2) {
-      bool heaterOn = (bool)Serial.read();
-      heater_on_request(heaterOn);
-      Serial.print("Override received, heaterOn: "); Serial.println(heaterOn);
+      Serial.readBytes(override_data.buffer, sizeof_override_data);
+      Serial.flush();
+      heater_on_request(override_data.data.heater);
+      Serial.print("Override received, heaterOn: "); Serial.println(override_data.data.heater);
     }
   }
 }

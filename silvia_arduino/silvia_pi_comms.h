@@ -42,6 +42,14 @@ union receivedData {
   byte buffer[sizeof(receivedFormat)];
 };
 
+struct overrideFormat {
+  bool heater;
+};
+union overrideData {
+  overrideFormat data;
+  byte buffer[sizeof(overrideFormat)];
+};
+
 // Objects defined in silvia_main.ino
 extern TemperatureSensor temperature_sensor;
 extern WaterLevelSensor water_sensor;
