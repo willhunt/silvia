@@ -8,6 +8,7 @@ $ sudo raspi-config
 ```
 Then file is required.
 ```bash
+$ sudo apt install git -y
 $ git clone https://github.com/willhunt/silvia.git
 $ cd /silvia/pi_setup
 $ chmod +x raspi_setup.sh
