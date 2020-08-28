@@ -2,12 +2,10 @@
 Notes on development and debugging commands
 
 ## Update files
-Scripts are used to fetch latest updates
+Scripts are used to fetch latest updates and collect static files. If <branch name> is empty, defaults to "master".
 ```bash
 $ cd silvia
-$ git fetch --all
-$ sudo git reset --hard origin/master
-$ sudo service apache2 restart
+$ ./update_branch <branch name>
 ```
 
 ## Django

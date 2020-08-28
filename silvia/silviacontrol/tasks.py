@@ -67,9 +67,10 @@ def async_get_response():
                 debug_log("Cannot write to microcontroller - response")
                 return False
         elif django_settings.ARDUINO_COMMS == "serial":
+            serial_arduino.reset_input_buffer()
+            serial_arduino.reset_output_buffer()
             serial_arduino.write(struct.pack('<b', 0))
             data_block = serial_arduino.read(size=24)
-            serial_arduino.flush()
 
         debug_log( "Data received: {}".format( list(data_block) ) )
         data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
@@ -170,9 +171,10 @@ def update_microcontroller_serial(on=False, brew=False, mode=0):
     data_block = struct.pack('<b2?B4f', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
     debug_log( "Data to send: {}".format(data_block) )
     try:
+        serial_arduino.reset_input_buffer()
+        serial_arduino.reset_output_buffer()
         serial_arduino.write(data_block)
         response = serial_arduino.readline()
-        serial_arduino.flush()
         debug_log("Update response: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - update")
@@ -207,9 +209,10 @@ def async_override_serial(heaterOn=False):
     data_block = struct.pack('<b?', 2, heaterOn)
     debug_log( "Override data to send: {}".format( list(data_block) ) )
     try:
+        serial_arduino.reset_input_buffer()
+        serial_arduino.reset_output_buffer()
         serial_arduino.write(data_block)
         response = serial_arduino.readline()
-        serial_arduino.flush()
         debug_log("Response to override: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
