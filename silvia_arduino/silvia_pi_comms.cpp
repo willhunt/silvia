@@ -89,10 +89,8 @@ void heater_on_request(bool heaterOn) {
   }
   if (heaterOn) {
     power_output.on();
-    pid.overrideOutput(true);
-  } else {
-    pid.overrideOutput(false);
   }
+  pid.overrideOutput(heaterOn);
 }
 
 void check_serial_calls() {
@@ -109,7 +107,7 @@ void check_serial_calls() {
     } else if (first_byte == 2) {
       bool heaterOn = Serial.read();
       heater_on_request(heaterOn);
-      Serial.println("Override received");
+      Serial.print("Override received, heaterOn: "); Serial.println(heaterOn);
     }
   }
 }

@@ -23,7 +23,7 @@ Notes:
 
 #define I2C_ADDR 0x8
 
-#define SAFETY_TEMPERATURE 120
+#define SAFETY_TEMPERATURE 40
 
 // Imports
 #include "silvia_temperature_sensor.h"
