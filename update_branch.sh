@@ -1,8 +1,10 @@
 #!/bin/sh
 
+branch=${1:-master}
+
 git fetch --all
-git reset --hard origin/pid
-git checkout pid
+git reset --hard origin/$branch
+git checkout $branch
 printf "Collecting Django static files..."
 python silvia/manage.py collectstatic --noinput --clear
 printf "Restarting server...  "

@@ -2,7 +2,8 @@
 trap "kill 0" EXIT
 
 # Celery
-celery -A silvia worker &
+# -c is concurrency (=1)
+celery -A silvia worker -c 1 &
 celery -A silvia beat --scheduler django_celery_beat.schedulers:DatabaseScheduler &
 
 # Pi GPIO
