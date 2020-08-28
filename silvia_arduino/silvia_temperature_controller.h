@@ -6,8 +6,9 @@
 #endif  // DEBUG
 
 #define ATUNE_NOISE 0.5 // Temperature noise band
-#define ATUNE_STEP 10 // Change in temperature
+#define ATUNE_STEP 20 // Change in temperature
 #define ATUNE_LOOKBACK 1000 // Timestep for peak identification
+#define ATUNE_OUTPUTSTART 50 
 
 #include <Arduino.h>
 #include <PID_v1.h>

@@ -78,7 +78,7 @@ void TemperatureController::overrideOutput(bool on) {
 
 void TemperatureController::setupTuner() {
     // Set output to a start guess
-    *output_ = tpc_window_size_;
+    *output_ = ATUNE_OUTPUTSTART;
     resume();
 }
 
