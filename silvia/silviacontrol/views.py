@@ -131,7 +131,7 @@ class ManualControlView(views.APIView):
         Turn heater on/off
         """
         debug_log("Manual control get request")
-        duty = string2bool(self.request.query_params.get('duty', 0))
+        duty = self.request.query_params.get('duty', 0)
         # If machine is off and heater is activated, it must be turned on
         status = StatusModel.objects.get(pk=1)
         if duty > 0 and not status.on:
