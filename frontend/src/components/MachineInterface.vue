@@ -81,6 +81,9 @@
 
     <div v-if="machineMode != 0">
       <v-row align="center">
+        <v-col cols="auto" class="px-1" align-self="baseline">
+          <v-text-field v-model="dutyOverride" type="number" suffix="%" style="max-width: 70px"></v-text-field>
+        </v-col>
         <v-col cols="auto" class="px-1">
           <v-btn color="secondary" @click="toggleHeaterOn">
             Heat On
@@ -88,11 +91,11 @@
         </v-col>
         <v-col cols="auto" class="px-1">
           <v-btn color="secondary" @click="toggleHeaterOff">
-            Heat Off
+            Off
           </v-btn>
         </v-col>
         <v-col cols="auto" class="px-1">
-          <v-btn color="accent lighten-1" @click="toggleAutoTune">
+          <v-btn color="accent lighten-1" @click="toggleAutoTune" disabled>
             <div v-if="machineMode == 2">
               Cancel Tuning
             </div>
@@ -149,7 +152,7 @@ export default {
       low_water: false,
       sessionData: null,
       // watchedData: { watched: [] },
-      heaterOn: false,
+      dutyOverride: 100,
       Kp: 0,
       Ki: 0,
       Kd: 0
@@ -195,40 +198,24 @@ export default {
       const mode = this.machineMode === 0 ? 1 : 0
       eventBus.$emit('changeMode', mode)
     },
-    toggleHeater () {
-      const getParams = {
-        params: {
-          heaterOn: !this.heaterOn
-        }
-      }
-      axios.get('/api/v1/override/', getParams)
-        .then(response => {
-          this.heaterOn = !this.heaterOn
-        })
-        .catch(error => console.log(error))
-    },
     toggleHeaterOn () {
       const getParams = {
         params: {
-          heaterOn: true
+          duty: this.dutyOverride
         }
       }
       axios.get('/api/v1/override/', getParams)
-        .then(response => {
-          this.heaterOn = true
-        })
+        .then(response => {})
         .catch(error => console.log(error))
     },
     toggleHeaterOff () {
       const getParams = {
         params: {
-          heaterOn: false
+          duty: 0
         }
       }
       axios.get('/api/v1/override/', getParams)
-        .then(response => {
-          this.heaterOn = false
-        })
+        .then(response => {})
         .catch(error => console.log(error))
     },
     toggleAutoTune () {

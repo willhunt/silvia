@@ -68,12 +68,8 @@ int TemperatureController::getRelayPin() {
     return relay_pin_;
 }
 
-void TemperatureController::overrideOutput(bool on) {
-    if (on) {
-        *output_ = tpc_window_size_;
-    } else {
-        *output_ = 0.0;
-    }
+void TemperatureController::overrideOutput(double duty) {
+    *output_ = tpc_window_size_ * duty / 100;
 }
 
 void TemperatureController::setupTuner() {

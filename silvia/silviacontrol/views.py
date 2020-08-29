@@ -131,15 +131,15 @@ class ManualControlView(views.APIView):
         Turn heater on/off
         """
         debug_log("Manual control get request")
-        heater_on = string2bool(self.request.query_params.get('heaterOn', False))
+        duty = string2bool(self.request.query_params.get('duty', 0))
         # If machine is off and heater is activated, it must be turned on
         status = StatusModel.objects.get(pk=1)
-        if heater_on and not status.on:
+        if duty > 0 and not status.on:
             status.on = True
             status.mode = 1
             status.save()
-        async_override_microcontroller.delay(heaterOn=heater_on)
-        return Response({"heater": heater_on})
+        async_override_microcontroller.delay(duty=duty)
+        return Response({"duty": duty})
 
 def string2bool(input_string):
     """

@@ -180,22 +180,21 @@ def update_microcontroller_serial(on=False, brew=False, mode=0):
         debug_log("Cannot write to microcontroller - update")
 
 @shared_task
-def async_override_microcontroller(heaterOn=False):
+def async_override_microcontroller(duty=0):
     """
     Control override/manual mode of arduino
     """
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
-            async_override_i2c(heaterOn)
+            async_override_i2c(duty)
         elif django_settings.ARDUINO_COMMS == "serial":
-            async_override_serial(heaterOn)
+            async_override_serial(duty)
 
-def async_override_i2c(heaterOn=False):
+def async_override_i2c(duty=0):
     """
     Control override/manual mode of arduino
     """
-    data_block = struct.pack('<?', heaterOn)
-    debug_log( "heaterOn: {}".format(heaterOn) )
+    data_block = struct.pack('<f', duty)
     debug_log( "Override data to send: {}".format( list(data_block) ) )
     # Write to register 2
     try:
@@ -203,11 +202,11 @@ def async_override_i2c(heaterOn=False):
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
         
-def async_override_serial(heaterOn=False):
+def async_override_serial(duty=0):
     """
     Control override/manual mode of arduino
     """
-    data_block = struct.pack('<b?', 2, heaterOn)
+    data_block = struct.pack('<bf', 2, duty)
     debug_log( "Override data to send: {}".format( list(data_block) ) )
     try:
         serial_arduino.reset_input_buffer()

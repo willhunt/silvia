@@ -40,7 +40,7 @@ class TemperatureController : public PID {
     double getSetpoint();
     double getDuty();
     int getRelayPin();
-    void overrideOutput(bool on);
+    void overrideOutput(double duty);
     void setupTuner();
     void cancelTuner();
     bool tune();

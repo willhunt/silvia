@@ -83,17 +83,17 @@ void response_actions() {
   }
 }
 
-void heater_on_request(bool heaterOn) {
+void heater_on_request(double duty) {
   if (mode != 1) {  
     if (mode = 2)
       pid.cancelTuner();
     mode = 1;
     pid.off();
   }
-  if (heaterOn) {
-    power_output.on();
-  }
-  pid.overrideOutput(heaterOn);
+  // if (duty > 0) {
+  //   power_output.on();
+  // }  Handle this on master end
+  pid.overrideOutput(duty);
 }
 
 void check_serial_calls() {
@@ -110,8 +110,8 @@ void check_serial_calls() {
     } else if (first_byte == 2) {
       Serial.readBytes(override_data.buffer, sizeof_override_data);
       Serial.flush();
-      heater_on_request(override_data.data.heater);
-      Serial.print("Override received, heaterOn: "); Serial.println(override_data.data.heater);
+      heater_on_request(override_data.data.duty);
+      Serial.print("Override received, duty: "); Serial.println(override_data.data.duty);
     }
   }
 }
@@ -147,8 +147,13 @@ void receiveEvent(int numBytes) {
       }
       response_actions();
     } else if (i2c_register == 2) { // Override request
-      bool heaterOn = (bool)Wire.read();
-      heater_on_request(heaterOn);
+      int index = 0;
+      while (Wire.available() && index < sizeof_override_data) {
+        override_data.buffer[index] = (byte)Wire.read();
+        index++;
+      }
+      heater_on_request(override_data.data.duty);
+      Serial.print("Override received, duty: "); Serial.println(override_data.data.duty);
     } 
   }  // if(Wire.available)
 }
