@@ -1,6 +1,6 @@
 #!/bin/sh
 
-branch=${1:-master}
+branch=$1
 
 git fetch --all
 git reset --hard origin/$branch
