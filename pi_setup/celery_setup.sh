@@ -3,7 +3,8 @@ sudo mkdir -p /var/log/celery
 sudo mkdir -p /var/run/celery
 # Permissions
 sudo chgrp -R server_group /var/run/celery
-sudo chgrp -R server_group /var/run/celery
+sudo chgrp -R server_group /var/log/celery
+
 
 # Systemd method
 # Copy celery daemonization files
@@ -26,5 +27,7 @@ sudo chgrp -R server_group /var/run/celery
 # Supervisor method
 sudo cp -f celery/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
 sudo cp -f celery/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
-sudo supervisord
+sudo chgrp -R server_group /var/log/supervisor
+sudo chmod g+wr /var/log/supervisor/supervisord.log
+sudo supervisord -c /etc/supervisor/supervisord.conf
 sudo supervisorctl start silvia_celery
