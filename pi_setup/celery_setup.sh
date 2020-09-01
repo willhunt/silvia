@@ -28,10 +28,3 @@ sudo cp -f celery/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
 sudo cp -f celery/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
 sudo supervisord
 sudo supervisorctl start silvia_celery
-
-
-
-
-# Start
-
-
