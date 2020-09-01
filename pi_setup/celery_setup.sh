@@ -1,3 +1,10 @@
+# Make logging directories
+sudo mkdir -p /var/log/celery
+sudo mkdir -p /var/run/celery
+# Permissions
+sudo chgrp -R server_group /var/run/celery
+sudo chgrp -R server_group /var/run/celery
+
 # Systemd method
 # Copy celery daemonization files
 # sudo cp -f celery.service /etc/systemd/system/celery.service
@@ -8,17 +15,23 @@
 # sudo systemctl daemon-reload
 
 # General method
-sudo cp -f celery/celeryd /etc/default/celeryd
-sudo cp -f celery/celerybeat /etc/default/celerybeat
-sudo cp -f celery/generic-init.d/celeryd /etc/init.d/celeryd
-sudo cp -f celery/generic-init.d/celerybeat /etc/init.d/celerybeat
+# sudo cp -f celery/celeryd /etc/default/celeryd
+# sudo cp -f celery/celerybeat /etc/default/celerybeat
+# sudo cp -f celery/generic-init.d/celeryd /etc/init.d/celeryd
+# sudo cp -f celery/generic-init.d/celerybeat /etc/init.d/celerybeat
+# celery multi start worker1 -A silvia --pidfile="/var/run/celery/%n.pid" --logfile="/var/log/celery/%n%I.log"
+# celery multi start celerybeat -A silvia --pidfile="/var/run/celery/%n.pid" --logfile="/var/log/celery/%n%I.log"
 
 
-# Make logging directories
-sudo mkdir -p /var/log/celery
-sudo mkdir -p /var/run/celery
+# Supervisor method
+sudo cp -f celery/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
+sudo cp -f celery/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
+sudo supervisord
+sudo supervisorctl start silvia_celery
+
+
+
 
 # Start
-/etc/init.d/celeryd start
-/etc/init.d/celerybeat start
+
 
