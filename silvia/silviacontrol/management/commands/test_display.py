@@ -10,7 +10,7 @@ class Command(BaseCommand):
             from silviacontrol.display_cp import SilviaDisplay
 
             display = SilviaDisplay(0x3C)
-            display.welcome()
+            display.showWelcome()
             display.showTemperature(20, 100)
         else:
             debug_log("Nothing to display in simulation mode")

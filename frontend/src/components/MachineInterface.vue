@@ -236,10 +236,15 @@ export default {
             console.log(response.data)
             // this.sessionData = response.data
             if (response.data === '') {
+              console.log('No response data returned')
               return false
             }
             this.sessionData = Object.assign({}, this.sessionData, response.data)
             const latestSession = response.data[Object.keys(response.data)[0]]
+            if (latestSession === undefined || latestSession.length === 0) {
+              console.log('No logged responses yet')
+              return false
+            }
             const lastResponse = latestSession[latestSession.length - 1]
             this.temperature = lastResponse.T_boiler
             this.m_current = lastResponse.m
