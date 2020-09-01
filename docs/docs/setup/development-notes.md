@@ -28,10 +28,17 @@ $ redis-cli flushall
 ### Celery
 Start celery and celery-beat
 ```bash
-$ cd silvia
+$ cd ~/silvia/silvia
 $ celery -A silvia worker -l info
 $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
+
+Inspect celery using flower
+```bash
+$ cd ~/silvia/silvia
+$ flower -A silvia
+```
+
 
 ## Apache
 Apache can be restarted using:

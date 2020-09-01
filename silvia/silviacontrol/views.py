@@ -11,7 +11,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_override_microcontroller
+from .tasks import async_comms_override
 
 # Html Views -----------
 def index(request):
@@ -138,7 +138,7 @@ class ManualControlView(views.APIView):
             status.on = True
             status.mode = 1
             status.save()
-        async_override_microcontroller.delay(duty=duty)
+        async_comms_override.delay(duty=duty)
         return Response({"duty": duty})
 
 def string2bool(input_string):

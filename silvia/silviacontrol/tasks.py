@@ -42,7 +42,7 @@ else:
 
 
 @shared_task(base=QueueOnce, once={'graceful': True})
-def async_get_response():
+def async_comms_response():
     """
     Get sensor and PID data from microcontroller and wireless scale
     Simulations used for testing
@@ -125,7 +125,7 @@ def async_get_response():
 
 
 @shared_task()
-def async_update_scale(brew):
+def async_scale_update(brew):
     """
     Args
         on [Bool]: True = start brewing, False = stop brewing
@@ -145,14 +145,14 @@ def async_update_scale(brew):
 
 
 @shared_task
-def async_update_microcontroller(on=False, brew=False, mode=0):
+def async_comms_update(on=False, brew=False, mode=0):
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
-            update_microcontroller_i2c(on, brew, mode)
+            async_comms_update_i2c(on, brew, mode)
         elif django_settings.ARDUINO_COMMS == "serial":
-            update_microcontroller_serial(on, brew, mode)
+            async_comms_update_serial(on, brew, mode)
 
-def update_microcontroller_i2c(on=False, brew=False, mode=0):
+def async_comms_update_i2c(on=False, brew=False, mode=0):
     settings = SettingsModel.objects.get(id=1)
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
@@ -164,7 +164,7 @@ def update_microcontroller_i2c(on=False, brew=False, mode=0):
     except Exception as e:
         debug_log("Cannot write to microcontroller - update")
 
-def update_microcontroller_serial(on=False, brew=False, mode=0):
+def async_comms_update_serial(on=False, brew=False, mode=0):
     """
     For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
     """
@@ -183,17 +183,17 @@ def update_microcontroller_serial(on=False, brew=False, mode=0):
         debug_log("Cannot write to microcontroller - update")
 
 @shared_task
-def async_override_microcontroller(duty=0):
+def async_comms_override(duty=0):
     """
     Control override/manual mode of arduino
     """
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
-            async_override_i2c(duty)
+            async_comms_override_i2c(duty)
         elif django_settings.ARDUINO_COMMS == "serial":
-            async_override_serial(duty)
+            async_comms_override_serial(duty)
 
-def async_override_i2c(duty=0):
+def async_comms_override_i2c(duty=0):
     """
     Control override/manual mode of arduino
     """
@@ -205,7 +205,7 @@ def async_override_i2c(duty=0):
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
         
-def async_override_serial(duty=0):
+def async_comms_override_serial(duty=0):
     """
     Control override/manual mode of arduino
     """
@@ -221,7 +221,7 @@ def async_override_serial(duty=0):
         debug_log("Cannot write to microcontroller - override")
 
 @shared_task
-def async_update_display():
+def async_display_update():
     """
     Update display over I2C
     """

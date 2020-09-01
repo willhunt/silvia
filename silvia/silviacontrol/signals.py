@@ -2,7 +2,7 @@ from django.db.models.signals import post_init, pre_save, post_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings as django_settings
 from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel, SessionModel
-from .tasks import async_get_response, async_update_microcontroller, async_update_scale, async_update_display
+from .tasks import async_comms_response, async_comms_update, async_scale_update, async_display_update
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 @receiver(pre_save, sender=ScheduleModel)
@@ -24,7 +24,7 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_on,
             name="on:{0} {1}".format(instance.id, instance.name),
             # name=('%s_on' % (instance.name)),  
-            task='async_update_microcontroller.delay',
+            task='async_comms_update.delay',
             args='[True, False, 0]',
             enabled=instance.active
         )
@@ -50,7 +50,7 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_off,
             name="off:{0} {1}".format(instance.id, instance.name),
             # name=('%s_off' % (instance.name)),  
-            task='async_update_microcontroller.delay',
+            task='async_comms_update.delay',
             args='[False, False, 0]',
             enabled=instance.active
         )
@@ -124,7 +124,7 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
         )
         periodic_response = PeriodicTask.objects.create(
             name="Get Response",
-            task="silviacontrol.tasks.async_get_response",
+            task="silviacontrol.tasks.async_comms_response",
             enabled=status.on,
             interval=periodic_interval
         )
@@ -143,12 +143,12 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
         )
         periodic_display = PeriodicTask.objects.create(
             name="Update Display",
-            task="silviacontrol.tasks.async_update_display",
+            task="silviacontrol.tasks.async_display_update",
             enabled=status.on,
             interval=display_interval
         )
     # Send to Arduino (update settings, not status, current status values given)
-    async_update_microcontroller.delay(status.on, status.brew, status.mode)
+    async_comms_update.delay(status.on, status.brew, status.mode)
 
 @receiver(pre_save, sender=StatusModel)
 def save_status(sender, instance, raw, using, update_fields, **kwargs):
@@ -207,8 +207,8 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
         session.save()
 
     # Turn actual machine/brew on/off or mode change
-    async_update_microcontroller.delay(instance.on, instance.brew, instance.mode)
+    async_comms_update.delay(instance.on, instance.brew, instance.mode)
 
     # Turn scale on/off
     if instance.brew != prior_status.brew:
-        async_update_scale.delay(instance.brew)
+        async_scale_update.delay(instance.brew)

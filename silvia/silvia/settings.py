@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+# from kombu import Queue
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -180,6 +181,12 @@ CELERY_ONCE = {
 # CELERY_BROKER_TRANSPORT_OPTIONS = {
 #     'queue_order_strategy': 'priority',
 # }
+
+# TASK_DEFAULT_QUEUE = 'default'
+# TASK_QUEUES = (
+#     Queue('default', routing_key="task.")
+# )
+CELERY_TASK_ROUTES = {'async_comms_*': {'queue': 'comms'}}
 
 # CORS
 # CORS_ORIGIN_WHITELIST = [
