@@ -244,6 +244,6 @@ def async_update_display():
         #         display.showTemperature(T, settings.T_set)
         # else:  # Off
         #     display.showBlank()
-
-        display.showTemperature(47, 100)
+        latest_response = ResponseModel.objects.order_by('-t')[0]
+        display.showTemperature(latest_response.T_boiler, 100)
         
