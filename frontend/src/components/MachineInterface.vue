@@ -348,7 +348,7 @@ export default {
   /* top: 10%;
   left: 83%; */
   top: 75%;
-  left: 31.5%;
+  left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   background-color: rgb(236, 236, 236);
