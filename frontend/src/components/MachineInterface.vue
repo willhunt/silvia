@@ -33,7 +33,7 @@
     <v-row align="center">
       <!-- <v-btn color="secondary" @click="toggleOnOff">{{ machineOn ? "On" : "Off" }}</v-btn> -->
       <v-col cols="auto">
-        <v-switch color="secondary" :value="machineOn" @change="toggleOnOff" :label="`${machineOn ? 'On' : 'Off'}`"></v-switch>
+        <v-switch color="secondary" value :input-value="machineOn" @change="toggleOnOff" :label="`${machineOn ? 'On' : 'Off'}`"></v-switch>
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="auto" class="px-1" v-if="machineOn">
