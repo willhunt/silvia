@@ -220,7 +220,7 @@ def async_override_serial(duty=0):
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
 
-@shared_task(base=QueueOnce, once={'graceful': True})
+@shared_task
 def async_update_display():
     """
     Update display over I2C
