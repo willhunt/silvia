@@ -30,4 +30,7 @@ sudo cp -f celery/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybea
 sudo chgrp -R server_group /var/log/supervisor
 sudo chmod g+wr /var/log/supervisor/supervisord.log
 sudo supervisord -c /etc/supervisor/supervisord.conf
-sudo supervisorctl start silvia_celery
+
+# Delete files
+# sudo rm /etc/supervisor/conf.d/silvia_celery.conf
+# sudo rm /etc/supervisor/conf.d/silvia_celerybeat.conf

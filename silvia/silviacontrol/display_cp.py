@@ -65,6 +65,7 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         self.image(image)
         try:
             self.show()
+            debug_log("Temperature displayed")
         except Exception as e:
             debug_log("Screen connection error")
 
