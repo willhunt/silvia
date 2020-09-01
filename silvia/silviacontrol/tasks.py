@@ -32,6 +32,9 @@ if django_settings.SIMULATE_MACHINE == False:
             raise serial.serialutil.SerialException("No serial connection to Arduino")    
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
+    # Display
+    from silviacontrol.display_cp import SilviaDisplay
+    display = SilviaDisplay(0x3C)
 
 # For testing without raspberry pi/espresso machine
 else:
@@ -216,3 +219,29 @@ def async_override_serial(duty=0):
         debug_log("Response to override: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")
+
+@shared_task(base=QueueOnce, once={'graceful': True})
+def async_update_display():
+    """
+    Update display over I2C
+    """
+    if django_settings.SIMULATE_MACHINE == False:
+        status = StatusModel.objects.get(id=1)
+        if status.on:
+            # Display welcome screen if only just turned on
+            t_now = timezone.now()
+            session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
+            if (t_now - session.t_start).total_seconds() < 2:
+                display.showWelcome()
+            else:
+                # Otherwise display temperature
+                settings = SettingsModel.objects.get(id=1)
+                latest_response = ResponseModel.objects.order_by('-t')[0]
+                if (t_now - latest_response.t).total_seconds() > 10:
+                    T = None
+                else:
+                    T = latest_response.T_boiler
+                display.showTemperature(T, settings.T_set)
+        else:  # Off
+            display.showBlank()
+        

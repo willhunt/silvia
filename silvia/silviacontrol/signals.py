@@ -2,7 +2,7 @@ from django.db.models.signals import post_init, pre_save, post_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings as django_settings
 from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel, SessionModel
-from .tasks import async_get_response, async_update_microcontroller, async_update_scale
+from .tasks import async_get_response, async_update_microcontroller, async_update_scale, async_update_display
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 @receiver(pre_save, sender=ScheduleModel)
@@ -116,7 +116,6 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
         if periodic_response.interval.every != instance.t_sample:
             periodic_response.interval.every = instance.t_sample
             periodic_response.interval.save()
-
     except PeriodicTask.DoesNotExist:
         # Create periodic task if it doesn't exist
         periodic_interval = IntervalSchedule.objects.create(
@@ -128,6 +127,25 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
             task="silviacontrol.tasks.async_get_response",
             enabled=status.on,
             interval=periodic_interval
+        )
+    # See if periodic display update task exists
+    try:
+        periodic_display = PeriodicTask.objects.get(name="Update Display")
+        #  Update period if different
+        if periodic_display.interval.every != instance.t_update:
+            periodic_display.interval.every = instance.t_update
+            periodic_display.interval.save()
+    except PeriodicTask.DoesNotExist:
+        # Create periodic task if it doesn't exist
+        display_interval = IntervalSchedule.objects.create(
+            every=instance.t_update,
+            period='seconds'
+        )
+        periodic_display = PeriodicTask.objects.create(
+            name="Update Display",
+            task="silviacontrol.tasks.async_update_display",
+            enabled=status.on,
+            interval=display_interval
         )
     # Send to Arduino (update settings, not status, current status values given)
     async_update_microcontroller.delay(status.on, status.brew, status.mode)

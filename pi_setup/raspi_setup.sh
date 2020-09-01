@@ -89,5 +89,21 @@ sudo -u postgres psql -c "ALTER ROLE databaseadmin SET default_transaction_isola
 sudo -u postgres psql -c "ALTER ROLE databaseadmin SET timezone TO 'GB';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE silviadatabase TO databaseadmin;"
 
+# Supervisor
+# Make logging directories
+sudo mkdir -p /var/log/celery
+sudo mkdir -p /var/run/celery
+sudo mkdir -p /var/log/silvia
+# Permissions
+sudo chgrp -R server_group /var/run/celery
+sudo chgrp -R server_group /var/log/celery
+sudo chgrp -R server_group /var/log/silvia
+# Config
+sudo cp -f supervisor/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
+sudo cp -f supervisor/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
+sudo chgrp -R server_group /var/log/supervisor
+sudo chmod g+wr /var/log/supervisor/supervisord.log
+# sudo supervisord -c /etc/supervisor/supervisord.conf
+
 # Reboot
 printf "Finished, now reboot."
