@@ -65,9 +65,27 @@ void handleBrewStart() {
   // Start timer
   timerReset();
   timerStartStop();
+
+//  if(server_.hasArg("setpoint")) {
+//    String m_setpoint_str = server_.arg("setpoint");
+//    m_setpoint = m_setpoint_str.toDouble();
+//  }
 }
 
 void handleBrewStop () {
   // Stop timer
   timerStartStop();
 }
+
+//void sendBrewStop() {
+//  HTTPClient http;
+//  http.begin("http://192.168.0.6/api/v1/status/1/");
+//  http.addHeader("Content-Type", "application/json");
+//  int httpResponseCode = http.PUT("{id: 1, brew: False}");
+//  if(httpResponseCode>0){
+//    String response = http.getString();
+//    Serial.print("Response: "); Serial.print(httpResponseCode);
+//    Serial.print(" - "); Serial.println(response);
+//  }
+//  http.end();
+//}

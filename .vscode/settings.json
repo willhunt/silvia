@@ -2,7 +2,8 @@
     "python.linting.enabled": true,
     "files.associations": {
         "*.cpp": "cpp",
-        "numeric": "cpp"
+        "numeric": "cpp",
+        "complex": "cpp"
     },
     "python.linting.pylintArgs": ["--load-plugins", "pylint_django"]
 }

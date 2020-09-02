@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
 #include "wifi_details.h"  // Wifi SSID & password
 #include "silvia_scale_display.h"
 #include "silvia_scale_timer.h"
@@ -16,5 +17,8 @@ void handleGetMass();
 void handleTare();
 void handleBrewStart();
 void handleBrewStop();
+//void sendBrewStop();
+
+//extern double m_setpoint;
 
 #endif  // SILVIA_SCALE_WIFI_H

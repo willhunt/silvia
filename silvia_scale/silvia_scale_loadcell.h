@@ -5,7 +5,7 @@
 //#include "HX711.h"
 #include <HX711_ADC.h>
 
-#define CALIBRATION_FACTOR 420.0983
+#define CALIBRATION_FACTOR 2871.68
 
 //extern HX711 loadcell;
 

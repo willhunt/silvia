@@ -20,6 +20,8 @@ IPAddress dns(192, 168, 0, 1);  // Domain name server
 
 ESP8266WebServer* server;
 
+double m_setpoint;
+
 void setup() {
   displaySetup();
   displayWelcome();
@@ -28,13 +30,12 @@ void setup() {
 //  delay(3000);
 
   server = scaleWifiSetup(ip, gateway, subnet, dns);
-  
 
   loadcellSetup(SCALE_DOUT_PIN, SCALE_CLK_PIN, LOADCELL_TARE_PIN);
 
-
   timerSetup(TIMER_START_PIN, TIMER_RESET_PIN);
-  
+
+  m_setpoint = -1;
 }
 
 void loop() {
@@ -48,4 +49,9 @@ void loop() {
 //  displayMass(mass);
   
 //  delay(100);
+
+  // Need to setup crsf token for this
+//  if (mass >= m_setpoint) {
+//    sendBrewStop();
+//  }
 }
