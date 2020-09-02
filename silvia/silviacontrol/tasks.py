@@ -245,6 +245,6 @@ def async_display_update():
         # else:  # Off
         #     display.showBlank()
         latest_response = ResponseModel.objects.order_by('-t')[0]
-        display = SilviaDisplay(0x3C)
+        display = display.reconnect()
         display.showTemperature(latest_response.T_boiler, 100)
         

@@ -17,6 +17,7 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
     def __init__(self, i2c_address):
         # self.i2c = busio.I2C(SCL, SDA)
         self.i2c = board.I2C()
+        self.i2c_address = i2c_address
         super().__init__(128, 64, self.i2c, addr=i2c_address)
         self.fill(0)
         self.show()
@@ -24,6 +25,10 @@ class SilviaDisplay(adafruit_ssd1306.SSD1306_I2C):
         # self.font = ImageFont.load_default()
         self.font_data = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 30)
         self.font_sub = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 12)
+
+    def reconnect(self):
+        self.i2c = board.I2C()
+        super().__init__(128, 64, self.i2c, addr=self.i2c_address)
         
     def welcome(self):
         self.showWelcome()
