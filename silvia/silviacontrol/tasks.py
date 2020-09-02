@@ -34,7 +34,7 @@ if django_settings.SIMULATE_MACHINE == False:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
     # Display
     from silviacontrol.display_cp import SilviaDisplay
-    display = SilviaDisplay(0x3C)
+    # display = SilviaDisplay(0x3C)
 
 # For testing without raspberry pi/espresso machine
 else:
@@ -245,5 +245,6 @@ def async_display_update():
         # else:  # Off
         #     display.showBlank()
         latest_response = ResponseModel.objects.order_by('-t')[0]
+        display = SilviaDisplay(0x3C)
         display.showTemperature(latest_response.T_boiler, 100)
         
