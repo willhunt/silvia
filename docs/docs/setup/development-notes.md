@@ -52,9 +52,10 @@ Restart processes
 ```bash
 $ sudo supervisorctl restart celery_workers:silvia_worker1
 ```
-Stopp all
+Stop/start all
 ```bash
 $ sudo supervisorctl stop all
+$ sudo supervisorctl start all
 ```
 
 Reload config

@@ -62,6 +62,8 @@ SilviaDisplay display = SilviaDisplay();
 void setup(void) {
     // pi_comms_setup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor, &mode);
     pi_comms_setup(I2C_ADDR);
+    display.showLogo();
+    delay(1000);
 }
 
 void loop(void)  {
