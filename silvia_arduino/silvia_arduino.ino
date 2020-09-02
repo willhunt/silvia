@@ -31,6 +31,7 @@ Notes:
 #include "silvia_pi_comms.h"
 #include "silvia_output.h"
 #include "silvia_water_sensor.h"
+#include "silvia_display.h"
 
 // Mode
 // 0 : PID
@@ -49,15 +50,14 @@ double pid_setpoint;
 // PID gains set to zero/ or default as not known yet
 TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
 
-// Display
-// Adafruit library doesn't seem to play with SoftwareWire. Implementing display from Pi side.
-// SilviaDisplay display = SilviaDisplay(DISPLAY_SDA_PIN, DISPLAY_SCL_PIN);
-
 // Relays
 // PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
 RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
+// Display
+// NB: Adafruit library doesn't seem to play with SoftwareWire.
+SilviaDisplay display = SilviaDisplay();
 
 void setup(void) {
     // pi_comms_setup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor, &mode);
@@ -87,4 +87,5 @@ void loop(void)  {
     }
     check_serial_calls();
     pid.relayControl();
+    display.update();
 }

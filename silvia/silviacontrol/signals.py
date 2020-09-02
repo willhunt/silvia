@@ -128,25 +128,26 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
             enabled=status.on,
             interval=periodic_interval
         )
+    # This is for a pereodic task to update the display. Not used currently
     # See if periodic display update task exists
-    try:
-        periodic_display = PeriodicTask.objects.get(name="Update Display")
-        #  Update period if different
-        if periodic_display.interval.every != instance.t_update:
-            periodic_display.interval.every = instance.t_update
-            periodic_display.interval.save()
-    except PeriodicTask.DoesNotExist:
-        # Create periodic task if it doesn't exist
-        display_interval = IntervalSchedule.objects.create(
-            every=instance.t_update,
-            period='seconds'
-        )
-        periodic_display = PeriodicTask.objects.create(
-            name="Update Display",
-            task="silviacontrol.tasks.async_display_update",
-            enabled=status.on,
-            interval=display_interval
-        )
+    # try:
+    #     periodic_display = PeriodicTask.objects.get(name="Update Display")
+    #     #  Update period if different
+    #     if periodic_display.interval.every != instance.t_update:
+    #         periodic_display.interval.every = instance.t_update
+    #         periodic_display.interval.save()
+    # except PeriodicTask.DoesNotExist:
+    #     # Create periodic task if it doesn't exist
+    #     display_interval = IntervalSchedule.objects.create(
+    #         every=instance.t_update,
+    #         period='seconds'
+    #     )
+    #     periodic_display = PeriodicTask.objects.create(
+    #         name="Update Display",
+    #         task="silviacontrol.tasks.async_display_update",
+    #         enabled=status.on,
+    #         interval=display_interval
+    #     )
     # Send to Arduino (update settings, not status, current status values given)
     async_comms_update.delay(status.on, status.brew, status.mode)
 

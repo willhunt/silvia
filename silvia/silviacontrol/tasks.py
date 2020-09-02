@@ -226,24 +226,22 @@ def async_display_update():
     Update display over I2C
     """
     if django_settings.SIMULATE_MACHINE == False:
-        # status = StatusModel.objects.get(id=1)
-        # if status.on:
-        #     # Display welcome screen if only just turned on
-        #     t_now = timezone.now()
-        #     session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
-        #     if (t_now - session.t_start).total_seconds() < 2:
-        #         display.showWelcome()
-        #     else:
-        #         # Otherwise display temperature
-        #         settings = SettingsModel.objects.get(id=1)
-        #         latest_response = ResponseModel.objects.order_by('-t')[0]
-        #         if (t_now - latest_response.t).total_seconds() > 10:
-        #             T = None
-        #         else:
-        #             T = latest_response.T_boiler
-        #         display.showTemperature(T, settings.T_set)
-        # else:  # Off
-        #     display.showBlank()
-        latest_response = ResponseModel.objects.order_by('-t')[0]
-        display.showTemperature(latest_response.T_boiler, 100)
+        status = StatusModel.objects.get(id=1)
+        if status.on:
+            # Display welcome screen if only just turned on
+            t_now = timezone.now()
+            session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
+            if (t_now - session.t_start).total_seconds() < 2:
+                display.showWelcome()
+            else:
+                # Otherwise display temperature
+                settings = SettingsModel.objects.get(id=1)
+                latest_response = ResponseModel.objects.order_by('-t')[0]
+                if (t_now - latest_response.t).total_seconds() > 10:
+                    T = None
+                else:
+                    T = latest_response.T_boiler
+                display.showTemperature(T, settings.T_set)
+        else:  # Off
+            display.showBlank()
         

@@ -74,7 +74,7 @@ export PATH=$PATH:/home/pi/bin
 arduino-cli config init
 arduino-cli core update-index
 arduino-cli core install arduino:avr
-arduino-cli lib install PID
+arduino-cli lib install PID Adafruit_SSD1306
 cd ~/Arduino/libraries
 git clone https://github.com/br3ttb/Arduino-PID-AutoTune-Library.git
 mv Arduino-PID-AutoTune-Library/PID_AutoTune_v0 .
