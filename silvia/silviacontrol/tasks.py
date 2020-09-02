@@ -41,7 +41,7 @@ else:
     from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
 
 
-@shared_task(base=QueueOnce, once={'graceful': True})
+@shared_task(base=QueueOnce, once={'graceful': True}, queue='comms')
 def async_comms_response():
     """
     Get sensor and PID data from microcontroller and wireless scale
@@ -144,7 +144,7 @@ def async_scale_update(brew):
                 debug_log("No connection to scale")
 
 
-@shared_task
+@shared_task(queue='comms')
 def async_comms_update(on=False, brew=False, mode=0):
     if django_settings.SIMULATE_MACHINE == False:
         if django_settings.ARDUINO_COMMS == "i2c":
@@ -182,7 +182,7 @@ def async_comms_update_serial(on=False, brew=False, mode=0):
     except Exception as e:
         debug_log("Cannot write to microcontroller - update")
 
-@shared_task
+@shared_task(queue='comms')
 def async_comms_override(duty=0):
     """
     Control override/manual mode of arduino

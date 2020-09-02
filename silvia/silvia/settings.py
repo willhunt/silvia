@@ -186,7 +186,7 @@ CELERY_ONCE = {
 # TASK_QUEUES = (
 #     Queue('default', routing_key="task.")
 # )
-CELERY_TASK_ROUTES = {'async_comms_*': {'queue': 'comms'}}
+# CELERY_TASK_ROUTES = {'async_comms_*': {'queue': 'comms'}}
 
 # CORS
 # CORS_ORIGIN_WHITELIST = [

@@ -40,11 +40,28 @@ $ flower -A silvia
 ```
 
 ## Supervisor
-sudo supervisorctl restart celery_workers
-sudo supervisord -c /etc/supervisor/supervisord.conf
+Start
+```bash
+$ sudo supervisord -c /etc/supervisor/supervisord.conf
+```
+See processes
+```bash
+$ sudo supervisorctl
+```
+Restart processes
+```bash
+$ sudo supervisorctl restart celery_workers:silvia_worker1
+```
+Stopp all
+```bash
+$ sudo supervisorctl stop all
+```
 
-sudo supervisorctl reread
-sudo supervisorctl update
+Reload config
+```bash
+$ sudo supervisorctl reread
+$ sudo supervisorctl update
+```
 
 ## Apache
 Apache can be restarted using:
