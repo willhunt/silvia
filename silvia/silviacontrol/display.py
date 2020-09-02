@@ -18,11 +18,14 @@ class SilviaDisplay():
         self.i2c_address = i2c_address
         self.font_data = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 30)
         self.font_sub = ImageFont.truetype(django_settings.STATIC_ROOT + '/silviacontrol/fonts/Roboto-Regular.ttf', 12)
+        i2c = board.I2C()
+        self.display = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=self.i2c_address)
         self.showBlank()
 
     def getDisplay(self):
-        i2c = board.I2C()
-        return adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=self.i2c_address)
+        # i2c = board.I2C()
+        # return adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=self.i2c_address)
+        return self.display
         
     def welcome(self):
         self.showWelcome()
