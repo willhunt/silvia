@@ -32,9 +32,6 @@ if django_settings.SIMULATE_MACHINE == False:
             raise serial.serialutil.SerialException("No serial connection to Arduino")    
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
-    # Display
-    from silviacontrol.display import SilviaDisplay
-    display = SilviaDisplay(0x3C)
 
 # For testing without raspberry pi/espresso machine
 else:
