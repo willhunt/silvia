@@ -60,10 +60,13 @@ RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 SilviaDisplay display = SilviaDisplay();
 
 void setup(void) {
-    // pi_comms_setup(I2C_ADDR, &power_output, &brew_output, &temperature_sensor, &pid, &water_sensor, &mode);
+    // Comms to pi
     pi_comms_setup(I2C_ADDR);
-    display.showLogo();
-    delay(1000);
+    // Display
+    display.begin(SSD1306_EXTERNALVCC, 0x3C);
+    display.display();
+    delay(2000);
+    display.clearDisplay();
 }
 
 void loop(void)  {

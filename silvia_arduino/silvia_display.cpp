@@ -2,11 +2,8 @@
 
 SilviaDisplay::SilviaDisplay()
   : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1) {
-  begin(SSD1306_EXTERNALVCC, 0x3C);
-
   power_start_ = 0;
   brew_start_ = 0;
-
   power_status_ = false;
 };
 
