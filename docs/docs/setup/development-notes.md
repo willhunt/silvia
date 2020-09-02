@@ -39,6 +39,12 @@ $ cd ~/silvia/silvia
 $ flower -A silvia
 ```
 
+## Supervisor
+sudo supervisorctl restart celery_workers
+sudo supervisord -c /etc/supervisor/supervisord.conf
+
+sudo supervisorctl reread
+sudo supervisorctl update
 
 ## Apache
 Apache can be restarted using:
