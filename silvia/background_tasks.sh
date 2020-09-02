@@ -3,7 +3,7 @@ trap "kill 0" EXIT
 
 # Celery
 # -c is concurrency (=1)
-celery -A silvia worker --queues=default &
+celery -A silvia worker --queues=celery &
 celery -A silvia worker -c 1 --queues=comms &
 celery -A silvia beat --scheduler django_celery_beat.schedulers:DatabaseScheduler &
 
