@@ -15,12 +15,17 @@ TemperatureController::TemperatureController(
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);    
 
+    // Autotuner not used
     // Autotuner
-    auto_tuner_ = new PID_ATune(Input, Output);
-    auto_tuner_->SetNoiseBand(ATUNE_NOISE);
-    auto_tuner_->SetOutputStep(ATUNE_STEP);
-    auto_tuner_->SetLookbackSec((int)ATUNE_LOOKBACK);
-    auto_tuner_->SetControlType(1); //PID 
+    // auto_tuner_ = new PID_ATune(Input, Output);
+    // auto_tuner_->SetNoiseBand(ATUNE_NOISE);
+    // auto_tuner_->SetOutputStep(ATUNE_STEP);
+    // auto_tuner_->SetLookbackSec((int)ATUNE_LOOKBACK);
+    // auto_tuner_->SetControlType(1); //PID 
+    // SetNoiseBand(ATUNE_NOISE);
+    // SetOutputStep(ATUNE_STEP);
+    // SetLookbackSec((int)ATUNE_LOOKBACK);
+    // SetControlType(1);
 }
 
 void TemperatureController::relayControl() {
@@ -72,27 +77,33 @@ void TemperatureController::overrideOutput(double duty) {
     *output_ = tpc_window_size_ * duty / 100;
 }
 
+// Autotuner not used
 void TemperatureController::setupTuner() {
     // Set output to a start guess
-    *output_ = ATUNE_OUTPUTSTART;
-    resume();
+    // *output_ = ATUNE_OUTPUTSTART;
+    // resume();
+    *output_ = 0;
 }
 
+// Autotuner not used
 void TemperatureController::cancelTuner() {
     // Set output to a start guess
-    auto_tuner_->Cancel();
+    // auto_tuner_->Cancel();
+    tuning_in_progress_ = false;
 }
 
+// Autotuner not used
 bool TemperatureController::tune() {
-    // byte val = (auto_tuner_->Runtime());
-    int val = auto_tuner_->Runtime();
-    if (val == 1) {  // Autotune has finished
-        // Turn pid back on with tuned values (and existing setpoint)
-        on(getSetpoint(), auto_tuner_->GetKp(), auto_tuner_->GetKi(), auto_tuner_->GetKd());
-        tuning_in_progress_ = false;
-    } else {
-        tuning_in_progress_ = true;
-    }
+    // int val = auto_tuner_->Runtime();
+    // if (val == 1) {  // Autotune has finished
+    //     // Turn pid back on with tuned values (and existing setpoint)
+    //     on(getSetpoint(), auto_tuner_->GetKp(), auto_tuner_->GetKi(), auto_tuner_->GetKd());
+    //     tuning_in_progress_ = false;
+    // } else {
+    //     tuning_in_progress_ = true;
+    // }
+    // return tuning_in_progress_;
+    tuning_in_progress_ = true;
     return tuning_in_progress_;
 }
 

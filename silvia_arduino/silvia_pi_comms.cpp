@@ -7,17 +7,24 @@ int sizeof_received_data;
 int sizeof_response_data;
 int sizeof_override_data;
 
-void pi_comms_setup(int i2c_addr) {
+void pi_comms_setup(int i2c_addr, TwoWire* wire) {
   sizeof_received_data = sizeof(receivedFormat);
   sizeof_response_data = sizeof(responseData);
   sizeof_override_data = sizeof(overrideData);
-
   // Serial
   Serial.begin(57600);
   // I2C
-  Wire.begin(i2c_addr);
-  Wire.onReceive(receiveEvent);
-  Wire.onRequest(requestEvent);
+  wire->begin(i2c_addr);
+  wire->onReceive(receiveEvent);
+  wire->onRequest(requestEvent);
+}
+
+void pi_comms_setup() {
+  sizeof_received_data = sizeof(receivedFormat);
+  sizeof_response_data = sizeof(responseData);
+  sizeof_override_data = sizeof(overrideData);
+  // Serial
+  Serial.begin(57600);
 }
 
 void update_data_buffer() {
@@ -76,10 +83,13 @@ void response_actions() {
   // Check if brew needs to be toggled
   if (received_data.data.brew != brew_output.getStatus()) {
     // Toggle brew if either in manual mode or water in tank
-    if (received_data.data.brew && ( (mode == 1) || water_sensor.getLevel() ))  
+    if (received_data.data.brew && ( (mode == 1) || water_sensor.getLevel() )) {
       brew_output.on();
-    else
+      timerReset();
+      timerStart();
+    } else {
       brew_output.off();
+    }
   }
 }
 

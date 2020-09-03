@@ -7,6 +7,7 @@
 #include "silvia_temperature_controller.h"
 #include "silvia_temperature_sensor.h"
 #include "silvia_water_sensor.h"
+#include "silvia_timer.h"
 
 #ifndef DEBUG
 #define DEBUG false
@@ -56,6 +57,8 @@ extern WaterLevelSensor water_sensor;
 extern RelayOutput power_output;
 extern RelayOutput brew_output;
 extern TemperatureController pid;
+extern void timerStart();
+extern void timerReset();
 
 // Mode - defined in silvia_main.ino
 // 0 : PID
@@ -63,7 +66,8 @@ extern TemperatureController pid;
 // 2 : PID autotune
 extern unsigned char mode;
 
-void pi_comms_setup(int i2c_addr);
+void pi_comms_setup(int i2c_addr, TwoWire* wire);
+void pi_comms_setup();
 void update_data_buffer();
 void response_actions();
 void heater_on_request(double duty);

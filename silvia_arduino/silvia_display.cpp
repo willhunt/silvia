@@ -1,30 +1,39 @@
 #include "silvia_display.h"
 
-SilviaDisplay::SilviaDisplay()
-  : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1) {
+SilviaDisplay::SilviaDisplay(TwoWire* twi)
+  : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, -1) {
   power_start_ = 0;
-  brew_start_ = 0;
   power_status_ = false;
 };
 
 void SilviaDisplay::showTemperature(double* T, double* T_set) {
-  clearDisplay();
+  setTextColor(SSD1306_WHITE);
+  char buffer [4];
 
-  setTextSize(1);  // Normal 1:1 pixel scale
-  setCursor(0, 0);
-  print("Temperature:");
-  setTextSize(2);
-  setCursor(0, 10);
-  print(*T, 1);  // Temperature to 1 decimal place
-  print(" "); cp437(true); write(167); print("C");  // Units
-
+  setTextSize(3);
+  sprintf(buffer, "%d", (int)*T);
+  drawCentreString(buffer, 35, 6);
   setTextSize(1);
-  setCursor(0, 35);
-  print("Target: ");
+  cp437(true); write(167); print("C");  // Units
+
   setTextSize(2);
-  setCursor(0, 10);
-  print(*T_set, 1);  // Temperature to 1 decimal place
-  print(" "); cp437(true); write(167); print("C");  // Units
+  sprintf(buffer, "%d", (int)*T_set);
+  drawCentreString(buffer, 102, 10);
+  drawRect(80, 7, 41, 20, WHITE);
+  
+  display();
+};
+
+void SilviaDisplay::showBrewTime(int* t) {
+  setTextColor(SSD1306_WHITE);
+  setTextSize(3);
+  char buffer [6];
+  int mins = *t / 60;
+  int secs = *t % 60;
+  sprintf(buffer, "%02d:%02d", mins, secs);
+  setCursor(21, 40);
+  print(buffer),
+  drawLine(0, 33, width()-1, 33, WHITE);
 
   display();
 };
@@ -35,10 +44,15 @@ void SilviaDisplay::showLogo() {
     (width()  - LOGO_WIDTH ) / 2, (height() - LOGO_HEIGHT) / 2,
     bitmap_logo,
     LOGO_WIDTH, LOGO_HEIGHT,
-    1
+    WHITE
   );
   display();
 };
+
+void SilviaDisplay::showBlank() {
+  clearDisplay();
+  display();
+}
 
 void SilviaDisplay::update() {
   if (power_output.getStatus()) {  // If machine on
@@ -46,14 +60,24 @@ void SilviaDisplay::update() {
       power_start_ = millis();
       showLogo();
     } else {
-      if (millis() - power_start_ > 2000) {  // ONly show temperature after 2 seconds, to leave welcome up
+      if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
+        clearDisplay();
         showTemperature(&T_boiler, &pid_setpoint);
+        showBrewTime(&brew_duration);
       }
     }
   } else {  // machine off
     if (power_status_) {  // If machine used to be on
-      clearDisplay();
+      showBlank();
     }
   }
   power_status_ = power_output.getStatus();
+}
+
+void SilviaDisplay::drawCentreString(const char *buf, int x, int y) {
+    int16_t x1, y1;
+    uint16_t w, h;
+    getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
+    setCursor(x - w / 2, y);
+    print(buf);
 }

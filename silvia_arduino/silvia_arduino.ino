@@ -9,20 +9,12 @@ Notes:
 
 // Pre-compile definitions
 #define DEBUG false
-// Pins
 #define TEMP_SENSOR_PIN A0
 #define WATER_SENSOR_PIN 7
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
-// #define DISPLAY_SDA_PIN 2
-// #define DISPLAY_SCL_PIN 3
-
-// #define PI_COMMS_SERIAL
-// #define PI_COMMS_I2C
-
 #define I2C_ADDR 0x8
-
 #define SAFETY_TEMPERATURE 120
 
 // Imports
@@ -39,6 +31,9 @@ Notes:
 // 2 : PID autotune
 unsigned char mode = 0;
 
+// Brew duration [s]
+int brew_duration = 0;
+
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
 WaterLevelSensor water_sensor(WATER_SENSOR_PIN);
@@ -51,22 +46,28 @@ double pid_setpoint;
 TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
 
 // Relays
-// PowerOutput power_output = PowerOutput(POWER_RELAY_PIN, &pid);
 RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
 // Display
 // NB: Adafruit library doesn't seem to play with SoftwareWire.
-SilviaDisplay display = SilviaDisplay();
+SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
-    pi_comms_setup(I2C_ADDR);
+    pi_comms_setup();
     // Display
-    display.begin(SSD1306_EXTERNALVCC, 0x3C);
-    display.display();
-    delay(2000);
-    display.clearDisplay();
+    if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+        if (DEBUG) {
+            Serial.println(F("SSD1306 allocation failed"));
+        }
+        // for(;;); // Don't proceed, loop forever
+    }
+    // Show logo
+    display.showLogo();
+    delay(3000);
+    display.showBlank();
+    timerReset();
 }
 
 void loop(void)  {
@@ -92,5 +93,6 @@ void loop(void)  {
     }
     check_serial_calls();
     pid.relayControl();
+    brew_duration = (int)(timerUpdate() / 1000);
     display.update();
 }

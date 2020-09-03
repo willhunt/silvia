@@ -5,14 +5,14 @@
 #define DEBUG false
 #endif  // DEBUG
 
-#define ATUNE_NOISE 0.5 // Temperature noise band
-#define ATUNE_STEP 20 // Change in temperature
-#define ATUNE_LOOKBACK 1000 // Timestep for peak identification
-#define ATUNE_OUTPUTSTART 50 
+// #define ATUNE_NOISE 0.5 // Temperature noise band
+// #define ATUNE_STEP 20 // Change in temperature
+// #define ATUNE_LOOKBACK 1000 // Timestep for peak identification
+// #define ATUNE_OUTPUTSTART 50 
 
 #include <Arduino.h>
 #include <PID_v1.h>
-#include <PID_AutoTune_v0.h>
+//#include <PID_AutoTune_v0.h>
 
 /* 
 PID controller for boiler temperature
@@ -24,7 +24,7 @@ class TemperatureController : public PID {
     unsigned long tpc_window_size_;  // Time proportional control window size [millis]
     double* output_;
     double* setpoint_;
-    PID_ATune* auto_tuner_;
+    // PID_ATune* auto_tuner_; 
     bool tuning_in_progress_;
 
   public:
@@ -41,6 +41,8 @@ class TemperatureController : public PID {
     double getDuty();
     int getRelayPin();
     void overrideOutput(double duty);
+    // Autotuner not used - methods left in for future use
+    // Inclusion caused display to fail
     void setupTuner();
     void cancelTuner();
     bool tune();
