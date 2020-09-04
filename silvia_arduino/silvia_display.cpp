@@ -10,7 +10,7 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
-  char buffer [4];
+  char buffer [6];
 
   setTextSize(3);
   sprintf(buffer, "%.0f", *T);
@@ -24,7 +24,6 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
   drawRect(80, 7, 41, 20, WHITE);
 
   setTextSize(3);
-  char buffer [6];
   int mins = *t / 60;
   int secs = *t % 60;
   sprintf(buffer, "%02d:%02d", mins, secs);
