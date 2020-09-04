@@ -14,7 +14,8 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
   int temp;  /// Temperature for printing
 
   setTextSize(3);
-  temp = (int)(*T + 0.5);  // 0.5 used for rounding correctly
+  // temp = (int)(*T + 0.5);  // 0.5 used for rounding correctly
+  temp = (int)(97.9078 + 0.5);
   sprintf(buffer, "%d", temp);
   drawCentreString(buffer, 35, 6);
   setTextSize(1);
