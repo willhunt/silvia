@@ -6,26 +6,23 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showTemperature(double* T, double* T_set) {
+void SilviaDisplay::showData(double* T, double* T_set, int* t) {
+  clearDisplay();
+
   setTextColor(SSD1306_WHITE);
   char buffer [4];
 
   setTextSize(3);
-  sprintf(buffer, "%d", (int)*T);
+  sprintf(buffer, "%.0f", *T);
   drawCentreString(buffer, 35, 6);
   setTextSize(1);
   cp437(true); write(167); print("C");  // Units
 
   setTextSize(2);
-  sprintf(buffer, "%d", (int)*T_set);
+  sprintf(buffer, "%.0f", *T_set);
   drawCentreString(buffer, 102, 10);
   drawRect(80, 7, 41, 20, WHITE);
-  
-  display();
-};
 
-void SilviaDisplay::showBrewTime(int* t) {
-  setTextColor(SSD1306_WHITE);
   setTextSize(3);
   char buffer [6];
   int mins = *t / 60;
@@ -34,7 +31,7 @@ void SilviaDisplay::showBrewTime(int* t) {
   setCursor(21, 40);
   print(buffer),
   drawLine(0, 33, width()-1, 33, WHITE);
-
+  
   display();
 };
 
@@ -61,9 +58,7 @@ void SilviaDisplay::update() {
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        clearDisplay();
-        showTemperature(&T_boiler, &pid_setpoint);
-        showBrewTime(&brew_duration);
+        showData(&T_boiler, &pid_setpoint, &brew_duration);
       }
     }
   } else {  // machine off
@@ -77,7 +72,7 @@ void SilviaDisplay::update() {
 void SilviaDisplay::drawCentreString(const char *buf, int x, int y) {
     int16_t x1, y1;
     uint16_t w, h;
-    getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
+    getTextBounds(buf, x, y, &x1, &y1, &w, &h); // Calc width of new string
     setCursor(x - w / 2, y);
     print(buf);
 }

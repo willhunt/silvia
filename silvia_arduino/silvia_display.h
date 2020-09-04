@@ -17,8 +17,7 @@ class SilviaDisplay : public Adafruit_SSD1306 {
     unsigned long power_start_;  // Time machine was last turned on
     bool power_status_;
     SilviaDisplay(TwoWire* wire);
-    void showTemperature(double* T, double* T_set);
-    void SilviaDisplay::showBrewTime(int* t);
+    void showData(double* T, double* T_set, int* t);
     void showLogo();
     void showBlank();
     void update();

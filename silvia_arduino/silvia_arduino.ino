@@ -72,6 +72,8 @@ void setup(void) {
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+    brew_duration = timerUpdate() / 1000;
+    display.update();
 
     // Ensure temperature never goes above safety level
     if (T_boiler > SAFETY_TEMPERATURE) {
@@ -93,6 +95,4 @@ void loop(void)  {
     }
     check_serial_calls();
     pid.relayControl();
-    brew_duration = (int)(timerUpdate() / 1000);
-    display.update();
 }
