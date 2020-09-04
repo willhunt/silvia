@@ -21,7 +21,8 @@ void TemperatureSensor::reset() {
 }
 
 double TemperatureSensor::readSensor() {
-    return analogRead(sensor_pin_) * sensor_coefficient_;
+    // return analogRead(sensor_pin_) * sensor_coefficient_;
+    return 97.2;
 }
 
 float TemperatureSensor::updateTemperature() {
@@ -46,8 +47,7 @@ float TemperatureSensor::getTemperature() {
     */
     if ((millis() - reading_time_) < averaging_interval_) {
         updateAverage();
-        // return reading_last_;
-        return 97.2;
+        return reading_last_;
     } else {
         return updateTemperature();
     }
