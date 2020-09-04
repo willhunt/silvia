@@ -1,18 +1,27 @@
 #include "silvia_temperature_sensor.h"
 
 TemperatureSensor::TemperatureSensor(int sensor_pin) {
-    reading_last_ = 0;
-    reading_sum_ = 0.0;
-    reading_count_ = 0;
     averaging_interval_ = 1000;  // Milliseconds
     sensor_coefficient_ = 0.48828125;  // LM35 sensor [(1.0/1024.0)*5.0*100.0]
     smoothing_filter_val_ = 0.2;
     sensor_pin_ = sensor_pin;
+    reset();
+    reading_last_ = readSensor();
 }
 
 void TemperatureSensor::updateAverage() {
-    reading_sum_ += analogRead(sensor_pin_) * sensor_coefficient_;
+    reading_sum_ += readSensor();
     reading_count_ += 1;
+}
+
+void TemperatureSensor::reset() {
+    reading_sum_ = 0.0;
+    reading_count_ = 0;
+    reading_time_ = millis();
+}
+
+double TemperatureSensor::readSensor() {
+    return analogRead(sensor_pin_) * sensor_coefficient_;
 }
 
 float TemperatureSensor::updateTemperature() {
@@ -24,15 +33,10 @@ float TemperatureSensor::updateTemperature() {
     reading_last_ = average * smoothing_filter_val_ + \
         reading_last_ * (1 - smoothing_filter_val_);
     // Reset
-    reading_sum_ = 0.0;
-    reading_count_ = 0;
-    reading_time_ = millis();
-
+    reset();
     // if (DEBUG) {
-        // Serial.print("Temperature: ");
-        // Serial.println(reading_last_);
+        // Serial.print("Temperature: "); Serial.println(reading_last_);
     // }
-
     return reading_last_;
 }
 

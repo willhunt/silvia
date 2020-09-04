@@ -72,8 +72,7 @@ void setup(void) {
 }
 
 void loop(void)  {
-    // T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
-    T_boiler = 96.2;
+    T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
     brew_duration = timerUpdate() / 1000;
     display.update();
 

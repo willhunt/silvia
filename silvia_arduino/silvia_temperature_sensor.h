@@ -31,6 +31,8 @@ class TemperatureSensor {
     float getTemperature();  // Get temperature, either last or new depending on interval
     float getLatestTemperature(); // Get latest without updating
     void updateInterval(int interval);  // Update interval [seconds]
+    void TemperatureSensor::reset();  // Reset variables
+    double TemperatureSensor::readSensor();  // Read sensor
 };
 
 
