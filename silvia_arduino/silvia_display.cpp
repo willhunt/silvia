@@ -14,6 +14,7 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
 
   setTextSize(3);
   sprintf(buffer, "%.0f", *T);
+  sprintf(buffer, "%.0f", 97);
   drawCentreString(buffer, 35, 6);
   setTextSize(1);
   cp437(true); write(167); print("C");  // Units
