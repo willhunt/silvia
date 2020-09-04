@@ -14,16 +14,16 @@ Rosserial publisher class for publishing IMU data from Adafruit BNO055
 class TemperatureSensor {
   
   private:
-    
     float reading_sum_;  // Sum readings to take average
     int reading_count_;  // Count readings to take average
     float sensor_coefficient_; // Specific to sensor
     float smoothing_filter_val_;  // Between 0 and 1 for smoothing function (small=more smooth)
     int sensor_pin_;  // Analog pin number
-    float updateTemperature();  // Updates temperature reading
     float averaging_interval_;  // Interval over which to average [millis]
     float reading_last_;  // Last temperature last_reading
     unsigned long reading_time_;  // Time at which last reading was taken
+    float updateTemperature();  // Updates temperature reading
+    void reset();  // Reset variables
 
   public:
     TemperatureSensor(int sensor_pin);
@@ -31,9 +31,7 @@ class TemperatureSensor {
     float getTemperature();  // Get temperature, either last or new depending on interval
     float getLatestTemperature(); // Get latest without updating
     void updateInterval(int interval);  // Update interval [seconds]
-    void TemperatureSensor::reset();  // Reset variables
-    double TemperatureSensor::readSensor();  // Read sensor
+    double readSensor();  // Read sensor
 };
-
 
 #endif //SILVIA_TEMP_SENSOR_H
