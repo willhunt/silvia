@@ -67,11 +67,13 @@ void setup(void) {
     display.showLogo();
     delay(3000);
     display.showBlank();
+    // Reset timer
     timerReset();
 }
 
 void loop(void)  {
-    T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+    // T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+    T_boiler = 96.2;
     brew_duration = timerUpdate() / 1000;
     display.update();
 

@@ -70,6 +70,7 @@ void response_actions() {
         Serial.println("Turn on");
       }
       power_output.on();
+      timerReset();
       // pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
     } else {
       if (DEBUG) {
