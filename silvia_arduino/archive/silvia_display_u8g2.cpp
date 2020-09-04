@@ -1,62 +1,60 @@
 #include "silvia_display.h"
 
-SilviaDisplay::SilviaDisplay(TwoWire* twi)
-  : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, -1) {
+SilviaDisplay::SilviaDisplay()
+  : U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, /* reset=*/ U8X8_PIN_NONE) {
   power_start_ = 0;
   power_status_ = false;
-  if(begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    if (DEBUG) {
-        Serial.println(F("SSD1306 allocation failed"));
-    }
-  }
+  begin();
 };
 
 void SilviaDisplay::showData(double* T, double* T_set, int* t) {
-  clearDisplay();
+  clearBuffer();
 
-  setTextColor(SSD1306_WHITE);
   char buffer [6];  // Buffer for printing strings
   int temp;  /// Temperature for printing
 
-  setTextSize(3);
+  setFont(u8g2_font_7x14_mn);
   temp = (int)(*T + 0.5);  // 0.5 used for rounding correctly
-  // sprintf(buffer, "%d", temp);
-  // drawCentreString(buffer, 35, 6);
-  setCursor(4,4); print(*T);
-  setTextSize(1);
-  cp437(true); write(167); print("C");  // Units
+  sprintf(buffer, "%d", temp);
+  drawCentreStr(35, 6, buffer);
+  setFont(u8g2_font_4x6_mf);
+  print(F("°C"));  // Units
 
-  setTextSize(2);
+  setFont(u8g2_font_5x8_mr);
   temp = (int)(*T_set + 0.5);  // 0.5 used for rounding correctly
   sprintf(buffer, "%d", temp);
-  drawCentreString(buffer, 102, 10);
-  drawRect(80, 7, 41, 20, WHITE);
+  drawCentreStr(102, 10, buffer);
+  drawFrame(80, 7, 41, 20);
 
-  setTextSize(3);
+  setFont(u8g2_font_7x14_mn);
   int mins = *t / 60;
   int secs = *t % 60;
   sprintf(buffer, "%02d:%02d", mins, secs);
-  setCursor(21, 40);
-  print(buffer),
-  drawLine(0, 33, width()-1, 33, WHITE);
+  drawStr(21, 40, buffer),
+  drawLine(0, 33, 127, 33);
   
-  display();
+  sendBuffer();
 };
 
 void SilviaDisplay::showLogo() {
-  clearDisplay();
-  drawBitmap(
-    (width()  - LOGO_WIDTH ) / 2, (height() - LOGO_HEIGHT) / 2,
-    bitmap_logo,
-    LOGO_WIDTH, LOGO_HEIGHT,
-    WHITE
+  clearBuffer();
+  // drawBitmap(
+  //   (width()  - LOGO_WIDTH ) / 2, (height() - LOGO_HEIGHT) / 2,
+  //   bitmap_logo,
+  //   LOGO_WIDTH/8, LOGO_HEIGHT,
+  //   WHITE
+  // );
+  drawXBM(
+    (SCREEN_WIDTH  - LOGO_WIDTH ) / 2, (SCREEN_HEIGHT - LOGO_HEIGHT) / 2,
+    LOGO_WIDTH/8, LOGO_HEIGHT,
+    bitmap_logo
   );
-  display();
+  sendBuffer();
 };
 
 void SilviaDisplay::showBlank() {
-  clearDisplay();
-  display();
+  clearBuffer();
+  sendBuffer();
 }
 
 void SilviaDisplay::update() {
@@ -77,10 +75,9 @@ void SilviaDisplay::update() {
   power_status_ = power_output.getStatus();
 }
 
-void SilviaDisplay::drawCentreString(const char *buf, int x, int y) {
-    int16_t x1, y1;
-    uint16_t w, h;
-    getTextBounds(buf, x, y, &x1, &y1, &w, &h); // Calc width of new string
-    setCursor(x - w / 2, y);
-    print(buf);
+void SilviaDisplay::drawCentreStr(int x, int y, const char *buffer) {
+    u8g2_uint_t w = getStrWidth(buffer);
+    setCursor(x - w/2, y);
+    // drawStr(x - w/2, y, buffer);
+    print(buffer);
 }

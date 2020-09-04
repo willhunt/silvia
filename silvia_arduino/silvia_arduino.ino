@@ -23,7 +23,7 @@ Notes:
 #include "silvia_pi_comms.h"
 #include "silvia_output.h"
 #include "silvia_water_sensor.h"
-// #include "silvia_display.h"
+#include "silvia_display.h"
 
 // Mode
 // 0 : PID
@@ -50,23 +50,15 @@ RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
 // Display
-// NB: Adafruit library doesn't seem to play with SoftwareWire.
-// SilviaDisplay display = SilviaDisplay(&Wire);
+SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
     pi_comms_setup();
-    // Display
-    // if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    //     if (DEBUG) {
-    //         Serial.println(F("SSD1306 allocation failed"));
-    //     }
-    //     // for(;;); // Don't proceed, loop forever
-    // }
-    // // Show logo
-    // display.showLogo();
-    // delay(3000);
-    // display.showBlank();
+    // Display - Show logo
+    display.showLogo();
+    delay(3000);
+    display.showBlank();
     // Reset timer
     timerReset();
 }
@@ -74,7 +66,7 @@ void setup(void) {
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
     brew_duration = timerUpdate() / 1000;
-    // display.update();
+    display.update();
 
     // Ensure temperature never goes above safety level
     if (T_boiler > SAFETY_TEMPERATURE) {

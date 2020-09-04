@@ -22,7 +22,6 @@ void TemperatureSensor::reset() {
 
 double TemperatureSensor::readSensor() {
     return analogRead(sensor_pin_) * sensor_coefficient_;
-    // return 97.2;
 }
 
 float TemperatureSensor::updateTemperature() {
@@ -36,7 +35,7 @@ float TemperatureSensor::updateTemperature() {
     // Reset
     reset();
     // if (DEBUG) {
-        // Serial.print("Temperature: "); Serial.println(reading_last_);
+        // Serial.print(F("Temperature: ")); Serial.println(reading_last_);
     // }
     return reading_last_;
 }

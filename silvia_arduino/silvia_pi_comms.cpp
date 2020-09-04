@@ -42,9 +42,9 @@ void update_data_buffer() {
 
 void response_actions() {
   if (DEBUG) {
-    Serial.print("    Power: "); Serial.println(received_data.data.power);
-    Serial.print("    Brew: "); Serial.println(received_data.data.brew);
-    Serial.print("    Mode: "); Serial.println(received_data.data.mode);
+    Serial.print(F("    Power: ")); Serial.println(received_data.data.power);
+    Serial.print(F("    Brew: ")); Serial.println(received_data.data.brew);
+    Serial.print(F("    Mode: ")); Serial.println(received_data.data.mode);
   }
   // Mode change
   if (received_data.data.mode == 0) { // Change to PID or PID settings
@@ -122,14 +122,14 @@ void check_serial_calls() {
       Serial.readBytes(override_data.buffer, sizeof_override_data);
       Serial.flush();
       heater_on_request(override_data.data.duty);
-      Serial.print("Override received, duty: "); Serial.println(override_data.data.duty);
+      Serial.print(F("Override received, duty: ")); Serial.println(override_data.data.duty);
     }
   }
 }
 
 void send_serial_response() {
   if (DEBUG) {
-    Serial.println("Received request for sensor readings");
+    Serial.println(F("Received request for sensor readings"));
   }
   update_data_buffer();
   // Write bytes to i2c address
@@ -138,14 +138,14 @@ void send_serial_response() {
 
 void receiveEvent(int numBytes) {
   if (DEBUG) {
-    Serial.print("Received ");Serial.print(numBytes);Serial.println(" bytes.");
+    Serial.print(F("Received "));Serial.print(numBytes);Serial.println(F(" bytes."));
   }
   // Check register
   if (Wire.available()) {
     // Get register (1st byte sent)
     int i2c_register = (byte)Wire.read();
     if (DEBUG) {
-      Serial.print("    Register: "); Serial.println(i2c_register);
+      Serial.print(F("    Register: ")); Serial.println(i2c_register);
     }
     // Register 1 to update
     if (i2c_register == 1) {
@@ -164,7 +164,7 @@ void receiveEvent(int numBytes) {
         index++;
       }
       heater_on_request(override_data.data.duty);
-      Serial.print("Override received, duty: "); Serial.println(override_data.data.duty);
+      Serial.print(F("Override received, duty: ")); Serial.println(override_data.data.duty);
     } 
   }  // if(Wire.available)
 }

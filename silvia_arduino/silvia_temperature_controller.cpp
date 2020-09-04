@@ -48,7 +48,7 @@ void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd)
     SetMode(AUTOMATIC);
     
     if (DEBUG) {
-        Serial.print("PID on, target: ");
+        Serial.print(F("PID on, target: "));
         Serial.println(*setpoint_);
     }
 }
