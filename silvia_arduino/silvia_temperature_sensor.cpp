@@ -21,8 +21,7 @@ void TemperatureSensor::reset() {
 }
 
 double TemperatureSensor::readSensor() {
-    // return analogRead(sensor_pin_) * sensor_coefficient_;
-    return 31.98;
+    return analogRead(sensor_pin_) * sensor_coefficient_;
 }
 
 float TemperatureSensor::updateTemperature() {
