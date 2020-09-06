@@ -6,7 +6,7 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showData(double* T, double* T_set, int* t) {
+void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mode) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
@@ -20,10 +20,14 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
   setTextSize(1);
   cp437(true); write(167); print("C");  // Units
 
-  setTextSize(2);
-  sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
-  drawCentreString(buffer, 102, 10);
   drawRect(80, 7, 41, 20, WHITE);
+  setTextSize(2);
+  if (mode == 0) {
+    sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
+  } else {
+    sprintf(buffer, "%s", "(M)");
+  }
+  drawCentreString(buffer, 102, 10);
 
   setTextSize(3);
   int mins = *t / 60;

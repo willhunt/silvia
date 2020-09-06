@@ -20,7 +20,7 @@ class SilviaDisplay : public Adafruit_SSD1306 {
     void showData(double* T, double* T_set, int* t);
     void showLogo();
     void showBlank();
-    void update(double* T, double* T_set, int* t);
+    void update(double* T, double* T_set, int* t, unsigned char* mode);
     void drawCentreString(const char *buf, int x, int y);
 };
 
