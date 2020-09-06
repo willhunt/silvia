@@ -28,8 +28,10 @@ void TemperatureSensor::reset() {
 }
 
 double TemperatureSensor::readSensor() {
-    // return analogRead(sensor_pin_) * sensor_coefficient_;
-    return 46.9;
+    return analogRead(sensor_pin_) * sensor_coefficient_;
+
+    // Not the problem
+    // return 46.9;
 }
 
 double TemperatureSensor::updateTemperature() {

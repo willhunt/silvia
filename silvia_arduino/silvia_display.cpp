@@ -16,20 +16,17 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t) {
 
   setTextColor(SSD1306_WHITE);
   char buffer [6];  // Buffer for printing strings
-  int temp;  /// Temperature for printing
-
+  
   // setTextSize(3);
   setTextSize(2);
-  temp = (int)(*T + 0.5);  // 0.5 used for rounding correctly
-  // sprintf(buffer, "%d", temp);
+  // sprintf(buffer, "%d", (int)(*T + 0.5));    // 0.5 used for rounding correctly
   // drawCentreString(buffer, 35, 6);
   setCursor(4,4); print(*T);
   setTextSize(1);
   cp437(true); write(167); print("C");  // Units
 
   setTextSize(2);
-  temp = (int)(*T_set + 0.5);  // 0.5 used for rounding correctly
-  sprintf(buffer, "%d", temp);
+  sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
   drawCentreString(buffer, 102, 10);
   drawRect(80, 7, 41, 20, WHITE);
 
