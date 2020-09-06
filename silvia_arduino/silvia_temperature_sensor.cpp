@@ -30,8 +30,9 @@ float TemperatureSensor::updateTemperature() {
     */
     float average = reading_sum_ / reading_count_;
     // Apply smoothing
-    reading_last_ = average * smoothing_filter_val_ + \
-        reading_last_ * (1 - smoothing_filter_val_);
+    // reading_last_ = average * smoothing_filter_val_ + \
+    //     reading_last_ * (1 - smoothing_filter_val_);
+    reading_last_ = reading_last_;
     // Reset
     reset();
     // if (DEBUG) {
