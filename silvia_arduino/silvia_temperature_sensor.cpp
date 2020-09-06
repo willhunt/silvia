@@ -26,11 +26,11 @@ double TemperatureSensor::readSensor() {
     return 46.9;
 }
 
-float TemperatureSensor::updateTemperature() {
+double TemperatureSensor::updateTemperature() {
     /*
     Update temperature using time averaging and filter based upon last reading
     */
-    float average = reading_sum_ / reading_count_;
+    double average = reading_sum_ / reading_count_;
     // Apply smoothing
     // ***************************************************** Inclusion here causes NAN
     reading_last_ = average * smoothing_filter_val_ + \
@@ -43,7 +43,7 @@ float TemperatureSensor::updateTemperature() {
     return reading_last_;
 }
 
-float TemperatureSensor::getTemperature() {
+double TemperatureSensor::getTemperature() {
     /*
     Get temperature. Either updates average or gets new reading depending on interval since last update
     */
@@ -55,7 +55,7 @@ float TemperatureSensor::getTemperature() {
     }
 }
 
-float TemperatureSensor::getLatestTemperature() {
+double TemperatureSensor::getLatestTemperature() {
     return reading_last_;
 }
 
