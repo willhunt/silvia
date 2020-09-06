@@ -7,7 +7,6 @@
 
 #include <Arduino.h>
 
-
 /* 
 Rosserial publisher class for publishing IMU data from Adafruit BNO055
 */

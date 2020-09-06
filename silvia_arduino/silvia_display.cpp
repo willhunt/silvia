@@ -77,6 +77,24 @@ void SilviaDisplay::update() {
   power_status_ = power_output.getStatus();
 }
 
+void SilviaDisplay::update(double* T, double* T_set, int* t) {
+  if (power_output.getStatus()) {  // If machine on
+    if (!power_status_) {  // If machine used to be off
+      power_start_ = millis();
+      showLogo();
+    } else {
+      if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
+        showData(T, T_set, t);
+      }
+    }
+  } else {  // machine off
+    if (power_status_) {  // If machine used to be on
+      showBlank();
+    }
+  }
+  power_status_ = power_output.getStatus();
+}
+
 void SilviaDisplay::drawCentreString(const char *buf, int x, int y) {
     int16_t x1, y1;
     uint16_t w, h;
