@@ -4,8 +4,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/about.168e52b6.css"
   },
   {
-    "revision": "5dc69b67ebb98357c684",
-    "url": "/css/app.d1334d2e.css"
+    "revision": "dedb94c544a3ea6817ea",
+    "url": "/css/app.3201a4aa.css"
   },
   {
     "revision": "a15803715ef2782c095b",
@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/Silvia_Illustration_on.75f5c1e9.png"
   },
   {
-    "revision": "931d7f1458cc630834d9f257433d09ff",
+    "revision": "2731b8fac8b96e1ac03f465a84e70966",
     "url": "/index.html"
   },
   {
@@ -36,8 +36,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/about.e6774c66.js"
   },
   {
-    "revision": "5dc69b67ebb98357c684",
-    "url": "/js/app.bc871096.js"
+    "revision": "dedb94c544a3ea6817ea",
+    "url": "/js/app.286e9010.js"
   },
   {
     "revision": "1d672ccaef53a76dcaee",
