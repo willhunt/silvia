@@ -6,7 +6,8 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
     smoothing_filter_val_ = 0.2;
     sensor_pin_ = sensor_pin;
     reset();
-    reading_last_ = readSensor();
+    // reading_last_ = readSensor();
+    reading_last_ = 67.2;
 }
 
 void TemperatureSensor::updateAverage() {
