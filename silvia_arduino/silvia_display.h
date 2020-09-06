@@ -17,13 +17,17 @@ class SilviaDisplay : public Adafruit_SSD1306 {
     unsigned long power_start_;  // Time machine was last turned on
     bool power_status_;
     SilviaDisplay(TwoWire* wire);
-    void showData(double* T, double* T_set, int* t);
+    void showData(double* T, double* T_set, int* t, unsigned char* mode);
     void showLogo();
     void showBlank();
-    void update(double* T, double* T_set, int* t, unsigned char* mode);
+    void update();
     void drawCentreString(const char *buf, int x, int y);
 };
 
 extern RelayOutput power_output;
+extern double T_boiler;
+extern double pid_setpoint;
+extern int brew_duration;
+extern unsigned char mode;
 
 #endif // SILVIA_DISPLAY_H

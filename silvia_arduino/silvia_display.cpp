@@ -22,7 +22,7 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
 
   drawRect(80, 7, 41, 20, WHITE);
   setTextSize(2);
-  if (mode == 0) {
+  if (*mode == 0) {
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
   } else {
     sprintf(buffer, "%s", "(M)");
@@ -56,14 +56,14 @@ void SilviaDisplay::showBlank() {
   display();
 }
 
-void SilviaDisplay::update(double* T, double* T_set, int* t) {
+void SilviaDisplay::update() {
   if (power_output.getStatus()) {  // If machine on
     if (!power_status_) {  // If machine used to be off
       power_start_ = millis();
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(T, T_set, t);
+        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode);
       }
     }
   } else {  // machine off
