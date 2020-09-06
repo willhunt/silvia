@@ -6,8 +6,8 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
     smoothing_filter_val_ = 0.2;
     sensor_pin_ = sensor_pin;
     reset();
-    // reading_last_ = readSensor();
-    reading_last_ = 67.2;
+    reading_last_ = readSensor();
+    // reading_last_ = 67.2;
 }
 
 void TemperatureSensor::updateAverage() {
@@ -22,7 +22,8 @@ void TemperatureSensor::reset() {
 }
 
 double TemperatureSensor::readSensor() {
-    return analogRead(sensor_pin_) * sensor_coefficient_;
+    // return analogRead(sensor_pin_) * sensor_coefficient_;
+    return 46.9;
 }
 
 float TemperatureSensor::updateTemperature() {
@@ -31,6 +32,7 @@ float TemperatureSensor::updateTemperature() {
     */
     float average = reading_sum_ / reading_count_;
     // Apply smoothing
+    // ***************************************************** Inclusion here causes NAN
     reading_last_ = average * smoothing_filter_val_ + \
         reading_last_ * (1 - smoothing_filter_val_);
     // Reset
