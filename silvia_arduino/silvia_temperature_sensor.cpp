@@ -30,11 +30,11 @@ double TemperatureSensor::updateTemperature() {
     /*
     Update temperature using time averaging and filter based upon last reading
     */
-    double average = reading_sum_ / (double)reading_count_;
+    double reading_average = reading_sum_ / (double)reading_count_;
     // double average = 76.2;
     // Apply smoothing
     // ***************************************************** Inclusion here causes NAN
-    reading_last_ = average * smoothing_filter_val_ + \
+    reading_last_ = reading_average * smoothing_filter_val_ + \
         reading_last_ * (1 - smoothing_filter_val_);
     // Reset
     reset();
