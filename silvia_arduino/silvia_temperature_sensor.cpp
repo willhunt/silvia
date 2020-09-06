@@ -11,8 +11,10 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
 }
 
 void TemperatureSensor::updateAverage() {
-    reading_sum_ += readSensor();
-    reading_count_ += 1;
+    // reading_sum_ += readSensor();
+    // reading_count_ += 1;
+    reading_sum_ = 78.2;
+    reading_count_ = 2;
 }
 
 void TemperatureSensor::reset() {
@@ -30,8 +32,8 @@ double TemperatureSensor::updateTemperature() {
     /*
     Update temperature using time averaging and filter based upon last reading
     */
-    // double reading_average = reading_sum_ / (double)reading_count_;
-    double reading_average = 76.2;
+    double reading_average = reading_sum_ / (double)reading_count_;
+    // double reading_average = 76.2;
     // Apply smoothing
     // ***************************************************** Inclusion here causes NAN
     reading_last_ = reading_average * smoothing_filter_val_ + \
