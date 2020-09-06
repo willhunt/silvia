@@ -20,14 +20,10 @@ class SilviaDisplay : public Adafruit_SSD1306 {
     void showData(double* T, double* T_set, int* t);
     void showLogo();
     void showBlank();
-    void update();
     void update(double* T, double* T_set, int* t);
     void drawCentreString(const char *buf, int x, int y);
 };
 
 extern RelayOutput power_output;
-extern double T_boiler;
-extern double pid_setpoint;
-extern int brew_duration;
 
 #endif // SILVIA_DISPLAY_H

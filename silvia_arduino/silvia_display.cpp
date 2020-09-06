@@ -4,11 +4,6 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, -1) {
   power_start_ = 0;
   power_status_ = false;
-  // if(begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-  //   if (DEBUG) {
-  //       Serial.println(F("SSD1306 allocation failed"));
-  //   }
-  // }
 };
 
 void SilviaDisplay::showData(double* T, double* T_set, int* t) {
@@ -55,24 +50,6 @@ void SilviaDisplay::showLogo() {
 void SilviaDisplay::showBlank() {
   clearDisplay();
   display();
-}
-
-void SilviaDisplay::update() {
-  if (power_output.getStatus()) {  // If machine on
-    if (!power_status_) {  // If machine used to be off
-      power_start_ = millis();
-      showLogo();
-    } else {
-      if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(&T_boiler, &pid_setpoint, &brew_duration);
-      }
-    }
-  } else {  // machine off
-    if (power_status_) {  // If machine used to be on
-      showBlank();
-    }
-  }
-  power_status_ = power_output.getStatus();
 }
 
 void SilviaDisplay::update(double* T, double* T_set, int* t) {

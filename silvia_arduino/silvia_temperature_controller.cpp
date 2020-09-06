@@ -13,7 +13,8 @@ TemperatureController::TemperatureController(
     tpc_window_size_(1000)
 {
     pinMode(relay_pin_, OUTPUT);
-    SetOutputLimits(0, tpc_window_size_);    
+    SetOutputLimits(0, tpc_window_size_);
+    *setpoint_ = 100;  // Avoid display issues where NAN  
 
     // Autotuner not used
     // Autotuner
