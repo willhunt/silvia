@@ -4,11 +4,11 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, -1) {
   power_start_ = 0;
   power_status_ = false;
-  if(begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    if (DEBUG) {
-        Serial.println(F("SSD1306 allocation failed"));
-    }
-  }
+  // if(begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+  //   if (DEBUG) {
+  //       Serial.println(F("SSD1306 allocation failed"));
+  //   }
+  // }
 };
 
 void SilviaDisplay::showData(double* T, double* T_set, int* t) {

@@ -64,6 +64,12 @@ $ sudo supervisorctl reread
 $ sudo supervisorctl update
 ```
 
+Inspect logs:
+```bash
+$ tail /var/log/celery/silvia_worker.log
+$ tail /var/log/celery/silvia_beat.log
+```
+
 ## Apache
 Apache can be restarted using:
 ```bash

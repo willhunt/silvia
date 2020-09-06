@@ -54,9 +54,15 @@ SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
-    // pi_comms_setup();
-    pi_comms_setup(I2C_ADDR, &Wire);
+    pi_comms_setup();  // Serial only
+    // pi_comms_setup(I2C_ADDR, &Wire);  // Serial + I2C
+
     // Display - Show logo
+    if(display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+        if (DEBUG) {
+            Serial.println(F("SSD1306 allocation failed"));
+        }
+    }
     display.showLogo();
     delay(3000);
     display.showBlank();
