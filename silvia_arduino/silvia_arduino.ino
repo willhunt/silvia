@@ -54,7 +54,8 @@ SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
-    pi_comms_setup();
+    // pi_comms_setup();
+    pi_comms_setup(I2C_ADDR, &Wire);
     // Display - Show logo
     display.showLogo();
     delay(3000);
