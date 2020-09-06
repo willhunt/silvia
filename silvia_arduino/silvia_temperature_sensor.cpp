@@ -13,6 +13,8 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
 void TemperatureSensor::updateAverage() {
     // reading_sum_ += readSensor();
     // reading_count_ += 1;
+
+    // This was not the problem
     reading_sum_ = 78.2;
     reading_count_ = 2;
 }
