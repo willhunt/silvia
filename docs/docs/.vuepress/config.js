@@ -59,7 +59,7 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            'app-demo',
+            // 'app-demo',
           ]
         }
       ],

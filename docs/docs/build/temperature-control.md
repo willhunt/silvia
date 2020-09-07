@@ -1,4 +1,8 @@
 ---
+images_installation: [
+    {src: "build_temperature_01.jpg", caption: "Temperature sensor mounted on boiler"},
+    {src: "build_heatrelay_01.jpg", caption: "Solid state heat relay"},
+]
 images_wiring: [
     {src: "wiring_temperaturecontrol_01.png", caption: "Fritzing wiring diagram for temperature control"},
 ]
@@ -12,9 +16,14 @@ The stock Rancillio Silvia uses a thermostat to control the boiler heating eleme
     * Control voltage range 3-32 VDC
     * Output voltage range 24-440 VAC
     * Output maximum load 25 A (Plenty)
+* LM35DT temperature sensor [[datasheet](https://www.ti.com/lit/ds/symlink/lm35.pdf)]
+    * −55°C to 150°C range
+    * 0.5°C accuracy @ 25°C
 
 ## Installation
-In line with other Rancillio Silvia mods the heat relay was fastened behind the front cover panel above the drip tray using the existing fastener for the cable clamp (on other side). This is enough to hold it in place but a second hole was drilled above to fix the relay securely in place.
+In line with other Rancillio Silvia mods the heat relay was fastened behind the front cover panel above the drip tray using the existing fastener for the cable clamp (on other side). This is enough to hold it in place but a second hole was drilled above to fix the relay securely in place. The temperature sensor was screwed down using a threaded hole for the original thermostat. 
+
+<DocsImageLayout :images="$frontmatter.images_installation" srcBase="/silvia/assets/build/"></DocsImageLayout>
 
 ## Wiring
 The Arduino controls the PID I/O independently of the raspberry pi although the pi, connected via i2C can turn the operation on and off as well as change the setpoint and gains. A 10k&#8486; pull-down resistor is used to ensure the relay input is at 0V when the output in not high.
@@ -31,7 +40,7 @@ reading_sum += analogRead(sensor_pin) * sensor_coefficient;
 reading_count += 1;
 ```
 
-After a set time interval these are then averaged and smoothed with respect to the previous value. The smoothing filter value controls the magnitude of this effect:
+After a set time interval these are then averaged and smoothed with respect to the previous value. The smoothing filter value controls the magnitude of this effect by biasing the value more or less towards the previously stored temperature:
 ```cpp
 float average = reading_sum / reading_count;
 // Apply smoothing
@@ -39,4 +48,4 @@ reading_new = average * smoothing_filter_val + reading_last * (1 - smoothing_fil
 ```
 
 ### PID
-For the PID control the Arduino PID library [[Github](https://github.com/br3ttb/Arduino-PID-Library/)] was used. To control the relay on/off output the technique was used as described in the [relay example](https://playground.arduino.cc/Code/PIDLibraryRelayOutputExample/). This was wrapped up into a new class by inheriting from the libraries PID class, extending with the rleay control function.
+For the PID control the Arduino PID library [[Github](https://github.com/br3ttb/Arduino-PID-Library/)] was used. To control the relay on/off output the technique was used as described in the [relay example](https://playground.arduino.cc/Code/PIDLibraryRelayOutputExample/). This was wrapped up into a new class by inheriting from the libraries PID class, extending with the relay control function.

@@ -2,7 +2,8 @@
 images_installation: [
     {src: "build_brewrelay_03.jpg", caption: "Relay modified with JST female connector"},
     {src: "build_brewrelay_01.jpg", caption: "Marking out for drilling"},
-    {src: "/build_brewrelay_02.jpg", caption: "Drilled holes"},
+    {src: "build_brewrelay_02.jpg", caption: "Drilled holes"},
+    {src: "build_brewrelay_04.jpg", caption: "Installed"},
 ]
 images_wiring: [
     {src: "wiring_brewcontrol_01.png", caption: "Fritzing wiring diagram for brew control"},
@@ -37,8 +38,8 @@ The raspberry pi gpiozero [Button class](https://gpiozero.readthedocs.io/en/stab
 from gpiozero import Button
 
 button_brew = Button(27)
-button_brew.when_pressed = trigger_celery_brew_start
-button_brew.when_released = trigger_celery_brew_stop
+button_brew.when_pressed = trigger_brew_start
+button_brew.when_released = trigger_brew_stop
 ```
 
 The python interrupt file is registered as a django management command:

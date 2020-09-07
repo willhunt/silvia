@@ -6,7 +6,7 @@ A quick setup can be done using a script. First setup wireless in raspi-config:
 ```bash
 $ sudo raspi-config
 ```
-Then file is required.
+Then download the script and run.
 ```bash
 $ sudo apt install git -y
 $ git clone https://github.com/willhunt/silvia.git
@@ -99,7 +99,7 @@ $ sshfs pi@192.168.0.6:/home ~/remote_code -o debug
 
 ## Install requirements
 ```bash
-$ sudo apt install git python3-venv libopenjp2-7 libtiff5 apache2 apache2-dev libapache2-mod-wsgi-py3 redis-server i2c-tools -y
+$ sudo apt install git python3-venv libopenjp2-7 libtiff5 apache2 apache2-dev libapache2-mod-wsgi-py3 redis-server i2c-tools postgresql libpq-dev postgresql-client postgresql-client-common python-dev -y
 ```
 
 ## Download files
@@ -216,6 +216,53 @@ Then add users to i2c group
 $ sudo adduser pi i2c
 $ sudo adduser www-data i2c
 ```
+
+## Setup PostgreSQL Database
+```bash
+$ cd ~/silvia/silvia
+$ python manage.py dumpdata --exclude=contenttypes --exclude=auth.Permission > datadump.json
+```
+Edit databse configuration:
+```bash
+$ sudo su - postgres
+$ psql
+$ CREATE DATABASE silviadatabase;
+$ CREATE USER databaseadmin WITH PASSWORD 'databasepwd';
+$ ALTER ROLE databaseadmin SET client_encoding TO 'utf8';
+$ ALTER ROLE databaseadmin SET default_transaction_isolation TO 'read committed';
+$ ALTER ROLE databaseadmin SET timezone TO 'GB';
+$ GRANT ALL PRIVILEGES ON DATABASE silviadatabase TO databaseadmin;
+$ \q
+$ exit
+```
+Migrate and recreate superuser
+```bash
+$ python manage.py migrate
+$ python manage.py createsuperuser
+```
+
+## Supervisor Setup
+Make logging directories
+```bash
+sudo mkdir -p /var/log/celery
+sudo mkdir -p /var/run/celery
+sudo mkdir -p /var/log/silvia
+```
+Permissions
+```bash
+sudo chgrp -R server_group /var/run/celery
+sudo chgrp -R server_group /var/log/celery
+sudo chgrp -R server_group /var/log/silvia
+```
+Configure
+```bash
+sudo cp -f supervisor/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
+sudo cp -f supervisor/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
+sudo cp -f supervisor/silvia_interrupt.conf /etc/supervisor/conf.d/silvia_interrupt.conf
+sudo chgrp -R server_group /var/log/supervisor
+sudo chmod g+wr /var/log/supervisor/supervisord.log
+```
+
 ## Arduino Flashing
 Install arduino command line (cli) tool to flash it from the raspberry pi
 Reference [https://siytek.com/arduino-cli-raspberry-pi/](https://siytek.com/arduino-cli-raspberry-pi/)
@@ -241,7 +288,7 @@ Reconnect, then create a configuration file, update board index and libraries:
 $ arduino-cli config init
 $ arduino-cli core update-index
 $ arduino-cli core install arduino:avr
-$ arduino-cli lib install PID
+$ arduino-cli lib install PID "Adafruit SSD1306" "Adafruit GFX"
 $ cd ~/Arduino/libraries
 $ git clone https://github.com/br3ttb/Arduino-PID-AutoTune-Library.git
 $ mv Arduino-PID-AutoTune-Library/PID_AutoTune_v0 .

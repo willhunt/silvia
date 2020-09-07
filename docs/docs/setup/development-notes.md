@@ -1,8 +1,8 @@
 # Notes
-Notes on development and debugging commands
+Notes on development and debugging commands. For the authors reference mainly!
 
 ## Update files
-Scripts are used to fetch latest updates and collect static files. If <branch name> is empty, defaults to "master".
+Scripts are used to fetch latest updates and collect static files. If \<branch name\> is empty, defaults to "master".
 ```bash
 $ cd silvia
 $ ./update_branch <branch name>

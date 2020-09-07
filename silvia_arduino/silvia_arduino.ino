@@ -32,7 +32,7 @@ Notes:
 unsigned char mode = 0;
 
 // Brew duration [s]
-int brew_duration = 0;
+unsigned int brew_duration = 0;
 
 // Sensors
 TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);

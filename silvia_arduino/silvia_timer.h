@@ -6,7 +6,7 @@
 
 void timerReset();
 void timerStart();
-int timerUpdate();
+unsigned long timerUpdate();
 
 extern RelayOutput brew_output;
 
