@@ -15,8 +15,6 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
   setTextSize(3);
   sprintf(buffer, "%d", (int)(*T + 0.5));    // 0.5 used for rounding correctly
   drawCentreString(buffer, 35, 6);
-  // setTextSize(2);
-  // setCursor(4,4); print(*T);
   setTextSize(1);
   cp437(true); write(167); print("C");  // Units
 
@@ -26,7 +24,6 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
     drawCentreString(buffer, 102, 10);
   } else {
-    //strcpy(buffer, "(M)");
     setCursor(83, 10);
     print("(M)");
   }
