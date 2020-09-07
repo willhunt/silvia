@@ -24,10 +24,13 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
   setTextSize(2);
   if (*mode == 0) {
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
+    drawCentreString(buffer, 102, 10);
   } else {
-    sprintf(buffer, "%s", "(M)");
+    //strcpy(buffer, "(M)");
+    setCursor(83, 10);
+    print("(M)");
   }
-  drawCentreString(buffer, 102, 10);
+
 
   setTextSize(3);
   int mins = *t / 60;
