@@ -49,7 +49,7 @@ export default {
         })
     },
     saveSchedule (schedule) {
-      axios.put('/api/v1/schedule/' + schedule.id + '/', schedule)
+      axios.put('/api/v1/schedule/' + schedule.id + '/', JSON.stringify(schedule))
         .then(response => {
           console.log(response)
         })

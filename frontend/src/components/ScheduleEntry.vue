@@ -41,7 +41,7 @@
       <!-- <v-row v-if="showExtra" class="mx-2"> -->
       <v-row class="mx-2">
         <v-col>
-          <v-dialog ref="dialog" v-model="dialogStart" :return-value.sync="scheduleLocal.start_time" persistent width="290px">
+          <v-dialog ref="dialog_start" v-model="dialogStart" :return-value.sync="scheduleLocal.start_time" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 :value="scheduleLocal.start_time"
@@ -64,13 +64,13 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text color="error" @click="dialogStart = false">Cancel</v-btn>
-                <v-btn text color="success" @click="saveStartTimeDialog($refs.dialog)">OK</v-btn>
+                <v-btn text color="success" @click="saveStartTimeDialog($refs.dialog_start)">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-col>
         <v-col>
-          <v-dialog ref="dialog" v-model="dialogEnd" :return-value.sync="scheduleLocal.end_time" persistent width="290px">
+          <v-dialog ref="dialog_end" v-model="dialogEnd" :return-value.sync="scheduleLocal.end_time" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 :value="scheduleLocal.end_time"
@@ -93,22 +93,12 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text color="error" @click="dialogEnd = false">Cancel</v-btn>
-                <v-btn text color="success" @click="saveEndTimeDialog($refs.dialog)">OK</v-btn>
+                <v-btn text color="success" @click="saveEndTimeDialog($refs.dialog_end)">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-col>
       </v-row>
-      <!-- Actions -->
-      <!-- <v-card-actions >
-        <v-spacer></v-spacer>
-        <div v-if="showExtra">
-          <v-icon class="mx-2">mdi-content-save</v-icon>
-        </div>
-        <v-btn icon @click="showExtra = !showExtra" >
-          <v-icon>{{ showExtra ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-        </v-btn>
-      </v-card-actions> -->
     </v-card>
   </div>
 </template>
@@ -162,6 +152,7 @@ export default {
   },
   beforeMount () {
     this.scheduleLocal = Object.assign({}, this.schedule)
+    // this.scheduleLocal = JSON.parse(JSON.stringify(this.schedule))
   }
 }
 </script>

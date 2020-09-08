@@ -203,9 +203,12 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
             response.save()
     elif prior_status.on and not instance.on:  # If machine is being turned off
         # Get current session
-        session = SessionModel.objects.filter(active=True).order_by('-id')[0]
-        session.set_end_time()
-        session.save()
+        try:
+            session = SessionModel.objects.filter(active=True).order_by('-id')[0]
+            session.set_end_time()
+            session.save()
+        except IndexError as e:
+            print("No active session")
 
     # Turn actual machine/brew on/off or mode change
     async_comms_update.delay(instance.on, instance.brew, instance.mode)
