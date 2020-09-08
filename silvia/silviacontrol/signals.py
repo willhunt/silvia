@@ -24,7 +24,7 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_on,
             name="on:{0} {1}".format(instance.id, instance.name),
             # name=('%s_on' % (instance.name)),  
-            task='async_comms_update.delay',
+            task='silviacontrol.tasks.async_comms_update',
             args='[True, False, 0]',
             enabled=instance.active
         )
@@ -50,7 +50,7 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             crontab=crontab_off,
             name="off:{0} {1}".format(instance.id, instance.name),
             # name=('%s_off' % (instance.name)),  
-            task='async_comms_update.delay',
+            task='silviacontrol.tasks.async_comms_update',
             args='[False, False, 0]',
             enabled=instance.active
         )

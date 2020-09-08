@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-# from kombu import Queue
+from kombu import Exchange, Queue
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -156,7 +157,6 @@ REST_FRAMEWORK = {
     )
 }
 
-
 # Celery settings
 
 # CELERY_BROKER_URL = 'amqp://guest:guest@localhost//' # Rabbitmq
@@ -177,16 +177,11 @@ CELERY_ONCE = {
     'default_timeout': 60 * 60
   }
 }
-# Splits celery queue into 4, ['celery0', 'celery3', 'celery6', 'celery9']
-# CELERY_BROKER_TRANSPORT_OPTIONS = {
-#     'queue_order_strategy': 'priority',
-# }
-
-# TASK_DEFAULT_QUEUE = 'default'
-# TASK_QUEUES = (
-#     Queue('default', routing_key="task.")
-# )
-# CELERY_TASK_ROUTES = {'async_comms_*': {'queue': 'comms'}}
+# Define queues as transient to improve performance
+CELERY_TASK_QUEUES = (
+    Queue('celery', Exchange('transient', delivery_mode=1), routing_key='celery', durable=False),
+    Queue('comms', Exchange('transient', delivery_mode=1), routing_key='comms', durable=False),
+)
 
 # CORS
 # CORS_ORIGIN_WHITELIST = [

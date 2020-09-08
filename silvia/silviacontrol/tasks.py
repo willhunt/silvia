@@ -130,13 +130,14 @@ def async_scale_update(brew):
     if django_settings.SIMULATE_MACHINE == False:
         # Reset scale
         if brew:
+            settings = SettingsModel.objects.get(pk=1)
             try:
-                requests.get("http://192.168.0.12/brewstart")
+                requests.put("http://192.168.0.12/brewstart", data={"setpoint": settings.m})
             except requests.exceptions.RequestException as e:
                 debug_log("No connection to scale")
         else:
             try:
-                requests.get("http://192.168.0.12/brewstop")
+                requests.put("http://192.168.0.12/brewstop")
             except requests.exceptions.RequestException as e:
                 debug_log("No connection to scale")
 

@@ -17,8 +17,9 @@ void handleGetMass();
 void handleTare();
 void handleBrewStart();
 void handleBrewStop();
-//void sendBrewStop();
+void sendBrewStop();
 
-//extern double m_setpoint;
+extern double setpoint;
+extern double mass;
 
 #endif  // SILVIA_SCALE_WIFI_H

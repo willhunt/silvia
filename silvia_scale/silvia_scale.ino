@@ -20,38 +20,33 @@ IPAddress dns(192, 168, 0, 1);  // Domain name server
 
 ESP8266WebServer* server;
 
-double m_setpoint;
+double setpoint;
+double mass;
 
 void setup() {
   displaySetup();
   displayWelcome();
   
-//  pinMode(LED_BUILTIN, OUTPUT);
-//  delay(3000);
-
   server = scaleWifiSetup(ip, gateway, subnet, dns);
 
   loadcellSetup(SCALE_DOUT_PIN, SCALE_CLK_PIN, LOADCELL_TARE_PIN);
 
   timerSetup(TIMER_START_PIN, TIMER_RESET_PIN);
 
-  m_setpoint = -1;
+  setpoint = -1.0;
 }
 
 void loop() {
 //  scale.spin();
   server->handleClient();
 
-  float mass = getMass();
+  mass = getMass();
   unsigned long milliseconds = timerUpdate();
-//  unsigned long milliseconds = 0;
   displayStatus(mass, milliseconds);
-//  displayMass(mass);
   
 //  delay(100);
 
-  // Need to setup crsf token for this
-//  if (mass >= m_setpoint) {
-//    sendBrewStop();
-//  }
+  if (setpoint > 0 && mass >= setpoint) {  // setpoint<0 signifies mass control off
+    sendBrewStop();
+  }
 }

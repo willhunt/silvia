@@ -11,6 +11,8 @@
 
 void loadcellSetup(int dout_pin, int clk_pin, int tare_pin);
 void ICACHE_RAM_ATTR loadcellTare();
-float getMass();
+double getMass();
+
+extern double mass;
 
 #endif // SILVIA_SCALE_LOADCELL_H

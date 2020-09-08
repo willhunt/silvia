@@ -24,7 +24,7 @@ void displayWelcome() {
   display.display();
 }
 
-void displayWifiSetup(String ssid) {
+void displayWifiSetup(const char* ssid) {
   display.setTextAlignment(TEXT_ALIGN_CENTER);
   display.setFont(ArialMT_Plain_10);
 //  String connect_string = String("Connecting to " + ssid);
@@ -51,7 +51,7 @@ void displayWifiConnecting() {
   
 }
 
-void displayWifiConnected(String ip) {
+void displayWifiConnected(const char* ip) {
   display.clear();
   display.setTextAlignment(TEXT_ALIGN_CENTER);
   display.setFont(ArialMT_Plain_16);

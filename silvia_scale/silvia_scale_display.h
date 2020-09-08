@@ -13,9 +13,9 @@
 
 void displaySetup();
 void displayWelcome();
-void displayWifiSetup(String ssid);
+void displayWifiSetup(const char* ssid);
 void displayWifiConnecting();
-void displayWifiConnected(String ip);
+void displayWifiConnected(const char* ip);
 void displayMass(float mass);
 void displayTimer();
 void displayStatus(float mass, int milliseconds);

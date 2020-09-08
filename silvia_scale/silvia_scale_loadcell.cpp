@@ -5,7 +5,6 @@ HX711_ADC* loadcell_;
 bool new_data_ready = false;
 unsigned long loadcell_last_update;
 const int loadcell_update_interval = 0;
-float mass;
 
 void loadcellSetup(int dout_pin, int clk_pin, int tare_pin) {
   pinMode(tare_pin, INPUT_PULLUP);
@@ -29,7 +28,7 @@ void loadcellSetup(int dout_pin, int clk_pin, int tare_pin) {
   }
 }
 
-float getMass() {
+double getMass() {
   // Average of 5 readings from the ADC minus the tare weight
 //  return loadcell_.get_units(10);
 //  return random(0, 20);

@@ -18,7 +18,7 @@ ESP8266WebServer* scaleWifiSetup(IPAddress ip, IPAddress subnet, IPAddress gatew
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   Serial.print("Configuring access point...");
-  displayWifiSetup(String(WIFI_SSID));
+  displayWifiSetup(WIFI_SSID);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -26,14 +26,14 @@ ESP8266WebServer* scaleWifiSetup(IPAddress ip, IPAddress subnet, IPAddress gatew
   }
   Serial.println(""); Serial.println("WiFi connected");
   Serial.print("IP address: "); Serial.println(WiFi.localIP());
-  displayWifiConnected( WiFi.localIP().toString() );
+  displayWifiConnected( WiFi.localIP().toString().c_str() );
 
   // Setup API
   server_.on("/", handleRoot);
   server_.on("/mass", HTTP_GET, handleGetMass); 
-  server_.on("/tare", HTTP_GET, handleTare); 
-  server_.on("/brewstart", HTTP_GET, handleBrewStart);
-  server_.on("/brewstop", HTTP_GET, handleBrewStop);
+  server_.on("/tare", HTTP_PUT, handleTare); 
+  server_.on("/brewstart", HTTP_PUT, handleBrewStart);
+  server_.on("/brewstop", HTTP_PUT, handleBrewStop);
   server_.begin();
   
   Serial.println("HTTP server started");
@@ -48,8 +48,9 @@ void handleRoot() {
 
 void handleGetMass() {
   Serial.println("Mass get request received");
-  float mass = random(0, 20);
-  String json = String("{\"mass\": " + String(mass, 2) + ", \"units\": \"g\"}");
+  char json[30];
+  // String json = String("{\"mass\": " + String(mass, 2) + ", \"units\": \"g\"}");
+  sprintf(json, "{\"mass\": %.2f, \"units\": \"g\"}", mass);  // have to escape all quotes
   server_.send(200, "application/json", json);
 }
 
@@ -66,10 +67,14 @@ void handleBrewStart() {
   timerReset();
   timerStartStop();
 
-//  if(server_.hasArg("setpoint")) {
-//    String m_setpoint_str = server_.arg("setpoint");
-//    m_setpoint = m_setpoint_str.toDouble();
-//  }
+  if(server_.hasArg("setpoint")) {
+    //char* setpoint_str = server_.arg("setpoint");
+    String setpoint_str = server_.arg("setpoint");
+    //setpoint = atof(setpoint_str);
+    setpoint = setpoint_str.toDouble();
+  } else {
+    setpoint = -1.0;
+  }
 }
 
 void handleBrewStop () {
@@ -77,15 +82,16 @@ void handleBrewStop () {
   timerStartStop();
 }
 
-//void sendBrewStop() {
-//  HTTPClient http;
-//  http.begin("http://192.168.0.6/api/v1/status/1/");
-//  http.addHeader("Content-Type", "application/json");
-//  int httpResponseCode = http.PUT("{id: 1, brew: False}");
-//  if(httpResponseCode>0){
-//    String response = http.getString();
-//    Serial.print("Response: "); Serial.print(httpResponseCode);
-//    Serial.print(" - "); Serial.println(response);
-//  }
-//  http.end();
-//}
+void sendBrewStop() {
+ HTTPClient http;
+ http.begin("http://192.168.0.6/api/v1/status/1/");
+ http.addHeader("Content-Type", "application/json");
+ http.addHeader("Authorization", AUTH_TOKEN);
+ int httpResponseCode = http.PUT("{id: 1, brew: False}");
+ if(httpResponseCode > 0){
+   String response = http.getString();
+   Serial.print("Response: "); Serial.print(httpResponseCode);
+   Serial.print(" - "); Serial.println(response);
+ }
+ http.end();
+}
