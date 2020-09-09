@@ -29,6 +29,7 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
   }
 
   // Below line
+  drawLine(0, 33, width()-1, 33, WHITE);
   if (mode == 0) {  // Show brew time
     setTextSize(3);
     int mins = *t / 60;
@@ -36,10 +37,11 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
     sprintf(buffer, "%02d:%02d", mins, secs);
     setCursor(21, 40);
     print(buffer),
-    drawLine(0, 33, width()-1, 33, WHITE);
   } else { // show gains
     setTextSize(2);
     sprintf(buffer, "K(%.1f, %.3f, %.0f", pid.GetKp(), pid.GetKi(), pid.GetKd());
+    setCursor(21, 42);
+    print(buffer),
   }
   
   
