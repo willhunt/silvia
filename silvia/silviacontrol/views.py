@@ -89,7 +89,13 @@ class ResponseViewSet(viewsets.ModelViewSet):
         if session_ids_string == "active":
             try:
                 session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
-                session_ids_string = "{}".format(session.id)
+                if session.t_end is None:
+                    queryset = ResponseModel.objects.filter(t__range=(session.t_start, timezone.now()))
+                else:
+                    queryset = ResponseModel.objects.filter(t__range=(session.t_start, session.t_end))
+                # Take last 50 points
+                queryset_dict = {session.id: self.serializer_class(queryset, many=True).data[-50:]}
+                return Response(queryset_dict)
             except IndexError as e:
                 return Response(data=None)
 
