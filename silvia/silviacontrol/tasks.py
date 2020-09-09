@@ -127,6 +127,7 @@ def async_scale_update(brew):
     Args
         on [Bool]: True = start brewing, False = stop brewing
     """
+    debug_log("Scale update task, input: {}".format(brew))
     if django_settings.SIMULATE_MACHINE == False:
         # Reset scale
         if brew:
