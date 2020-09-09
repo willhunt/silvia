@@ -121,7 +121,7 @@ def async_comms_response():
     return T
 
 
-@shared_task()
+@shared_task(queue='celery')
 def async_scale_update(brew):
     """
     Args
@@ -132,6 +132,7 @@ def async_scale_update(brew):
         if brew:
             settings = SettingsModel.objects.get(pk=1)
             try:
+                debug_log("Sending to scale at url:")
                 request_scale = requests.put("http://192.168.0.12/brewstart", params={"setpoint": settings.m})
                 debug_log(request_scale.url)  # Check URL is correct
             except requests.exceptions.RequestException as e:
