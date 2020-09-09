@@ -25,6 +25,7 @@ class SilviaDisplay : public Adafruit_SSD1306 {
 };
 
 extern RelayOutput power_output;
+extern TemperatureController pid;
 extern double T_boiler;
 extern double pid_setpoint;
 extern unsigned int brew_duration;

@@ -147,7 +147,8 @@ $ python manage.py migrate
 $ python manage.py createsuperuser
 ```
 
-## Remove files from git based upon .gitignore changes
+## .gitignore changes
+Remove files from git based upon .gitignore changes
 ```bash
 $ git rm -r --cached .
 $ git add .
