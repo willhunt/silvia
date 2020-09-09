@@ -61,6 +61,7 @@ void handleTare() {
 }
 
 void handleBrewStart() {
+  Serial.println("Brew request received");
   // Tare scale
   loadcellTare();
   // Start timer
@@ -75,11 +76,15 @@ void handleBrewStart() {
   } else {
     setpoint = -1.0;
   }
+  server_.send(200, "text/plain", "Brew started");
 }
 
 void handleBrewStop () {
   // Stop timer
   timerStartStop();
+  char json[10];
+  sprintf(json, "{\"t\": %d}", (int)(t/1000 + 0.5));  // have to escape all quotes
+  server_.send(200, "application/json", json);
 }
 
 void sendBrewStop() {

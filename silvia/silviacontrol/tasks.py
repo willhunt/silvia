@@ -132,7 +132,7 @@ def async_scale_update(brew):
         if brew:
             settings = SettingsModel.objects.get(pk=1)
             try:
-                requests.put("http://192.168.0.12/brewstart", data={"setpoint": settings.m})
+                requests.put("http://192.168.0.12/brewstart", params={"setpoint": settings.m})
             except requests.exceptions.RequestException as e:
                 debug_log("No connection to scale")
         else:

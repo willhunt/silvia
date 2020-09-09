@@ -21,5 +21,6 @@ void sendBrewStop();
 
 extern double setpoint;
 extern double mass;
+extern unsigned long t;
 
 #endif  // SILVIA_SCALE_WIFI_H

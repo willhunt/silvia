@@ -22,6 +22,7 @@ ESP8266WebServer* server;
 
 double setpoint;
 double mass;
+unsigned long t;
 
 void setup() {
   displaySetup();
@@ -41,8 +42,8 @@ void loop() {
   server->handleClient();
 
   mass = getMass();
-  unsigned long milliseconds = timerUpdate();
-  displayStatus(mass, milliseconds);
+  t = timerUpdate();
+  displayStatus(mass, t);
   
 //  delay(100);
 
