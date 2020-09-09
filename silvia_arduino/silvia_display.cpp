@@ -6,7 +6,7 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mode) {
+void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
@@ -30,18 +30,21 @@ void SilviaDisplay::showData(double* T, double* T_set, int* t, unsigned char* mo
 
   // Below line
   drawLine(0, 33, width()-1, 33, WHITE);
-  if (mode == 0) {  // Show brew time
+  if (*mode == 0) {  // Show brew time
     setTextSize(3);
     int mins = *t / 60;
     int secs = *t % 60;
     sprintf(buffer, "%02d:%02d", mins, secs);
     setCursor(21, 40);
-    print(buffer),
+    print(buffer);
   } else { // show gains
     setTextSize(2);
-    sprintf(buffer, "K(%.1f, %.3f, %.0f", pid.GetKp(), pid.GetKi(), pid.GetKd());
+    // sprintf(buffer, "K(%.1f, %.3f, %.0f)", pid.GetKp(), pid.GetKi(), pid.GetKd());
     setCursor(21, 42);
-    print(buffer),
+    // print(buffer),
+    print("K(");
+    print(pid.GetKp(), 0); print(", "); print(pid.GetKp(), 0); print(", "); print(pid.GetKp(), 0);
+    print(")");
   }
   
   
