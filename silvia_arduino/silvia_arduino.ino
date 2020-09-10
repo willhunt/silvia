@@ -43,7 +43,7 @@ double T_boiler;
 double pid_output;
 double pid_setpoint;
 // PID gains set to zero/ or default as not known yet
-TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
+TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_M, DIRECT, HEAT_RELAY_PIN);
 
 // Relays
 RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
