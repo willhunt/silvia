@@ -15,6 +15,18 @@ TemperatureController::TemperatureController(
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);
     *setpoint_ = 100;  // Avoid display issues where NAN  
+
+    // Autotuner not used
+    // Autotuner
+    // auto_tuner_ = new PID_ATune(Input, Output);
+    // auto_tuner_->SetNoiseBand(ATUNE_NOISE);
+    // auto_tuner_->SetOutputStep(ATUNE_STEP);
+    // auto_tuner_->SetLookbackSec((int)ATUNE_LOOKBACK);
+    // auto_tuner_->SetControlType(1); //PID 
+    // SetNoiseBand(ATUNE_NOISE);
+    // SetOutputStep(ATUNE_STEP);
+    // SetLookbackSec((int)ATUNE_LOOKBACK);
+    // SetControlType(1);
 }
 
 void TemperatureController::relayControl() {

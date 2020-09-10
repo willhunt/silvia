@@ -1,7 +1,7 @@
 #include "silvia_temperature_sensor.h"
 
 TemperatureSensor::TemperatureSensor(int sensor_pin) {
-    averaging_interval_ = 1000;  // Milliseconds
+    averaging_interval_ = 200;  // Milliseconds
     sensor_coefficient_ = 0.48828125;  // LM35 sensor [(1.0/1024.0)*5.0*100.0]
     smoothing_filter_val_ = 0.2;
     sensor_pin_ = sensor_pin;
