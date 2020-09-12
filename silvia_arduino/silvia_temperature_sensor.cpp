@@ -3,7 +3,7 @@
 TemperatureSensor::TemperatureSensor(int sensor_pin) {
     averaging_interval_ = 200;  // Milliseconds
     sensor_coefficient_ = 0.48828125;  // LM35 sensor [(1.0/1024.0)*5.0*100.0]
-    smoothing_filter_val_ = 0.7;  // How much smoothing (1=100% filtered(no update), 0=no filtering)
+    smoothing_filter_val_ = 0.8;  // How much smoothing (1=100% filtered(no update), 0=no filtering)
     sensor_pin_ = sensor_pin;
     reset();
     reading_last_ = readSensor();

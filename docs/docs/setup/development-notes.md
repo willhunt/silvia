@@ -50,7 +50,7 @@ $ sudo supervisorctl
 ```
 Restart processes
 ```bash
-$ sudo supervisorctl restart celery_workers:silvia_worker1
+$  x celery_workers:silvia_worker1
 ```
 Stop/start all
 ```bash
