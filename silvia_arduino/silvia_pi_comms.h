@@ -23,6 +23,7 @@ struct responseFormat {
   double Kp;
   double Ki;
   double Kd;
+  // int kp_mode;
 };
 union responseData {
   responseFormat data;
@@ -37,6 +38,7 @@ struct receivedFormat {
   double kp;
   double ki;
   double kd;
+  int kp_mode;
 };
 union receivedData {
   receivedFormat data;

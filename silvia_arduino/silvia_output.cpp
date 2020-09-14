@@ -27,9 +27,9 @@ PowerOutput::PowerOutput(int pin, TemperatureController* pid)
 
 };
 
-void PowerOutput::on(double Setpoint, double Kp, double Ki, double Kd) {
+void PowerOutput::on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode) {
   RelayOutput::on();
-  pid_->on(Setpoint, Kp, Ki, Kd);
+  pid_->on(Setpoint, Kp, Ki, Kd, Kp_mode);
 };
 
 void PowerOutput::off() {

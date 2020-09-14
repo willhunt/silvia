@@ -32,8 +32,8 @@ void TemperatureController::relayControl() {
     }
 }
 
-void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd) {
-    SetTunings(Kp, Ki, Kd);
+void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode) {
+    SetTunings(Kp, Ki, Kd, Kp_mode);
     *setpoint_ = Setpoint;
     SetMode(AUTOMATIC);
     

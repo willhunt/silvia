@@ -51,7 +51,13 @@ void response_actions() {
     if (mode = 2)
       pid.cancelTuner();
     mode = 0;
-    pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
+    pid.on(
+      received_data.data.setpoint,
+      received_data.data.kp,
+      received_data.data.ki,
+      received_data.data.kd,
+      received_data.data.kp_mode
+    );
   } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
     if (mode = 2)
       pid.cancelTuner();

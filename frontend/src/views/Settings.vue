@@ -18,6 +18,7 @@
           <v-text-field class="" label="D Gain" type="number" v-model="settings.k_d"></v-text-field>
         </v-col>
       </v-row>
+      <v-select class="mx-4" label="Proportional Gain Action" :items="kp_types" v-model="settings.k_p_mode"></v-select>
 
       <v-card-subtitle>Extraction Control</v-card-subtitle>
       <v-text-field class="mx-4" label="Extraction Mass" type="number" v-model="settings.m" suffix="g"></v-text-field>
@@ -49,7 +50,11 @@ export default {
     return {
       settings: {},
       settingsServer: {},
-      saveUpToDate: false
+      saveUpToDate: false,
+      kp_types: [
+        { text: 'On error', value: 1 },
+        { text: 'On measurement', value: 0 }
+      ]
     }
   },
   watch: {

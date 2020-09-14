@@ -12,6 +12,7 @@ class SettingsModel(models.Model):
     k_p = models.FloatField(default=0)  # Proportional gain
     k_d = models.FloatField(default=0)  # Derivative gain
     k_i = models.FloatField(default=0)  # Integral gain
+    k_p_mode = models.IntegerField(default=1)  # Proportional or error=1, on measurement=0
     # Setpoints
     T_set = models.FloatField(default=95)  # Temperature setpoint [degC]
     m = models.FloatField(default=20)  # Extraction mass [g]

@@ -23,7 +23,7 @@ class PowerOutput : public RelayOutput {
   
   public:
     PowerOutput(int pin, TemperatureController* pid);
-    void on(double Setpoint, double Kp, double Ki, double Kd);
+    void on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode);
     void off();
 };
 

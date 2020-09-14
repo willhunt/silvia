@@ -158,7 +158,7 @@ def async_comms_update_i2c(on=False, brew=False, mode=0):
     settings = SettingsModel.objects.get(id=1)
     # Send i2C data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<2?B4f', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<2?B4fi', on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode)
     debug_log( "Data to send: {}".format( list(data_block) ) )
     # Write to register 1
     try:
@@ -173,7 +173,7 @@ def async_comms_update_serial(on=False, brew=False, mode=0):
     settings = SettingsModel.objects.get(id=1)
     # Send serial data to arduino
     # Structure packed here and unpacked using 'union' on Arduino
-    data_block = struct.pack('<b2?B4f', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d)
+    data_block = struct.pack('<b2?B4fi', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode)
     debug_log( "Data to send: {}".format(data_block) )
     try:
         serial_arduino.reset_input_buffer()
@@ -220,30 +220,4 @@ def async_comms_override_serial(duty=0):
         response = serial_arduino.readline()
         debug_log("Response to override: {}".format(response))
     except Exception as e:
-        debug_log("Cannot write to microcontroller - override")
-
-@shared_task
-def async_display_update():
-    """
-    Update display over I2C
-    """
-    if django_settings.SIMULATE_MACHINE == False:
-        status = StatusModel.objects.get(id=1)
-        if status.on:
-            # Display welcome screen if only just turned on
-            t_now = timezone.now()
-            session = SessionModel.objects.filter(active=True).order_by('-t_start')[0]
-            if (t_now - session.t_start).total_seconds() < 2:
-                display.showWelcome()
-            else:
-                # Otherwise display temperature
-                settings = SettingsModel.objects.get(id=1)
-                latest_response = ResponseModel.objects.order_by('-t')[0]
-                if (t_now - latest_response.t).total_seconds() > 10:
-                    T = None
-                else:
-                    T = latest_response.T_boiler
-                display.showTemperature(T, settings.T_set)
-        else:  # Off
-            display.showBlank()
-        
+        debug_log("Cannot write to microcontroller - override")        
