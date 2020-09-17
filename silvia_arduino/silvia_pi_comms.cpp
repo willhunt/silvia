@@ -46,17 +46,42 @@ void response_actions() {
     Serial.print(F("    Brew: ")); Serial.println(received_data.data.brew);
     Serial.print(F("    Mode: ")); Serial.println(received_data.data.mode);
   }
+  // Reset PID?
+  bool reset_pid = false;
+
+  // Check if power needs to be toggled
+  if (received_data.data.power != power_output.getStatus()) {
+    // toggle power
+    if (received_data.data.power) {
+      if (DEBUG) {
+        Serial.println("Turn on");
+      }
+      power_output.on();
+      timerReset();
+      reset_pid = true;  // reset pid if turning on.
+    } else {
+      if (DEBUG) {
+        Serial.println("Turn off");
+      }
+      power_output.off();
+      pid.off();
+    }
+  }
+
   // Mode change
   if (received_data.data.mode == 0) { // Change to PID or PID settings
     if (mode = 2)
       pid.cancelTuner();
+    if (mode != 0)
+      reset_pid = true;  // Reset PID if previously in a different mode
     mode = 0;
     pid.on(
       received_data.data.setpoint,
       received_data.data.kp,
       received_data.data.ki,
       received_data.data.kd,
-      received_data.data.kp_mode
+      received_data.data.kp_mode,
+      reset_pid
     );
   } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
     if (mode = 2)
@@ -68,25 +93,7 @@ void response_actions() {
     mode = 2;
     pid.setupTuner();
   }
-  // Check if power needs to be toggled
-  if (received_data.data.power != power_output.getStatus()) {
-    // toggle power
-    if (received_data.data.power) {
-      if (DEBUG) {
-        Serial.println("Turn on");
-      }
-      power_output.on();
-      timerReset();
-      // pid.on(received_data.data.setpoint, received_data.data.kp, received_data.data.ki, received_data.data.kd);
-    } else {
-      if (DEBUG) {
-        Serial.println("Turn off");
-      }
-      // power_output_ref->off();
-      power_output.off();
-      pid.off();
-    }
-  }
+  
   // Check if brew needs to be toggled
   if (received_data.data.brew != brew_output.getStatus()) {
     // Toggle brew if either in manual mode or water in tank
@@ -107,9 +114,6 @@ void heater_on_request(double duty) {
     mode = 1;
     pid.off();
   }
-  // if (duty > 0) {
-  //   power_output.on();
-  // }  Handle this on master end
   pid.overrideOutput(duty);
 }
 

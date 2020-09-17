@@ -34,7 +34,7 @@ class TemperatureController : public PID {
       int POn, int ControllerDirection, int relay_pin
     );
     void relayControl();
-    void on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode);
+    void on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode, bool reset=false);
     void resume();
     void off();
     double getSetpoint();
