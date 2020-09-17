@@ -34,10 +34,11 @@ class TemperatureController : public PID {
       int POn, int ControllerDirection, int relay_pin
     );
     void relayControl();
+    void on(bool reset=false);
     void on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode, bool reset=false);
-    void resume();
     void off();
     double getSetpoint();
+    void setSetpoint(double temperature);
     double getDuty();
     int getRelayPin();
     void overrideOutput(double duty);

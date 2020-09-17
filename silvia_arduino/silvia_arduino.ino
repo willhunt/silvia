@@ -26,10 +26,11 @@ Notes:
 #include "silvia_display.h"
 
 // Mode
-// 0 : PID
-// 1 : Manual
-// 2 : PID autotune
-unsigned char mode = 0;
+#define MODE_OFF 4
+#define MODE_PID 0
+#define MODE_MANUAL 1
+#define MODE_AUTOTUNE 2
+unsigned char mode = MODE_OFF;
 
 // Brew duration [s]
 unsigned int brew_duration = 0;
@@ -81,6 +82,7 @@ void loop(void)  {
         if (DEBUG) {
             Serial.println("Over temperature limit");
         }
+        pid.on(true);  // Reset to avoid windup
     } else if (power_output.getStatus() && mode == 0) { // PID mode
         pid.Compute();  // Method includes sampling time check
     } else if (mode == 2) { // autotune

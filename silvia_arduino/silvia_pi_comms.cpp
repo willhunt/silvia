@@ -7,6 +7,8 @@ int sizeof_received_data;
 int sizeof_response_data;
 int sizeof_override_data;
 
+bool pid_overridden_by_brew = false;
+
 void pi_comms_setup(int i2c_addr, TwoWire* wire) {
   sizeof_received_data = sizeof(receivedFormat);
   sizeof_response_data = sizeof(responseData);
@@ -46,8 +48,6 @@ void response_actions() {
     Serial.print(F("    Brew: ")); Serial.println(received_data.data.brew);
     Serial.print(F("    Mode: ")); Serial.println(received_data.data.mode);
   }
-  // Reset PID?
-  bool reset_pid = false;
 
   // Check if power needs to be toggled
   if (received_data.data.power != power_output.getStatus()) {
@@ -58,7 +58,6 @@ void response_actions() {
       }
       power_output.on();
       timerReset();
-      reset_pid = true;  // reset pid if turning on.
     } else {
       if (DEBUG) {
         Serial.println("Turn off");
@@ -68,32 +67,16 @@ void response_actions() {
     }
   }
 
-  // Mode change
-  if (received_data.data.mode == 0) { // Change to PID or PID settings
-    if (mode = 2)
-      pid.cancelTuner();
-    if (mode != 0)
-      reset_pid = true;  // Reset PID if previously in a different mode
-    mode = 0;
-    pid.on(
-      received_data.data.setpoint,
-      received_data.data.kp,
-      received_data.data.ki,
-      received_data.data.kd,
-      received_data.data.kp_mode,
-      reset_pid
-    );
-  } else if (received_data.data.mode == 1 && mode !=1) { // Change to manual
-    if (mode = 2)
-      pid.cancelTuner();
-    mode = 1;
-    pid.off();
-    pid.overrideOutput(false);
-  } else if (received_data.data.mode == 2 && mode !=2) { // Change to auto tune
-    mode = 2;
-    pid.setupTuner();
+  // Update pid settings
+  if (received_data.data.mode == MODE_PID) {
+    pid.SetTunings(received_data.data.kp, received_data.data.ki, received_data.data.kd, received_data.data.kp_mode);
+    pid.setSetpoint(received_data.data.setpoint);
   }
-  
+  // Add mode 'MODE_OFF' which webserver doesn't record
+  unsigned char new_mode = (received_data.data.power == false) ? MODE_OFF : received_data.data.power;
+  // Mode change
+  change_mode(new_mode);
+
   // Check if brew needs to be toggled
   if (received_data.data.brew != brew_output.getStatus()) {
     // Toggle brew if either in manual mode or water in tank
@@ -101,10 +84,51 @@ void response_actions() {
       brew_output.on();
       timerReset();
       timerStart();
+      if (mode == MODE_PID) {
+        // Change to manual mode to max power and no integral windup
+        change_mode(MODE_MANUAL);
+        pid.overrideOutput(100);
+        pid_overridden_by_brew = true;
+      }
     } else {
       brew_output.off();
+      if (pid_overridden_by_brew) {
+        change_mode(MODE_MANUAL);
+        pid.overrideOutput(100);
+        pid_overridden_by_brew = false;
+      }
     }
   }
+}
+
+void change_mode(unsigned char new_mode) {
+    if (new_mode == MODE_OFF) {
+        if (mode = MODE_PID)
+            pid.off();
+        if (mode = MODE_MANUAL)
+            pid.overrideOutput(0);
+        if (mode = MODE_AUTOTUNE)
+            pid.cancelTuner();
+        mode = MODE_OFF;
+    } else if (new_mode == MODE_PID) { // Change to PID or PID settings
+        if (mode = MODE_AUTOTUNE)
+            pid.cancelTuner();
+        bool reset_pid = false;
+        if (mode != MODE_PID)
+            reset_pid = true;  // Reset PID if previously in a different mode
+        mode = 0;
+        pid.on(reset_pid);
+    } else if (new_mode == MODE_MANUAL && mode != MODE_MANUAL) { // Change to manual
+        if (mode = MODE_AUTOTUNE)
+            pid.cancelTuner();
+        if (mode = MODE_PID)
+            pid.off();
+        mode = MODE_MANUAL;
+        pid.overrideOutput(0);
+    } else if (new_mode == MODE_AUTOTUNE && mode != MODE_AUTOTUNE) { // Change to auto tune
+        mode = MODE_AUTOTUNE;
+        pid.setupTuner();
+    }
 }
 
 void heater_on_request(double duty) {

@@ -63,10 +63,12 @@ extern void timerStart();
 extern void timerReset();
 
 // Mode - defined in silvia_main.ino
-// 0 : PID
-// 1 : Manual
-// 2 : PID autotune
+#define MODE_OFF 0
+#define MODE_PID 1
+#define MODE_MANUAL 2
+#define MODE_AUTOTUNE 3
 extern unsigned char mode;
+void change_mode(unsigned char new_mode);
 
 void pi_comms_setup(int i2c_addr, TwoWire* wire);
 void pi_comms_setup();

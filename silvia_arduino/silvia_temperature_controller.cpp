@@ -32,6 +32,12 @@ void TemperatureController::relayControl() {
     }
 }
 
+void TemperatureController::on(bool reset) {
+    if (reset) {
+        SetMode(MANUAL); // Set to manual first to reset integral term
+    }
+    SetMode(AUTOMATIC);
+}
 void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode, bool reset) {
     if (reset) {
         SetMode(MANUAL); // Set to manual first to reset integral term
@@ -46,16 +52,16 @@ void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd,
     }
 }
 
-void TemperatureController::resume() {
-    SetMode(AUTOMATIC);
-}
-
 void TemperatureController::off() {
     SetMode(MANUAL);
 }
 
 double TemperatureController::getSetpoint() {
     return *setpoint_;
+}
+
+void TemperatureController::setSetpoint(double temperature) {
+    *setpoint_ = temperature;
 }
 
 double TemperatureController::getDuty() {
