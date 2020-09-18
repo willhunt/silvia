@@ -39,10 +39,12 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
     print(buffer);
   } else { // show gains
     setTextSize(1);
-    setCursor(10, 50);
+    setCursor(10, 45);
     print("K(");
-    print(pid.GetKp(), 0); print(", "); print(pid.GetKi(), 0); print(", "); print(pid.GetKd(), 0);
+    print(pid.GetKp(), 1); print(", "); print(pid.GetKi(), 3); print(", "); print(pid.GetKd(), 0);
     print(")");
+    setCursor(10, 60);
+    print("Set("); print(pid.getSetpoint(), 0); print(")");
   }
   
   display();
