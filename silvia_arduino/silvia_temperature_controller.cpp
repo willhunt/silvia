@@ -35,16 +35,15 @@ void TemperatureController::relayControl() {
 void TemperatureController::on(bool reset) {
     if (reset) {
         SetMode(MANUAL); // Set to manual first to reset integral term
+        overrideOutput(0);
     }
     SetMode(AUTOMATIC);
 }
 void TemperatureController::on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode, bool reset) {
-    if (reset) {
-        SetMode(MANUAL); // Set to manual first to reset integral term
-    }
     SetTunings(Kp, Ki, Kd, Kp_mode);
     *setpoint_ = Setpoint;
-    SetMode(AUTOMATIC);
+    // Pass to less loaded method
+    on(reset);
     
     if (DEBUG) {
         Serial.print(F("PID on, target: "));

@@ -115,7 +115,7 @@ void change_mode(unsigned char new_mode) {
         bool reset_pid = false;
         if (mode != MODE_PID)
             reset_pid = true;  // Reset PID if previously in a different mode
-        mode = 0;
+        mode = MODE_PID;
         pid.on(reset_pid);
     } else if (new_mode == MODE_MANUAL && mode != MODE_MANUAL) { // Change to manual
         if (mode = MODE_AUTOTUNE)
