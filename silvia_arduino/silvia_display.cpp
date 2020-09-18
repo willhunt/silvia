@@ -20,7 +20,10 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
 
   drawRect(80, 7, 41, 20, WHITE);
   setTextSize(2);
-  if (*mode == MODE_PID) {
+  if (pid_overridden_by_brew) {
+    setCursor(83, 10);
+    print("(B)");
+  } else if (*mode == MODE_PID) {
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
     drawCentreString(buffer, 102, 10);
   } else {
