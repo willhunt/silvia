@@ -73,7 +73,7 @@ void response_actions() {
     pid.setSetpoint(received_data.data.setpoint);
   }
   // Add mode 'MODE_OFF' which webserver doesn't record
-  unsigned char new_mode = (received_data.data.power == false) ? MODE_OFF : received_data.data.power;
+  unsigned char new_mode = (received_data.data.power == false) ? MODE_OFF : received_data.data.mode;
   // Mode change
   change_mode(new_mode);
 
@@ -93,8 +93,7 @@ void response_actions() {
     } else {
       brew_output.off();
       if (pid_overridden_by_brew) {
-        change_mode(MODE_MANUAL);
-        pid.overrideOutput(100);
+        change_mode(MODE_PID);
         pid_overridden_by_brew = false;
       }
     }
@@ -132,11 +131,8 @@ void change_mode(unsigned char new_mode) {
 }
 
 void heater_on_request(double duty) {
-  if (mode != 1) {  
-    if (mode = 2)
-      pid.cancelTuner();
-    mode = 1;
-    pid.off();
+  if (mode != MODE_MANUAL) {
+    change_mode(MODE_MANUAL);
   }
   pid.overrideOutput(duty);
 }
