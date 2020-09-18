@@ -8,6 +8,7 @@
 #include "silvia_temperature_sensor.h"
 #include "silvia_water_sensor.h"
 #include "silvia_timer.h"
+#include "silvia_modes.h"
 
 #ifndef DEBUG
 #define DEBUG false
@@ -63,10 +64,6 @@ extern void timerStart();
 extern void timerReset();
 
 // Mode - defined in silvia_main.ino
-#define MODE_OFF 4
-#define MODE_PID 0
-#define MODE_MANUAL 1
-#define MODE_AUTOTUNE 2
 extern unsigned char mode;
 void change_mode(unsigned char new_mode);
 

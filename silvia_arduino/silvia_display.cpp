@@ -6,7 +6,7 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode) {
+void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* pid_overridden_by_brew) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
@@ -20,7 +20,7 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
 
   drawRect(80, 7, 41, 20, WHITE);
   setTextSize(2);
-  if (*mode == 0) {
+  if (*mode == MODE_PID) {
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
     drawCentreString(buffer, 102, 10);
   } else {
@@ -30,21 +30,23 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
 
   // Below line
   drawLine(0, 33, width()-1, 33, WHITE);
-  if (*mode == 0) {  // Show brew time
+  if (*mode == MODE_MANUAL && !*pid_overridden_by_brew) { // show gains 
+    setTextSize(1);
+    setCursor(10, 40);
+    print("K(");
+    print(pid.GetKp(), 1); print(", "); print(pid.GetKi(), 3); print(", "); print(pid.GetKd(), 0);
+    print(")");
+    setCursor(10, 50);
+    print("Set("); print(pid.getSetpoint(), 0); print(")");
+  } else { // Show brew time
     setTextSize(3);
     int mins = *t / 60;
     int secs = *t % 60;
     sprintf(buffer, "%02d:%02d", mins, secs);
     setCursor(21, 40);
     print(buffer);
-  } else { // show gains
-    setTextSize(1);
-    setCursor(10, 45);
-    print("K(");
-    print(pid.GetKp(), 1); print(", "); print(pid.GetKi(), 3); print(", "); print(pid.GetKd(), 0);
-    print(")");
-    setCursor(10, 60);
-    print("Set("); print(pid.getSetpoint(), 0); print(")");
+
+    
   }
   
   display();
@@ -73,7 +75,7 @@ void SilviaDisplay::update() {
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode);
+        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode, &pid_overridden_by_brew);
       }
     }
   } else {  // machine off

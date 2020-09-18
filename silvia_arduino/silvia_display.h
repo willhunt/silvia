@@ -7,6 +7,7 @@
 #include <Adafruit_GFX.h>
 #include "silvia_logo.h"
 #include "silvia_output.h"
+#include "silvia_modes.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
@@ -30,5 +31,6 @@ extern double T_boiler;
 extern double pid_setpoint;
 extern unsigned int brew_duration;
 extern unsigned char mode;
+extern bool pid_overridden_by_brew;
 
 #endif // SILVIA_DISPLAY_H

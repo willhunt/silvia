@@ -24,12 +24,9 @@ Notes:
 #include "silvia_output.h"
 #include "silvia_water_sensor.h"
 #include "silvia_display.h"
+#include "silvia_modes.h"
 
 // Mode
-#define MODE_OFF 4
-#define MODE_PID 0
-#define MODE_MANUAL 1
-#define MODE_AUTOTUNE 2
 unsigned char mode = MODE_OFF;
 
 // Brew duration [s]
