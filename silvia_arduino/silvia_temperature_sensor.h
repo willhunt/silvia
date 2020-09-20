@@ -7,6 +7,9 @@
 
 #include <Arduino.h>
 
+#define MA_FILTER_WINDOW_SIZE 10
+#define FILTER_TYPE 1  // 0=lag, 1=moving average
+
 /* 
 Rosserial publisher class for publishing IMU data from Adafruit BNO055
 */
@@ -23,6 +26,9 @@ class TemperatureSensor {
     unsigned long reading_time_;  // Time at which last reading was taken
     double updateTemperature();  // Updates temperature reading
     void reset();  // Reset variables
+    double ma_readings_[MA_FILTER_WINDOW_SIZE]; // Store of previous readings for moving average filter
+    int ma_index_; // Moving average index
+    double ma_sum_; // Moving average Sum
 
   public:
     TemperatureSensor(int sensor_pin);

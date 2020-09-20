@@ -7,6 +7,12 @@ TemperatureSensor::TemperatureSensor(int sensor_pin) {
     sensor_pin_ = sensor_pin;
     reset();
     reading_last_ = readSensor();
+    // Setup moving average filter
+    for (int i = 0; i < MA_FILTER_WINDOW_SIZE; i++) {
+        ma_readings_[i] = 0;
+    }
+    ma_sum_ = reading_last_;
+    ma_index_ = 0;
 }
 
 void TemperatureSensor::updateAverage() {
@@ -36,8 +42,19 @@ double TemperatureSensor::updateTemperature() {
         reading_average = reading_sum_ / (double)reading_count_;
     }
     // Apply smoothing
-    reading_last_ = reading_average * (1 - smoothing_filter_val_) + \
+    if (FILTER_TYPE == 0) {  // Lag filter
+        reading_last_ = reading_average * (1 - smoothing_filter_val_) + \
         reading_last_ * smoothing_filter_val_;
+    } else if (FILTER_TYPE == 1) { // moving average
+        ma_sum_ -= ma_readings_[ma_index_];  // Remove the oldest entry from the sum
+        ma_sum_ += reading_average;  // Add new value to sum
+        ma_readings_[ma_index_] = reading_average;  // Replace with new value in store
+        ma_index_ = (ma_index_ + 1) % MA_FILTER_WINDOW_SIZE;  // Increment index
+        reading_last_ = ma_sum_ / MA_FILTER_WINDOW_SIZE;
+    } else {  // No filter
+        reading_last_ = reading_average;
+    }
+    
     // Reset
     reset();
     // if (DEBUG) {
