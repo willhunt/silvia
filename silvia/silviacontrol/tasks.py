@@ -221,3 +221,17 @@ def async_comms_override_serial(duty=0):
         debug_log("Response to override: {}".format(response))
     except Exception as e:
         debug_log("Cannot write to microcontroller - override")        
+
+@shared_task
+def async_machine_on():
+    debug_log("Machine on using schedule")
+    status = StatusModel.objects.get(pk=1)
+    status.on = True
+    status.save()
+
+@shared_task
+def async_machine_off():
+    debug_log("Machine off using schedule")
+    status = StatusModel.objects.get(pk=1)
+    status.on = False
+    status.save()

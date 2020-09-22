@@ -1,8 +1,8 @@
-from django.db.models.signals import post_init, pre_save, post_delete, post_save
+from django.db.models.signals import pre_save, post_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings as django_settings
 from .models import ScheduleModel, ResponseModel, StatusModel, SettingsModel, SessionModel
-from .tasks import async_comms_response, async_comms_update, async_scale_update
+from .tasks import async_comms_update, async_scale_update
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 
 @receiver(pre_save, sender=ScheduleModel)
@@ -18,14 +18,15 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             hour=instance.t_on.hour,
             day_of_week=dow_crontype,
             day_of_month='*',
-            month_of_year='*'
+            month_of_year='*',
+            timezone=django_settings.TIME_ZONE
         )
         schedule_on = PeriodicTask.objects.create(
             crontab=crontab_on,
             name="on:{0} {1}".format(instance.id, instance.name),
             # name=('%s_on' % (instance.name)),  
-            task='silviacontrol.tasks.async_comms_update',
-            args='[True, False, 0]',
+            task='silviacontrol.tasks.async_machine_on',
+            # args='[true, false, 0]',  # json format required
             enabled=instance.active
         )
         instance.schedule_on = schedule_on
@@ -44,14 +45,15 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
             hour=instance.t_off.hour,
             day_of_week=dow_crontype,
             day_of_month='*',
-            month_of_year='*'
+            month_of_year='*',
+            timezone=django_settings.TIME_ZONE
         )
         schedule_off = PeriodicTask.objects.create(
             crontab=crontab_off,
             name="off:{0} {1}".format(instance.id, instance.name),
             # name=('%s_off' % (instance.name)),  
-            task='silviacontrol.tasks.async_comms_update',
-            args='[False, False, 0]',
+            task='silviacontrol.tasks.async_machine_off',
+            # args='[false, false, 0]',  # json format required
             enabled=instance.active
         )
         instance.schedule_off = schedule_off

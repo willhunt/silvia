@@ -128,13 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'GB'
-
+TIME_ZONE = 'Europe/London'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -158,7 +154,8 @@ REST_FRAMEWORK = {
 }
 
 # Celery settings
-
+CELERY_ENABLE_UTC = True
+CELERY_TIMEZONE = 'Europe/London'
 # CELERY_BROKER_URL = 'amqp://guest:guest@localhost//' # Rabbitmq
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis
 #: Only add pickle to this list if your broker is secured

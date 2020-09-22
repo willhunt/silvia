@@ -142,13 +142,14 @@ class ScheduleModel(models.Model):
         for i, d in enumerate(dow):
             if d is "1":
                 dow_cron.append(i)
-        return dow_cron
+        return ",".join(map(str, dow_cron))  # Return as string
 
     @staticmethod
     def convert_dow_from_crontype(dow):
         """
         Convert crontab style day of the week to database type
         """
+        dow = map(int, dow.split(","))
         dow_cron = []
         for i, d in enumerate(dow):
             if d is "1":
