@@ -35,6 +35,8 @@ void setup() {
   timerSetup(TIMER_START_PIN, TIMER_RESET_PIN);
 
   setpoint = -1.0;
+
+  Serial.println("Setup complete.");
 }
 
 void loop() {

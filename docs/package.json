@@ -1,7 +1,7 @@
 {
   "name": "silvia",
   "version": "0.0.1",
-  "description": "Silvia smart espresso machine",
+  "description": "Silviabot smart espresso machine",
   "main": "index.js",
   "authors": {
     "name": "William Hunt",

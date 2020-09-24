@@ -233,16 +233,16 @@ export default {
 
         axios.get('/api/v1/response/sessions/', getParams)
           .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             // this.sessionData = response.data
             if (response.data === '') {
-              console.log('No response data returned')
+              // console.log('No response data returned')
               return false
             }
             this.sessionData = Object.assign({}, this.sessionData, response.data)
             const latestSession = response.data[Object.keys(response.data)[0]]
             if (latestSession === undefined || latestSession.length === 0) {
-              console.log('No logged responses yet')
+              // console.log('No logged responses yet')
               return false
             }
             const lastResponse = latestSession[latestSession.length - 1]
@@ -255,7 +255,7 @@ export default {
         // Get latest response only
         axios.get('/api/v1/response/latest/')
           .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             // Check if temperature is old
             const deltaTime = (new Date() - new Date(response.data.t)) / 1000
             // console.log(deltaTime)
@@ -306,7 +306,7 @@ export default {
     eventBus.$emit('updateStatus')
   },
   destroyed () {
-    console.log('Cancel temperature update')
+    // console.log('Cancel temperature update')
     clearInterval(this.intervalReference)
   }
 }

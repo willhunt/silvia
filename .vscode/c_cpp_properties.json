@@ -3,13 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "/home/will/.arduino15/packages/esp8266/hardware/esp8266/2.7.4/**",
-                "/home/will/.arduino15/packages/esp8266/tools/**",
-                "/home/will/.arduino15/packages/esp8266/hardware/esp8266/2.7.1/**",
                 "/home/will/.arduino/arduino-1.8.12/tools/**",
                 "/home/will/.arduino/arduino-1.8.12/hardware/arduino/avr/**",
                 "/home/will/Arduino/libraries/**",
-                "${workspaceFolder}/arduino",
+                "${workspaceFolder}/silvis_arduino",
                 "/home/will/.arduino15/packages/arduino/hardware/avr/1.8.3/**",
                 "/home/will/.arduino15/packages/arduino/tools/**"
             ],
