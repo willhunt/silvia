@@ -59,7 +59,8 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            // 'app-demo',
+            'app-demo',
+            'temperature-control'
           ]
         }
       ],
@@ -69,6 +70,7 @@ module.exports = {
           collapsable: false,
           children: [
             '',
+            'control-setup',
             'raspi-setup',
             'arduino-setup',
             'scale-setup',
@@ -87,6 +89,7 @@ module.exports = {
             'brew-control',
             'power-supply',
             'oled-display',
+            'wifi-scale'
           ]
         }
       ]
@@ -98,10 +101,16 @@ module.exports = {
    */
   plugins: [
     '@vuepress/plugin-back-to-top',
-    '@vuepress/plugin-medium-zoom',
-    ['@vuepress/search', {
-      searchMaxSuggestions: 10
-    }],
+    ['@vuepress/plugin-medium-zoom',
+      {
+        selector: '.img'
+      }
+    ],
+    ['@vuepress/search',
+      {
+        searchMaxSuggestions: 10
+      }
+    ],
     ['vuepress-plugin-mathjax',
       {
         target: 'svg',

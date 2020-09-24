@@ -1,4 +1,4 @@
-## Setting up the Pi
+## Pi Setup
 Follow these steps to set up a raspberry pi, download the code and setup the web server and message broker.
 
 ## Quick Setup

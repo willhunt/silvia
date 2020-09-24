@@ -7,11 +7,8 @@ from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
 
-# For real machine
+# Machine
 if django_settings.SIMULATE_MACHINE == False:
-    # Scale
-    import requests
-    from .simulation import simulated_mass_sensor
     # Arduino Comms
     if django_settings.ARDUINO_COMMS == "i2c":
         from smbus2 import SMBus
@@ -32,10 +29,15 @@ if django_settings.SIMULATE_MACHINE == False:
             raise serial.serialutil.SerialException("No serial connection to Arduino")    
     else:
         raise NotImplementedError("ARDUINO_COMMS not recognised")
-
 # For testing without raspberry pi/espresso machine
 else:
-    from .simulation import simulated_temperature_sensor, simulated_mass_sensor, pid_update
+    from .simulation import simulated_temperature_sensor, pid_update
+
+# Scale
+if django_settings.SIMULATE_SCALE == False:
+    import requests
+else:
+    from .simulation import simulated_mass_sensor
 
 
 @shared_task(base=QueueOnce, once={'graceful': True}, queue='comms')
@@ -47,11 +49,22 @@ def async_comms_response():
     status = StatusModel.objects.get(id=1)
     settings = SettingsModel.objects.get(id=1)
 
-    # Read simulated sesnors
+    if django_settings.SIMULATE_SCALE == True:
+        m = simulated_mass_sensor("simulated")
+    else:
+        try:
+            request_scale = requests.get("http://192.168.0.12/mass")
+            # Decode data
+            data_scale = request_scale.json()
+            m = data_scale["mass"]
+        except requests.exceptions.RequestException as e:
+            m = None
+
+    # Read simulated machine sensors
     if django_settings.SIMULATE_MACHINE == True:
         t = timezone.now()
         T = simulated_temperature_sensor("simulated")
-        m = simulated_mass_sensor("simulated")
+        # m = simulated_mass_sensor("simulated")
         # Get new PID
         duty, duty_pid = pid_update(T, t)
         low_water = False
@@ -89,16 +102,6 @@ def async_comms_response():
             status.mode = mode
             status.save()
 
-        # SCALE
-        try:
-            request_scale = requests.get("http://192.168.0.12/mass")
-            # Decode data
-            data_scale = request_scale.json()
-            m = data_scale["mass"]
-        except requests.exceptions.RequestException as e:
-            m = None
-            # m = simulated_mass_sensor("simulated")
-
     # Record temperature if machine is on
     if status.on:
     # if True:
@@ -128,7 +131,7 @@ def async_scale_update(brew):
         on [Bool]: True = start brewing, False = stop brewing
     """
     debug_log("Scale update task, input: {}".format(brew))
-    if django_settings.SIMULATE_MACHINE == False:
+    if django_settings.SIMULATE_SCALE == False:
         # Reset scale
         if brew:
             settings = SettingsModel.objects.get(pk=1)

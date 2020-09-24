@@ -48,6 +48,8 @@ void loop() {
 //  delay(100);
 
   if (setpoint > 0 && mass >= setpoint) {  // setpoint<0 signifies mass control off
-    sendBrewStop();
+    // check also that enough time has passed
+    if (t > 3000)
+      sendBrewStop();
   }
 }

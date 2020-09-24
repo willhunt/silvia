@@ -92,7 +92,7 @@ void sendBrewStop() {
  http.begin("http://192.168.0.6/api/v1/status/1/");
  http.addHeader("Content-Type", "application/json");
  http.addHeader("Authorization", AUTH_TOKEN);
- int httpResponseCode = http.PUT("{id: 1, brew: False}");
+ int httpResponseCode = http.PUT("{\"brew\": false}");
  if(httpResponseCode > 0){
    String response = http.getString();
    Serial.print("Response: "); Serial.print(httpResponseCode);
