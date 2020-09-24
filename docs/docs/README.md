@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: /assets/will_silvia_icon.png
-tagline: Silvia smart espresso machine, currently under development.
+tagline: Silviabot smart espresso machine.
 actionText: Demo →
 actionLink: /demo/
 features:

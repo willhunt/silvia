@@ -1,4 +1,4 @@
-# silvia
+# silviabot
 
 > Silvia smart espresso machine
 
