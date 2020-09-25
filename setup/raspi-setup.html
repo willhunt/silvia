@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Pi Setup | Silviabot Documentation</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="Silviabot smart espresso machine">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="preload" href="/silvia/assets/css/0.styles.84c15d8c.css" as="style"><link rel="preload" href="/silvia/assets/js/app.58b51180.js" as="script"><link rel="preload" href="/silvia/assets/js/2.216158cf.js" as="script"><link rel="preload" href="/silvia/assets/js/22.6c7c5b00.js" as="script"><link rel="prefetch" href="/silvia/assets/js/10.1d3113f7.js"><link rel="prefetch" href="/silvia/assets/js/11.e3890126.js"><link rel="prefetch" href="/silvia/assets/js/12.6ae84a4f.js"><link rel="prefetch" href="/silvia/assets/js/13.90f118ae.js"><link rel="prefetch" href="/silvia/assets/js/14.e55e6256.js"><link rel="prefetch" href="/silvia/assets/js/15.85a719c5.js"><link rel="prefetch" href="/silvia/assets/js/16.135070dd.js"><link rel="prefetch" href="/silvia/assets/js/17.b37ec67f.js"><link rel="prefetch" href="/silvia/assets/js/18.10500e0d.js"><link rel="prefetch" href="/silvia/assets/js/19.9a8bea67.js"><link rel="prefetch" href="/silvia/assets/js/20.2b4676e2.js"><link rel="prefetch" href="/silvia/assets/js/21.d7a4d73e.js"><link rel="prefetch" href="/silvia/assets/js/23.ad97dde0.js"><link rel="prefetch" href="/silvia/assets/js/3.f01c0106.js"><link rel="prefetch" href="/silvia/assets/js/4.02721f6a.js"><link rel="prefetch" href="/silvia/assets/js/5.267c1543.js"><link rel="prefetch" href="/silvia/assets/js/6.6da585be.js"><link rel="prefetch" href="/silvia/assets/js/7.05a1fa71.js"><link rel="prefetch" href="/silvia/assets/js/8.4531bd28.js"><link rel="prefetch" href="/silvia/assets/js/9.fedc342e.js">
+    <link rel="stylesheet" href="/silvia/assets/css/0.styles.84c15d8c.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/silvia/" class="home-link router-link-active"><!----> <span class="site-name">Silviabot Documentation</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/silvia/demo/" class="nav-link">
+  Demo
+</a></div><div class="nav-item"><a href="/silvia/setup/" class="nav-link router-link-active">
+  Setup
+</a></div><div class="nav-item"><a href="/silvia/build/" class="nav-link">
+  Build
+</a></div><div class="nav-item"><a href="https://github.com/willhunt/silvia" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/silvia/demo/" class="nav-link">
+  Demo
+</a></div><div class="nav-item"><a href="/silvia/setup/" class="nav-link router-link-active">
+  Setup
+</a></div><div class="nav-item"><a href="/silvia/build/" class="nav-link">
+  Build
+</a></div><div class="nav-item"><a href="https://github.com/willhunt/silvia" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Setup</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/silvia/setup/" aria-current="page" class="sidebar-link">Introduction</a></li><li><a href="/silvia/setup/control-setup.html" class="sidebar-link">Temperature Control</a></li><li><a href="/silvia/setup/raspi-setup.html" aria-current="page" class="active sidebar-link">Pi Setup</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#pi-setup" class="sidebar-link">Pi Setup</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#quick-setup" class="sidebar-link">Quick Setup</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#useful-links" class="sidebar-link">Useful Links</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#pi-setup-2" class="sidebar-link">Pi Setup</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#setup-ssh" class="sidebar-link">Setup SSH</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#connect-via-ssh" class="sidebar-link">Connect via SSH</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#allow-remote-access-to-files" class="sidebar-link">Allow remote access to files</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#install-requirements" class="sidebar-link">Install requirements</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#download-files" class="sidebar-link">Download files</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#setup-python-environment" class="sidebar-link">Setup Python environment</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#setup-apache-server" class="sidebar-link">Setup Apache server</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#setup-i2c" class="sidebar-link">Setup I2C</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#setup-postgresql-database" class="sidebar-link">Setup PostgreSQL Database</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#supervisor-setup" class="sidebar-link">Supervisor Setup</a></li><li class="sidebar-sub-header"><a href="/silvia/setup/raspi-setup.html#arduino-flashing" class="sidebar-link">Arduino Flashing</a></li></ul></li><li><a href="/silvia/setup/arduino-setup.html" class="sidebar-link">Arduino Setup</a></li><li><a href="/silvia/setup/scale-setup.html" class="sidebar-link">Scale Setup</a></li><li><a href="/silvia/setup/development-notes.html" class="sidebar-link">Notes</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="pi-setup"><a href="#pi-setup" class="header-anchor">#</a> Pi Setup</h2> <p>Follow these steps to set up a raspberry pi, download the code and setup the web server and message broker.</p> <h2 id="quick-setup"><a href="#quick-setup" class="header-anchor">#</a> Quick Setup</h2> <p>A quick setup can be done using a script. First setup wireless in raspi-config:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> raspi-config
+</code></pre></div><p>Then download the script and run.</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> <span class="token function">git</span> -y
+$ <span class="token function">git</span> clone https://github.com/willhunt/silvia.git
+$ <span class="token builtin class-name">cd</span> /silvia/pi_setup
+$ <span class="token function">chmod</span> +x raspi_setup.sh
+$ ./raspi_setup.sh
+</code></pre></div><p>Then setup Django database</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token builtin class-name">cd</span> ~/silvia/silvia
+$ python manage.py migrate
+$ python manage.py createsuperuser
+</code></pre></div><p>Then follow prompts.</p> <h2 id="useful-links"><a href="#useful-links" class="header-anchor">#</a> Useful Links</h2> <p>Some useful links for the following instructions are:</p> <ul><li><a href="https://www.codingforentrepreneurs.com/blog/raspberry-pi-network-server-guide-with-django-ssh/" target="_blank" rel="noopener noreferrer">raspberry-pi-network-server-guide-with-django-ssh<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li><a href="https://mikesmithers.wordpress.com/2017/02/21/configuring-django-with-apache-on-a-raspberry-pi/" target="_blank" rel="noopener noreferrer">configuring-django-with-apache-on-a-raspberry-pi<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul> <h2 id="pi-setup-2"><a href="#pi-setup-2" class="header-anchor">#</a> Pi Setup</h2> <h3 id="install-operating-system"><a href="#install-operating-system" class="header-anchor">#</a> Install operating system</h3> <p>Setup a raspberry pi with Raspberry Pi OS Lite as described at <a href="https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up" target="_blank" rel="noopener noreferrer">projects.raspberrypi.org<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p> <h3 id="update-pi"><a href="#update-pi" class="header-anchor">#</a> Update pi</h3> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">apt-get</span> update -y
+$ <span class="token function">sudo</span> <span class="token function">apt-get</span> upgrade -y
+$ <span class="token function">sudo</span> <span class="token function">apt-get</span> autoremove
+</code></pre></div><h2 id="setup-ssh"><a href="#setup-ssh" class="header-anchor">#</a> Setup SSH</h2> <h3 id="enable-ssh"><a href="#enable-ssh" class="header-anchor">#</a> Enable SSH</h3> <p>Allow SSH connections on the raspberry pi by using the raspi-config tool on the raspberry pi:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> raspi-config
+</code></pre></div><p>The IP address can be found on the pi using</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">hostname</span> -I
+</code></pre></div><h3 id="setup-static-ip-address"><a href="#setup-static-ip-address" class="header-anchor">#</a> Setup static IP address</h3> <p>Reference: <a href="https://pimylifeup.com/raspberry-pi-static-ip-address/" target="_blank" rel="noopener noreferrer">Raspberry Pi Static IP Address<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>. Here the IP address <code>192.168.0.6</code> is used.</p> <p>Edit file:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">nano</span> /etc/dhcpcd.conf
+</code></pre></div><p>And add:</p> <div class="language- extra-class"><pre class="language-text"><code>interface wlan0
+static ip_address=192.168.0.6/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
+</code></pre></div><p>Replacing with relevant IP addresses. Use this to find router/name server:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">ip</span> r <span class="token operator">|</span> <span class="token function">grep</span> default
+</code></pre></div><p>Reboot</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">reboot</span>
+</code></pre></div><h2 id="connect-via-ssh"><a href="#connect-via-ssh" class="header-anchor">#</a> Connect via SSH</h2> <p>Once enabled access can be made via another networked computer:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">ssh</span> pi@<span class="token operator">&lt;</span>IP<span class="token operator">&gt;</span>
+</code></pre></div><p>In my case:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">ssh</span> pi@192.168.0.6
+</code></pre></div><h2 id="allow-remote-access-to-files"><a href="#allow-remote-access-to-files" class="header-anchor">#</a> Allow remote access to files</h2> <p>It is possible to mount file system on a local machine to make editing files easier. This can be done on the other PC by the following:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> sshfs
+$ <span class="token function">mkdir</span> ~/remote_code
+$ sshfs pi@192.168.0.6:/home ~/remote_code
+</code></pre></div><p>Add debug option to help if there are any problems</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ sshfs pi@192.168.0.6:/home ~/remote_code -o debug
+</code></pre></div><h2 id="install-requirements"><a href="#install-requirements" class="header-anchor">#</a> Install requirements</h2> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> <span class="token function">git</span> python3-venv libopenjp2-7 libtiff5 apache2 apache2-dev libapache2-mod-wsgi-py3 redis-server i2c-tools postgresql libpq-dev postgresql-client postgresql-client-common python-dev -y
+</code></pre></div><h2 id="download-files"><a href="#download-files" class="header-anchor">#</a> Download files</h2> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">git</span> clone https://github.com/willhunt/silvia.git
+</code></pre></div><h2 id="setup-python-environment"><a href="#setup-python-environment" class="header-anchor">#</a> Setup Python environment</h2> <div class="language-bash extra-class"><pre class="language-bash"><code>$ python3 -m venv .virtualenvs/venv-silvia
+$ <span class="token builtin class-name">source</span> .virtualenvs/venv-silvia/bin/activate
+$ <span class="token builtin class-name">cd</span> silvia/silvia
+$ pip <span class="token function">install</span> -r requirements.txt
+</code></pre></div><p>Source virtual env by default by adding line to .bashrc</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">nano</span> .bashrc
+</code></pre></div><p>Add at end:</p> <div class="language- extra-class"><pre class="language-text"><code>source ~/.virtualenvs/venv-silvia/bin/activate
+</code></pre></div><h2 id="setup-apache-server"><a href="#setup-apache-server" class="header-anchor">#</a> Setup Apache server</h2> <h3 id="edit-server-configuration"><a href="#edit-server-configuration" class="header-anchor">#</a> Edit server configuration</h3> <p>Replace contents of <code>/etc/apache2/sites-available/000-default.conf</code> with:</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;VirtualHost *:80&gt;
+    # The ServerName directive sets the request scheme, hostname and port that
+    # the server uses to identify itself. This is used when creating
+    # redirection URLs. In the context of virtual hosts, the ServerName
+    # specifies what hostname must appear in the request's Host: header to
+    # match this virtual host. For the default virtual host (this file) this
+    # value is not decisive as it is used as a last resort host regardless.
+    # However, you must set it for any further virtual host explicitly.
+    #ServerName www.example.com
+
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+    # error, crit, alert, emerg.
+    # It is also possible to configure the loglevel for particular
+    # modules, e.g.
+    #LogLevel info ssl:warn
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    # For most configuration files from conf-available/, which are
+    # enabled or disabled at a global level, it is possible to
+    # include a line for only one particular virtual host. For example the
+    # following line enables the CGI configuration for this host only
+    # after it has been globally disabled with &quot;a2disconf&quot;.
+    #Include conf-available/serve-cgi-bin.conf
+
+    Alias /static /home/pi/silvia/silvia/staticfiles
+        &lt;Directory /home/pi/silvia/silvia/staticfiles&gt;
+            Require all granted
+        &lt;/Directory&gt;
+
+    WSGIDaemonProcess silvia python-path=/home/pi/silvia/silvia python-home=/home/pi/.virtualenvs/venv-silvia
+    WSGIProcessGroup silvia
+    WSGIScriptAlias / /home/pi/silvia/silvia/silvia/wsgi.py
+
+    &lt;Directory /home/pi/silvia/silvia&gt;
+        &lt;Files wsgi.py&gt;
+                Require all granted
+        &lt;/Files&gt;
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+</code></pre></div><h3 id="change-file-permissions"><a href="#change-file-permissions" class="header-anchor">#</a> Change file permissions</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># Change permissions</span>
+$ <span class="token function">sudo</span> <span class="token function">chmod</span> g+w ~/silvia/silvia/db.sqlite3 
+$ <span class="token function">sudo</span> <span class="token function">chmod</span> g+w ~/silvia/silvia
+<span class="token comment"># Change owner</span>
+$ <span class="token function">sudo</span> <span class="token function">chown</span> www-data:www-data ~/silvia/silvia/db.sqlite3
+$ <span class="token function">sudo</span> <span class="token function">chown</span> www-data:www-data ~/silvia/silvia
+$ <span class="token function">sudo</span> <span class="token function">chown</span> www-data:www-data ~/.virtualenvs/venv-silvia
+<span class="token comment"># Change group</span>
+$ <span class="token function">sudo</span> <span class="token function">groupadd</span> server_group
+$ <span class="token function">sudo</span> adduser pi server_group
+$ <span class="token function">sudo</span> adduser www-data server_group
+$ <span class="token function">sudo</span> adduser www-data dialout
+$ <span class="token function">sudo</span> <span class="token function">chgrp</span> server_group ~/silvia/silvia/db.sqlite3
+$ <span class="token function">sudo</span> <span class="token function">chgrp</span> server_group ~/silvia/silvia/
+</code></pre></div><p>*Maybe try adding &quot;-r&quot; argument (recursive) for chown if having problems&quot;</p> <h2 id="setup-i2c"><a href="#setup-i2c" class="header-anchor">#</a> Setup I2C</h2> <p>Edit this file for I2C permissions:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">nano</span> /etc/udev/rules.d/99-com.rules
+</code></pre></div><p>Change this line</p> <div class="language- extra-class"><pre class="language-text"><code>SUBSYSTEM==&quot;ic2-dev&quot;, GROUP=&quot;i2c&quot;, MODE=&quot;0660&quot;
+</code></pre></div><p>to this:</p> <div class="language- extra-class"><pre class="language-text"><code>SUBSYSTEM==&quot;ic2-dev&quot;, GROUP=&quot;i2c&quot;, MODE=&quot;0666&quot;
+</code></pre></div><p>Then add users to i2c group</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> adduser pi i2c
+$ <span class="token function">sudo</span> adduser www-data i2c
+</code></pre></div><h2 id="setup-postgresql-database"><a href="#setup-postgresql-database" class="header-anchor">#</a> Setup PostgreSQL Database</h2> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token builtin class-name">cd</span> ~/silvia/silvia
+$ python manage.py dumpdata --exclude<span class="token operator">=</span>contenttypes --exclude<span class="token operator">=</span>auth.Permission <span class="token operator">&gt;</span> datadump.json
+</code></pre></div><p>Edit databse configuration:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">sudo</span> <span class="token function">su</span> - postgres
+$ psql
+$ CREATE DATABASE silviadatabase<span class="token punctuation">;</span>
+$ CREATE <span class="token environment constant">USER</span> databaseadmin WITH PASSWORD <span class="token string">'databasepwd'</span><span class="token punctuation">;</span>
+$ ALTER ROLE databaseadmin SET client_encoding TO <span class="token string">'utf8'</span><span class="token punctuation">;</span>
+$ ALTER ROLE databaseadmin SET default_transaction_isolation TO <span class="token string">'read committed'</span><span class="token punctuation">;</span>
+$ ALTER ROLE databaseadmin SET timezone TO <span class="token string">'GB'</span><span class="token punctuation">;</span>
+$ GRANT ALL PRIVILEGES ON DATABASE silviadatabase TO databaseadmin<span class="token punctuation">;</span>
+$ <span class="token punctuation">\</span>q
+$ <span class="token builtin class-name">exit</span>
+</code></pre></div><p>Migrate and recreate superuser</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ python manage.py migrate
+$ python manage.py createsuperuser
+</code></pre></div><h2 id="supervisor-setup"><a href="#supervisor-setup" class="header-anchor">#</a> Supervisor Setup</h2> <p>Make logging directories</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">sudo</span> <span class="token function">mkdir</span> -p /var/log/celery
+<span class="token function">sudo</span> <span class="token function">mkdir</span> -p /var/run/celery
+<span class="token function">sudo</span> <span class="token function">mkdir</span> -p /var/log/silvia
+</code></pre></div><p>Permissions</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">sudo</span> <span class="token function">chgrp</span> -R server_group /var/run/celery
+<span class="token function">sudo</span> <span class="token function">chgrp</span> -R server_group /var/log/celery
+<span class="token function">sudo</span> <span class="token function">chgrp</span> -R server_group /var/log/silvia
+</code></pre></div><p>Configure</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">sudo</span> <span class="token function">cp</span> -f supervisor/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
+<span class="token function">sudo</span> <span class="token function">cp</span> -f supervisor/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
+<span class="token function">sudo</span> <span class="token function">cp</span> -f supervisor/silvia_interrupt.conf /etc/supervisor/conf.d/silvia_interrupt.conf
+<span class="token function">sudo</span> <span class="token function">chgrp</span> -R server_group /var/log/supervisor
+<span class="token function">sudo</span> <span class="token function">chmod</span> g+wr /var/log/supervisor/supervisord.log
+</code></pre></div><h2 id="arduino-flashing"><a href="#arduino-flashing" class="header-anchor">#</a> Arduino Flashing</h2> <p>Install arduino command line (cli) tool to flash it from the raspberry pi
+Reference <a href="https://siytek.com/arduino-cli-raspberry-pi/" target="_blank" rel="noopener noreferrer">https://siytek.com/arduino-cli-raspberry-pi/<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <p>Install</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token builtin class-name">cd</span> ~
+$ <span class="token function">curl</span> -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh <span class="token operator">|</span> <span class="token function">sh</span>
+</code></pre></div><p>Add to shell path</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">nano</span> ~/.bashrc
+</code></pre></div><p>Add this at the end:</p> <div class="language- extra-class"><pre class="language-text"><code>export PATH=$PATH:/home/pi/bin
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">sudo</span> <span class="token function">reboot</span>
+</code></pre></div><p>Reconnect, then create a configuration file, update board index and libraries:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ arduino-cli config init
+$ arduino-cli core update-index
+$ arduino-cli core <span class="token function">install</span> arduino:avr
+$ arduino-cli lib <span class="token function">install</span> PID <span class="token string">&quot;Adafruit SSD1306&quot;</span> <span class="token string">&quot;Adafruit GFX&quot;</span>
+$ <span class="token builtin class-name">cd</span> ~/Arduino/libraries
+$ <span class="token function">git</span> clone https://github.com/br3ttb/Arduino-PID-AutoTune-Library.git
+$ <span class="token function">mv</span> Arduino-PID-AutoTune-Library/PID_AutoTune_v0 <span class="token builtin class-name">.</span>
+$ <span class="token function">sudo</span> <span class="token function">rm</span> -r Arduino-PID-AutoTune-Library/
+</code></pre></div><p>Upload sketch to Arduino:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token builtin class-name">cd</span> ~/silvia
+$ <span class="token function">chmod</span> +x update_arduino.sh 
+$ ./update_arduino.sh
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/silvia/setup/control-setup.html" class="prev">
+        Temperature Control
+      </a></span> <span class="next"><a href="/silvia/setup/arduino-setup.html">
+        Arduino Setup
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/silvia/assets/js/app.58b51180.js" defer></script><script src="/silvia/assets/js/2.216158cf.js" defer></script><script src="/silvia/assets/js/22.6c7c5b00.js" defer></script>
+  </body>
+</html>
