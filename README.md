@@ -27,6 +27,7 @@ Front end web-app using Vue.js.
 Back end using Django, hosted with Apache.
 * Django - Web framework
 * Django Rest Framework - Restful API
+* Redis - Message queue
 
 ### Hardware
-Raspberry pi for serving the web app and user interaction, Arduino to run PID temperature controller and sensing.
+Raspberry pi for serving the web app and user interaction, Arduino to run PID temperature controller and sensing. Communication between the two over serial or I2C.
