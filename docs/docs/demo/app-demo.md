@@ -13,19 +13,19 @@ Below are some examples showing use of the web application. The site is hosted l
 ## Operation
 The update interval here is 5 seconds so there is some apparent delay in visualizing the response to certain actions due to the slow update frequency.  
 
-![Machine operation](/assets/demo/demo_operation_1.gif)
+![Machine operation](/silvia/assets/demo/demo_operation_1.gif)
 
 ## Scheduling
 The machine can easily be scheduled to turn on and off at repeatable daily or weekly times.  
 
-![Machine scheduling](/assets/demo/demo_schedule_1.gif)
+![Machine scheduling](/silvia/assets/demo/demo_schedule_1.gif)
 
 ## Sessions
 A session is defined as a period between the machine being turned on and off. Between these times the machine state is recorded and can be viewed individually or together. 
 
-![Machine sessions](/assets/demo/demo_session_1.gif)
+![Machine sessions](/silvia/assets/demo/demo_session_1.gif)
 
 ## Settings
 Many settings are for tuning the temperature controller but the temperature and brew setpoints can also be set.  
 
-![Machine settings](/assets/demo/demo_settings_1.gif)
+![Machine settings](/silvia/assets/demo/demo_settings_1.gif)
