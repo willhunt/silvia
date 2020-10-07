@@ -101,7 +101,7 @@ sudo chgrp -R server_group /var/log/silvia
 # Config
 sudo cp -f supervisor/silvia_celery.conf /etc/supervisor/conf.d/silvia_celery.conf
 sudo cp -f supervisor/silvia_celerybeat.conf /etc/supervisor/conf.d/silvia_celerybeat.conf
-sudo cp -f supervisor/silvia_interrupt.conf /etc/supervisor/conf.d/silvia_interrupt.conf
+# sudo cp -f supervisor/silvia_interrupt.conf /etc/supervisor/conf.d/silvia_interrupt.conf
 sudo chgrp -R server_group /var/log/supervisor
 sudo chmod g+wr /var/log/supervisor/supervisord.log
 # sudo supervisord -c /etc/supervisor/supervisord.conf

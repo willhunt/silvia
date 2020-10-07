@@ -37,6 +37,9 @@ class StatusModel(models.Model):
     on = models.BooleanField(default=False)  # Machine on or off
     brew = models.BooleanField(default=False)  # Machine currently brewing
     mode = models.IntegerField(default=0)  # Operational mode
+    T_boiler = models.FloatField(default=0)  # Boiler temperature
+    low_water = models.BooleanField(default=False)  # Low water flag
+    m = models.FloatField(default=None, null=True)  # Brew mass
 
     def __repr__(self):
         status = "On" if self.on else "Off"

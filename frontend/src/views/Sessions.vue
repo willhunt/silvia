@@ -1,7 +1,7 @@
 <template>
 
   <div class="sessions">
-    <v-card class="mx-auto mb-4" min-width=350 max-width=1200>
+    <v-card class="mx-2 mb-4" min-width=350 max-width=1200>
       <v-row align="center" class="ml-0 mr-4">
         <v-col cols="auto">
           <v-card-title>Sessions</v-card-title>

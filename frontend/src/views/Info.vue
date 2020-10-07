@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>
+    <v-card class="mx-4">
       <v-card-title>Brewing information</v-card-title>
       <v-card-subtitle>Some useful target brewing paramaters</v-card-subtitle>
       <v-data-table class="mx-4" :headers="headers" :items="params" disable-pagination hide-default-footer>

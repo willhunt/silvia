@@ -8,7 +8,7 @@ celery -A silvia worker -c 1 --queues=comms &
 celery -A silvia beat --scheduler django_celery_beat.schedulers:DatabaseScheduler &
 
 # Pi GPIO
-python manage.py raspi_interrupt &
+# python manage.py raspi_interrupt &
 # Pi display
 # python manage.py raspi_display &
 

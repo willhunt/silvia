@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mb-4" min-width=750 max-width=1600>
+    <v-card class="mb-4 mx-2" :width="chartWidth" min-width="350" max-width="1000" style="position: relative;">
       <response-chart class="px-6 pt-6 pb-1" :chartData="graphData" :chartOptions="graphOptions"></response-chart>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -32,6 +32,7 @@ export default {
   },
   data: function () {
     return {
+      chartWidth: 0.8 * window.innerWidth,
       graphOptions: {
         scales: {
           xAxes: [{
@@ -193,6 +194,12 @@ export default {
       e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
       a.dispatchEvent(e)
     }
+  },
+
+  created () {
+    window.addEventListener ('resize', () => {
+      this.chartWidth = 0.8 * window.innerWidth
+    })
   }
 }
 </script>

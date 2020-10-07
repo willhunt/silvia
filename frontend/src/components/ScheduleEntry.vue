@@ -1,6 +1,6 @@
 <template>
   <div class="scheduleentry">
-    <v-card class="mx-auto mb-4" min-width="500">
+    <v-card class="mx-2 mb-4" min-width="300">
       <v-row align="center">
         <!-- Card name edit mode -->
         <v-col v-if="editName" class="mx-4" cols="auto">

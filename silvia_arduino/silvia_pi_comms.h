@@ -2,7 +2,7 @@
 #define SILVIA_PI_COMMS_H
 
 #include <Arduino.h>
-#include <Wire.h>
+// #include <Wire.h>
 #include "silvia_output.h"
 #include "silvia_temperature_controller.h"
 #include "silvia_temperature_sensor.h"
@@ -10,10 +10,7 @@
 #include "silvia_timer.h"
 #include "silvia_modes.h"
 
-#ifndef DEBUG
-#define DEBUG false
-#endif  // DEBUG
-
+// Data to send when data is requested
 struct responseFormat {
   bool power;
   bool brew;
@@ -30,7 +27,7 @@ union responseData {
   responseFormat data;
   byte buffer[sizeof(responseFormat)];
 };
-
+// Data to receive hen request to change made, eg machine on/off, brew
 struct receivedFormat {
   bool power;
   bool brew;
@@ -45,13 +42,22 @@ union receivedData {
   receivedFormat data;
   byte buffer[sizeof(receivedFormat)];
 };
-
+// Data to receive if override requested
 struct overrideFormat {
   double duty;
 };
 union overrideData {
   overrideFormat data;
   byte buffer[sizeof(overrideFormat)];
+};
+// Data to send when request to change made, eg machine on/off, brew
+struct feedbackFormat {
+  bool ok;
+  char msg[20];
+};
+union feedbackData {
+  feedbackFormat data;
+  byte buffer[sizeof(feedbackFormat)];
 };
 
 // Objects defined in silvia_main.ino
@@ -65,18 +71,13 @@ extern void timerReset();
 
 // Mode - defined in silvia_main.ino
 extern unsigned char mode;
-void change_mode(unsigned char new_mode);
 
-void pi_comms_setup(int i2c_addr, TwoWire* wire);
 void pi_comms_setup();
 void update_data_buffer();
 void response_actions();
-void heater_on_request(double duty);
+
 // Serial
 void check_serial_calls();
 void send_serial_response();
-// I2C
-void receiveEvent(int numBytes);
-void requestEvent();
 
 #endif // SILVIA_PI_COMMS_H

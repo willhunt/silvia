@@ -89,21 +89,21 @@ def delete_schedule(sender, instance, **kwargs):
     except (AssertionError, AttributeError) as e:
         print('No Crontab off')
 
-@receiver(pre_save, sender=ResponseModel)
-def pre_save_response(sender, instance, raw, using, update_fields, **kwargs):
-    """
-    When creating response model check brewing status and add
-    """
-    status = StatusModel.objects.get(id=1)
-    # Set brewing in response
-    instance.brewing = status.brew
+# @receiver(pre_save, sender=ResponseModel)
+# def pre_save_response(sender, instance, raw, using, update_fields, **kwargs):
+#     """
+#     When creating response model check brewing status and add
+#     """
+#     status = StatusModel.objects.get(id=1)
+#     # Set brewing in response - Now doing this in async_save_response()
+#     instance.brewing = status.brew
 
-    settings = SettingsModel.objects.get(id=1)
     # Check if brewing and mass target is reached
-    if status.brew:
-        if instance.m is not None and instance.m >= settings.m:
-            status.brew = False
-            status.save()
+    # if status.brew:
+    #    settings = SettingsModel.objects.get(id=1)
+    #     if instance.m is not None and instance.m >= settings.m:
+    #         status.brew = False
+    #         status.save()
 
 @receiver(post_save, sender=SettingsModel)
 def save_settings(sender, instance, raw, using, update_fields, **kwargs):
@@ -130,26 +130,6 @@ def save_settings(sender, instance, raw, using, update_fields, **kwargs):
             enabled=status.on,
             interval=periodic_interval
         )
-    # This is for a pereodic task to update the display. Not used currently
-    # See if periodic display update task exists
-    # try:
-    #     periodic_display = PeriodicTask.objects.get(name="Update Display")
-    #     #  Update period if different
-    #     if periodic_display.interval.every != instance.t_update:
-    #         periodic_display.interval.every = instance.t_update
-    #         periodic_display.interval.save()
-    # except PeriodicTask.DoesNotExist:
-    #     # Create periodic task if it doesn't exist
-    #     display_interval = IntervalSchedule.objects.create(
-    #         every=instance.t_update,
-    #         period='seconds'
-    #     )
-    #     periodic_display = PeriodicTask.objects.create(
-    #         name="Update Display",
-    #         task="silviacontrol.tasks.async_display_update",
-    #         enabled=status.on,
-    #         interval=display_interval
-    #     )
     # Send to Arduino (update settings, not status, current status values given)
     async_comms_update.delay(status.on, status.brew, status.mode)
 
@@ -163,7 +143,7 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     try:
         prior_status = StatusModel.objects.get(pk=1)
     except StatusModel.DoesNotExist as e:
-        print("No pre-save signal processing as no status model found")
+        print("No pre-save processing as no status model found, please create one")
         return False
 
     # Fill in values not sent
@@ -182,12 +162,6 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
     except:
         raise ValueError("Save sample time to create 'Get Response' periodic task")
 
-    # Implement some rules on on/brew combinations
-    if instance.on != prior_status.on:  # Ensure brew off if changing on/off
-        instance.brew = False
-    elif instance.brew != prior_status.brew:  # Ensure machine on if changing brew
-        instance.on = True
-
     # Start/stop sessions
     if instance.on and not prior_status.on:  # Turning machine on
         # Create a new session
@@ -200,7 +174,8 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
                 duty=0,
                 duty_p=0,
                 duty_i=0,
-                duty_d=0
+                duty_d=0,
+                m=0
             )
             response.save()
     elif prior_status.on and not instance.on:  # If machine is being turned off
@@ -211,10 +186,3 @@ def save_status(sender, instance, raw, using, update_fields, **kwargs):
             session.save()
         except IndexError as e:
             print("No active session")
-
-    # Turn actual machine/brew on/off or mode change
-    async_comms_update.delay(instance.on, instance.brew, instance.mode)
-
-    # Turn scale on/off
-    if instance.brew != prior_status.brew:
-        async_scale_update.delay(instance.brew)

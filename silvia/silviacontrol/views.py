@@ -11,7 +11,7 @@ from .serializers import (SettingsSerializer, StatusSerializer, SessionSerialize
                             ResponseSerializer, ScheduleSerializer)
 from .utils import debug_log
 import json
-from .tasks import async_comms_override
+from .tasks import async_comms_override, async_comms_update
 
 # Html Views -----------
 def index(request):
@@ -43,6 +43,24 @@ class StatusViewSet(viewsets.ModelViewSet):
         obj, created = StatusModel.objects.get_or_create(pk=1)
         return obj
     
+    def perform_update(self, serializer):
+        """
+        Don't update model directly, first try to update Arduino
+        """
+        try:
+            on = serializer.initial_data['on']
+        except KeyError:
+            on = None
+        try:
+            brew = serializer.initial_data['brew']
+        except KeyError:
+            brew = None
+        try:
+            mode = serializer.initial_data['mode']
+        except KeyError:
+            mode = None
+
+        async_comms_update.delay(on, brew, mode)
 
     @action(methods=['get', 'put'], detail=True)  # Detail/instance or collection/list
     def update_session(self, request, pk=None):

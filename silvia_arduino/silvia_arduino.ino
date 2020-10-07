@@ -14,6 +14,8 @@ Notes:
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
+#define POWER_SWITCH_PIN 3
+#define BREW_SWITCH_PIN 4
 #define I2C_ADDR 0x8
 #define SAFETY_TEMPERATURE 120
 
@@ -25,6 +27,7 @@ Notes:
 #include "silvia_water_sensor.h"
 #include "silvia_display.h"
 #include "silvia_modes.h"
+#include "silvia_function.h"
 
 // Mode
 unsigned char mode = MODE_OFF;
@@ -53,7 +56,14 @@ SilviaDisplay display = SilviaDisplay(&Wire);
 void setup(void) {
     // Comms to pi
     pi_comms_setup();  // Serial only
-    // pi_comms_setup(I2C_ADDR, &Wire);  // Serial + I2C
+    
+    // Switches
+    pinMode(POWER_SWITCH_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_on, RISING);
+    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_off, FALLING);
+    pinMode(BREW_SWITCH_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_on, RISING);
+    attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_off, FALLING);
 
     // Display - Show logo
     if(display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {

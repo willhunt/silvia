@@ -4,12 +4,15 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map'
   },
+
   devServer: {
     proxy: 'http://127.0.0.1:8000/'
   },
+
   transpileDependencies: [
     'vuetify'
   ],
+
   pwa: {
     name: 'Silvia Control',
     manifestOptions: {
@@ -89,5 +92,7 @@ module.exports = {
       ]
     }
   },
-  outputDir: path.resolve(__dirname, "../silvia/silviacontrol/static/silviacontrol/vue")
+
+  outputDir: path.resolve(__dirname, "../silvia/silviacontrol/static/silviacontrol/vue"),
+  lintOnSave: false
 }

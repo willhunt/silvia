@@ -70,7 +70,8 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
-          eventBus.$emit('updateStatus')
+          setTimeout(() => { eventBus.$emit('updateStatus') }, 1000)
+          // eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })
@@ -85,7 +86,8 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
-          eventBus.$emit('updateStatus')
+          setTimeout(() => { eventBus.$emit('updateStatus') }, 1000)
+          // eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })
@@ -102,7 +104,8 @@ export default {
       axios.put('/api/v1/status/1/', axiosData)
         .then(response => {
           console.log(response)
-          eventBus.$emit('updateStatus')
+          setTimeout(() => { eventBus.$emit('updateStatus') }, 1000)
+          // eventBus.$emit('updateStatus')
         })
         .catch(error => console.log(error))
     })
@@ -110,6 +113,7 @@ export default {
     eventBus.$on('updateStatus', () => {
       axios.get('/api/v1/status/1/')
         .then(response => {
+          console.log('Updating status')
           this.machineOn = Boolean(response.data.on)
           this.machineBrewing = Boolean(response.data.brew)
           this.machineMode = Number(response.data.mode)

@@ -1,7 +1,7 @@
 <template>
 
   <div class="settings">
-    <v-card class="mx-auto" min-width=350 max-width=500>
+    <v-card class="mx-2" min-width=250 max-width=500>
       <v-card-title>Settings</v-card-title>
       <v-form>
       <v-card-subtitle>Temperature Control</v-card-subtitle>
