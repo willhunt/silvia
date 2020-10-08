@@ -55,11 +55,11 @@ SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
-    pi_comms_setup();  // Serial only
+    pi_comms_setup();
     
     // Switches
     pinMode(POWER_SWITCH_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_on, FALLING);
+    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_switch_on, FALLING);
     attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_off, RISING);
     pinMode(BREW_SWITCH_PIN, INPUT_PULLUP);
     // attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_on, RISING);

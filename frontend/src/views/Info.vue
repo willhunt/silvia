@@ -29,8 +29,9 @@ export default {
       ],
       params: [
         { id: 0, parameter: 'Water Temperature', value: 88, units: 'C' },
-        { id: 1, parameter: 'Brew Volume', value: 50, units: 'ml' },
-        { id: 2, parameter: 'Extraction Time', value: 25, units: 's' }
+        { id: 1, parameter: 'COffee Mass', value: 18, units: 'g' },
+        { id: 1, parameter: 'Brew Mass', value: 36, units: 'g' },
+        { id: 2, parameter: 'Extraction Time', value: 30, units: 's' }
       ]
     }
   }

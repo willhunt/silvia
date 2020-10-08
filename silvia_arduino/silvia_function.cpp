@@ -45,7 +45,13 @@ void power_on() {
     timerReset();
 }
 
+void power_switch_on() {
+    change_mode(MODE_PID);
+    power_on();
+}
+
 void power_off() {
+    change_mode(MODE_OFF);
     power_output.off();
     pid.off();
 }

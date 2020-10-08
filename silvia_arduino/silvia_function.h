@@ -9,6 +9,7 @@
 void heater_on_request(double duty);
 void change_mode(unsigned char new_mode);
 void power_on();
+void power_switch_on();
 void power_off();
 void brew_on();
 void brew_off();
