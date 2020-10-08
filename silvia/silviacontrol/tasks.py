@@ -7,33 +7,6 @@ from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
 
-# Machine
-if django_settings.SIMULATE_MACHINE == False:
-    # Arduino Comms
-    import os
-    import serial
-    for i in range(0, 3):
-        serial_path = "/dev/ttyACM{}".format(i)
-        if os.path.exists(serial_path) == True:
-            serial_arduino = serial.Serial(serial_path, 57600, timeout=1)
-            break
-    if serial_arduino:
-        serial_arduino.flush()
-        # Update Arduino settings
-        async_comms_update.delay(on=False, brew=False, mode=0)
-    else:
-        raise serial.serialutil.SerialException("No serial connection to Arduino")    
-# For testing without raspberry pi/espresso machine
-else:
-    from .simulation import simulated_temperature_sensor, pid_update
-
-# Scale
-if django_settings.SIMULATE_SCALE == False:
-    import requests
-else:
-    from .simulation import simulated_mass_sensor
-
-
 @shared_task(base=QueueOnce, once={'graceful': True}, queue='comms')
 def async_comms_response():
     """
@@ -241,3 +214,31 @@ def async_machine_off():
     status = StatusModel.objects.get(pk=1)
     status.on = False
     status.save()
+
+# ------------------------------------------------------------
+# Machine
+if django_settings.SIMULATE_MACHINE == False:
+    # Arduino Comms
+    import os
+    import serial
+    for i in range(0, 3):
+        serial_path = "/dev/ttyACM{}".format(i)
+        if os.path.exists(serial_path) == True:
+            serial_arduino = serial.Serial(serial_path, 57600, timeout=1)
+            break
+    if serial_arduino:
+        serial_arduino.flush()
+        # Update Arduino settings
+        async_comms_update.delay(on=False, brew=False, mode=0)
+    else:
+        raise serial.serialutil.SerialException("No serial connection to Arduino")    
+# For testing without raspberry pi/espresso machine
+else:
+    from .simulation import simulated_temperature_sensor, pid_update
+
+# Scale
+if django_settings.SIMULATE_SCALE == False:
+    import requests
+else:
+    from .simulation import simulated_mass_sensor
+    
