@@ -19,6 +19,8 @@ if django_settings.SIMULATE_MACHINE == False:
             break
     if serial_arduino:
         serial_arduino.flush()
+        # Update Arduino settings
+        async_comms_update.delay(on=False, brew=False, mode=0)
     else:
         raise serial.serialutil.SerialException("No serial connection to Arduino")    
 # For testing without raspberry pi/espresso machine
