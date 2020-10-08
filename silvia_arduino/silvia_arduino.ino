@@ -59,11 +59,11 @@ void setup(void) {
     
     // Switches
     pinMode(POWER_SWITCH_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_on, RISING);
-    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_off, FALLING);
+    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_on, FALLING);
+    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_off, RISING);
     pinMode(BREW_SWITCH_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_on, RISING);
-    attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_off, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_on, RISING);
+    // attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_off, FALLING);
 
     // Display - Show logo
     if(display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
@@ -80,6 +80,12 @@ void setup(void) {
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+    // check brew switch, not on interrupt pin
+    if (digitalRead(BREW_SWITCH_PIN) == LOW && brew_output.status == False) {
+        brew_on();
+    } else if (digitalRead(BREW_SWITCH_PIN) == HIGH && brew_output.status == True) {
+        brew_off();
+    }
     brew_duration = timerUpdate() / 1000;
     display.update();
 
