@@ -166,7 +166,7 @@ def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None)
                 debug_log("Microcontroller not updated")
             
         except Exception as e:
-            debug_log("Cannot write to microcontroller (comms update)")
+            debug_log("Cannot write to microcontroller (comms update): " + str(e))
     else:  # In simulation mode just save to database
         async_update_status.delay(on, brew, mode)
 
