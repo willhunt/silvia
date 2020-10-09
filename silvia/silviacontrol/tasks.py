@@ -6,6 +6,7 @@ from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
+from celery.contrib import rdb
 
 @shared_task(base=QueueOnce, once={'graceful': True}, queue='comms')
 def async_comms_response():
@@ -145,6 +146,7 @@ def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None)
             settings = SettingsModel.objects.get(pk=1)
         # Send serial data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
+        rdb.set_trace()
         data_block = struct.pack('<b2?B4fi', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode)
         debug_log( "Data to send: {}".format(data_block) )
         try:
