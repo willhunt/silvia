@@ -8,7 +8,7 @@ Notes:
 */
 
 // Pre-compile definitions
-#define DEBUG true
+#define DEBUG false
 #define TEMP_SENSOR_PIN A0
 #define WATER_SENSOR_PIN 7
 #define HEAT_RELAY_PIN 13
@@ -50,15 +50,16 @@ TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_s
 RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
 RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 
+// Switches
+SwitchInput power_switch = SwitchInput(POWER_SWITCH_PIN, &power_on_switch, &power_off_switch);
+SwitchInput brew_switch = SwitchInput(BREW_SWITCH_PIN, &brew_on_switch, &brew_off_switch);
+
 // Display
 SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
     pi_comms_setup();;
-    // Switches
-    pinMode(POWER_SWITCH_PIN, INPUT_PULLUP);
-    pinMode(BREW_SWITCH_PIN, INPUT_PULLUP);
     // Display - Show logo
     if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         if (DEBUG) {
@@ -74,31 +75,19 @@ void setup(void) {
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
-    // Check power switch
-    if (digitalRead(POWER_SWITCH_PIN) == LOW && power_output.getStatus() == false) {
-        // Serial.println(F("Powering on machine from switch"));
-        power_on_switch();
-    } else if (digitalRead(POWER_SWITCH_PIN) == HIGH && power_output.getStatus() == true) {
-        // Serial.println(F("Powering off machine from switch"));
-        power_off_switch();
-    }
-    // Check brew switch
-    if (digitalRead(BREW_SWITCH_PIN) == LOW && brew_output.getStatus() == false) {
-        // Serial.println(F("Brew on from switch"));
-        brew_on_switch();
-    } else if (digitalRead(BREW_SWITCH_PIN) == HIGH && brew_output.getStatus() == true) {
-        // Serial.println(F("Brew off from switch"));
-        brew_off_switch();
-    }
+    // Check switches
+    power_switch.update();
+    brew_switch.update();
+    // Timer
     brew_duration = timerUpdate() / 1000;
+    // Display
     display.update();
-
     // Ensure temperature never goes above safety level
     if (T_boiler > SAFETY_TEMPERATURE) {
         pid_output = 0.0;
-        // if (DEBUG) {
-        //     Serial.println("Over temperature limit");
-        // }
+        if (DEBUG) {
+            Serial.println("Over temperature limit");
+        }
         pid.on(true);  // Reset to avoid windup
     } else if (power_output.getStatus() && mode == 0) { // PID mode
         pid.Compute();  // Method includes sampling time check

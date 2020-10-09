@@ -36,3 +36,29 @@ void PowerOutput::off() {
   RelayOutput::off();
   pid_->off();
 };
+
+SwitchInput::SwitchInput(int pin, void (*on_callback)(), void (*off_callback)()) {
+  pin_ = pin;
+  pinMode(pin, INPUT_PULLUP);
+  on_callback_ = on_callback;
+  off_callback_ = off_callback;
+  status_ = getStatus();
+}
+
+bool SwitchInput::getStatus() {
+  bool status = (digitalRead(pin_) == LOW) ? true : false;
+  return status;
+}
+
+void SwitchInput::update() {
+  bool this_status = getStatus();
+  if (this_status != status_) {  // If switch is changed
+    if (this_status) {  // On
+      on_callback_();
+    } else {
+      off_callback_();
+    }
+    status_ = this_status;
+  }
+}
+

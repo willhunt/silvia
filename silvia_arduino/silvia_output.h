@@ -27,4 +27,17 @@ class PowerOutput : public RelayOutput {
     void off();
 };
 
+class SwitchInput {
+  private:
+    int pin_;  // Pin number
+    bool status_;  // Last recorded status
+    void (*on_callback_)();
+    void (*off_callback_)();
+
+  public:
+    SwitchInput(int pin, void (*on_callback)(), void (*off_callback)());
+    void update();
+    bool getStatus();
+};
+
 #endif // SILVIA_OUTPUT_H
