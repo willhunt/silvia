@@ -72,7 +72,6 @@ void check_serial_calls() {
       response_actions();
       feedbackData feedback_data;
       feedback_data.data.ok = true;
-      strncpy(feedback_data.data.msg, "Update received", 16);
       Serial.write(feedback_data.buffer, sizeof_feedback_data);
     } else if (first_byte == 2) {
       Serial.readBytes(override_data.buffer, sizeof_override_data);
@@ -80,7 +79,6 @@ void check_serial_calls() {
       heater_on_request(override_data.data.duty);
       feedbackData feedback_data;
       feedback_data.data.ok = true;
-      sprintf(feedback_data.data.msg, "Duty received: %d", override_data.data.duty);
       Serial.write(feedback_data.buffer, sizeof_feedback_data);
     }
   }

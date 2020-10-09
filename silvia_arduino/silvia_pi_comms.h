@@ -53,7 +53,6 @@ union overrideData {
 // Data to send when request to change made, eg machine on/off, brew
 struct feedbackFormat {
   bool ok;
-  char msg[20];
 };
 union feedbackData {
   feedbackFormat data;

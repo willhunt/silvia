@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 TASK_NAME = "Check serial"
-INTERVAL = 0.5 #s
+INTERVAL = 500000 #microseconds
 
 class Command(BaseCommand):
     help = 'Creates periodic task to check for arduino serial comms'
@@ -25,5 +25,5 @@ class Command(BaseCommand):
                 name=TASK_NAME,
                 task="silviacontrol.tasks.async_comms_process",
                 enabled=True,
-                INTERVAL=periodic_interval
+                interval=periodic_interval
             )

@@ -8,14 +8,14 @@ Notes:
 */
 
 // Pre-compile definitions
-#define DEBUG false
+#define DEBUG true
 #define TEMP_SENSOR_PIN A0
 #define WATER_SENSOR_PIN 7
 #define HEAT_RELAY_PIN 13
 #define POWER_RELAY_PIN 9
 #define BREW_RELAY_PIN 12
-#define POWER_SWITCH_PIN 3
-#define BREW_SWITCH_PIN 4
+#define POWER_SWITCH_PIN 4
+#define BREW_SWITCH_PIN 3
 #define I2C_ADDR 0x8
 #define SAFETY_TEMPERATURE 120
 
@@ -55,18 +55,12 @@ SilviaDisplay display = SilviaDisplay(&Wire);
 
 void setup(void) {
     // Comms to pi
-    pi_comms_setup();
-    
+    pi_comms_setup();;
     // Switches
     pinMode(POWER_SWITCH_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_switch_on, FALLING);
-    attachInterrupt(digitalPinToInterrupt(POWER_SWITCH_PIN), power_off, RISING);
     pinMode(BREW_SWITCH_PIN, INPUT_PULLUP);
-    // attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_on, RISING);
-    // attachInterrupt(digitalPinToInterrupt(BREW_SWITCH_PIN), brew_off, FALLING);
-
     // Display - Show logo
-    if(display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         if (DEBUG) {
             Serial.println(F("SSD1306 allocation failed"));
         }
@@ -80,11 +74,21 @@ void setup(void) {
 
 void loop(void)  {
     T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
-    // check brew switch, not on interrupt pin
-    if (digitalRead(BREW_SWITCH_PIN) == LOW && brew_output.status == false) {
-        brew_on();
-    } else if (digitalRead(BREW_SWITCH_PIN) == HIGH && brew_output.status == true) {
-        brew_off();
+    // Check power switch
+    if (digitalRead(POWER_SWITCH_PIN) == LOW && power_output.getStatus() == false) {
+        // Serial.println(F("Powering on machine from switch"));
+        power_on_switch();
+    } else if (digitalRead(POWER_SWITCH_PIN) == HIGH && power_output.getStatus() == true) {
+        // Serial.println(F("Powering off machine from switch"));
+        power_off_switch();
+    }
+    // Check brew switch
+    if (digitalRead(BREW_SWITCH_PIN) == LOW && brew_output.getStatus() == false) {
+        // Serial.println(F("Brew on from switch"));
+        brew_on_switch();
+    } else if (digitalRead(BREW_SWITCH_PIN) == HIGH && brew_output.getStatus() == true) {
+        // Serial.println(F("Brew off from switch"));
+        brew_off_switch();
     }
     brew_duration = timerUpdate() / 1000;
     display.update();
@@ -92,9 +96,9 @@ void loop(void)  {
     // Ensure temperature never goes above safety level
     if (T_boiler > SAFETY_TEMPERATURE) {
         pid_output = 0.0;
-        if (DEBUG) {
-            Serial.println("Over temperature limit");
-        }
+        // if (DEBUG) {
+        //     Serial.println("Over temperature limit");
+        // }
         pid.on(true);  // Reset to avoid windup
     } else if (power_output.getStatus() && mode == 0) { // PID mode
         pid.Compute();  // Method includes sampling time check

@@ -48,8 +48,6 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
     sprintf(buffer, "%02d:%02d", mins, secs);
     setCursor(21, 40);
     print(buffer);
-
-    
   }
   
   display();

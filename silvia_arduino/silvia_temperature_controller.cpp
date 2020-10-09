@@ -14,7 +14,7 @@ TemperatureController::TemperatureController(
 {
     pinMode(relay_pin_, OUTPUT);
     SetOutputLimits(0, tpc_window_size_);
-    *setpoint_ = 100;  // Avoid display issues where NAN  
+    *setpoint_ = 98;  // Avoid display issues where NAN  
     SetSampleTime(500);  // Increase sample time to 500ms rather than 200 (default)
 }
 

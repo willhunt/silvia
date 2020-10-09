@@ -36,7 +36,7 @@ $ celery -A silvia beat -l info --scheduler django_celery_beat.schedulers:Databa
 Inspect celery using flower
 ```bash
 $ cd ~/silvia/silvia
-$ flower -A silvia
+$ flower -A silvia --address=192.168.0.6 --port=5555
 ```
 
 ## Supervisor
@@ -103,11 +103,6 @@ $ sudo touch /boot/forcefsck
 $ sudo shutdown -r now
 ```
 
-## Scale
-
-### Display Images
-XBM images can be converted at: [www.online-utility.org](https://www.online-utility.org/image/convert/to/XBM)
-
 ## Changing Database to PostgreSQL
 ```bash
 $ sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common python-dev -y
@@ -154,3 +149,7 @@ $ git rm -r --cached .
 $ git add .
 $ git commit -m "update files based upon .gitignore changes"
 ```
+
+### Scale
+### Display Images
+XBM images can be converted at: [www.online-utility.org](https://www.online-utility.org/image/convert/to/XBM)

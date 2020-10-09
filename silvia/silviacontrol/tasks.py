@@ -139,9 +139,9 @@ def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None)
     For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
     """
     if django_settings.SIMULATE_MACHINE == False:
-        if not status:
+        if status is None:
             status = StatusModel.objects.get(pk=1)
-        if not settings:
+        if settings is None:
             settings = SettingsModel.objects.get(pk=1)
         # Send serial data to arduino
         # Structure packed here and unpacked using 'union' on Arduino
@@ -169,12 +169,12 @@ def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None)
         async_update_status.delay(on, brew, mode)
 
 @shared_task(queue='comms')
-def async_comms_process(data_block):
+def async_comms_process():
     """
     Process data from microcontroller
     """
     if django_settings.SIMULATE_SCALE == False:
-        if (serial_arduino.in_waiting() > 0): #if incoming bytes are waiting to be read from the serial input buffer
+        if (serial_arduino.in_waiting > 0): #if incoming bytes are waiting to be read from the serial input buffer
             data_block = serial_arduino.read(size=24)
             async_comms_process.delay(data_block)
             debug_log( "Data received: {}".format( list(data_block) ) )

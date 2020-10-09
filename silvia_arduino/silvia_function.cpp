@@ -1,5 +1,6 @@
 #include "silvia_function.h"
 #include "silvia_modes.h"
+#include "silvia_pi_comms.h"
 
 bool pid_overridden_by_brew = false;
 
@@ -44,10 +45,10 @@ void power_on() {
     power_output.on();
     timerReset();
 }
-
-void power_switch_on() {
+void power_on_switch() {
     change_mode(MODE_PID);
     power_on();
+    send_serial_response();
 }
 
 void power_off() {
@@ -55,9 +56,14 @@ void power_off() {
     power_output.off();
     pid.off();
 }
+void power_off_switch() {
+    power_off();;
+    send_serial_response();
+}
 
 void brew_on() {
-    if ( (mode == MODE_MANUAL) || water_sensor.getLevel() ) {  // In manual mode or water in tank
+    // Not in off mode as well as in manual mode or water in tank
+    if ( mode != MODE_OFF && ( (mode == MODE_MANUAL) || water_sensor.getLevel() ) ) {  
         brew_output.on();
         timerReset();
         timerStart();
@@ -69,6 +75,10 @@ void brew_on() {
         }
     }
 }
+void brew_on_switch() {
+    brew_on();
+    send_serial_response();
+}
 
 void brew_off() {
     brew_output.off();
@@ -76,4 +86,8 @@ void brew_off() {
         change_mode(MODE_PID);
         pid_overridden_by_brew = false;
     }
+}
+void brew_off_switch() {
+    brew_off();
+    send_serial_response();
 }
