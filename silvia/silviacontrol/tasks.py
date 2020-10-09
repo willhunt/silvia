@@ -184,9 +184,9 @@ def async_comms_process():
             data_block = serial_arduino.read(size=24)
             debug_log( "Data received: {}".format( list(data_block) ) )
             data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
-            [power, brew, T, duty, low_water, mode, Kp, Ki, Kd] = data_list   
+            [power, brew, T, duty, low_water, mode, Kp, Ki, Kd] = data_list
             # Update status
-            async_update_status.delay(power, brew, mode)
+            async_update_status.delay(power, brew)
             serial_arduino.reset_input_buffer()
 
 @shared_task(queue='comms')
