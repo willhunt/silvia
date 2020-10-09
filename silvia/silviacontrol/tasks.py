@@ -182,12 +182,11 @@ def async_comms_process():
     if django_settings.SIMULATE_SCALE == False:
         if (serial_arduino.in_waiting > 0): #if incoming bytes are waiting to be read from the serial input buffer
             data_block = serial_arduino.read(size=24)
-            async_comms_process.delay(data_block)
             debug_log( "Data received: {}".format( list(data_block) ) )
             data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
             [power, brew, T, duty, low_water, mode, Kp, Ki, Kd] = data_list   
             # Update status
-            async_update_status.delay(on, brew, mode)
+            async_update_status.delay(power, brew, mode)
             serial_arduino.reset_input_buffer()
 
 @shared_task(queue='comms')
