@@ -6,7 +6,7 @@ from .utils import debug_log
 from django.conf import settings as django_settings
 from django.utils import timezone
 import struct
-from celery.contrib import rdb
+# from celery.contrib import rdb
 
 @shared_task(base=QueueOnce, once={'graceful': True}, queue='comms')
 def async_comms_response():
@@ -135,7 +135,7 @@ def async_scale_update(brew, m):
                 debug_log("No connection to scale")
 
 @shared_task(queue='comms')
-def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None):
+def async_comms_update(on=None, brew=None, mode=None, status=None, settings=None):
     """
     For some reason the Arduino does not detect Serial.available() > 0 after reading first byte.
     """
@@ -144,20 +144,24 @@ def async_comms_update(on=False, brew=False, mode=0, status=None, settings=None)
             status = StatusModel.objects.get(pk=1)
         if settings is None:
             settings = SettingsModel.objects.get(pk=1)
+        if on is None:
+            on = status.on
+        if brew is None:
+            brew = status.brew
+        if mode is None:
+            mode = status.mode
         # Send serial data to arduino
-        # Structure packed here and unpacked using 'union' on Arduino
-        # rdb.set_trace()
         data_block = struct.pack('<b2?B4fi', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode)
         debug_log( "Data to send: {}".format(data_block) )
         try:
             serial_arduino.reset_input_buffer()
             serial_arduino.reset_output_buffer()
             serial_arduino.write(data_block)
-            data_block = serial_arduino.read(size=24)
-            [ok, msg] = struct.unpack('<?20s', bytes(data_block))
-            debug_log( "Message received: {}, {}".format(ok, msg) )
+            data_block = serial_arduino.read(size=1)
+            [success] = struct.unpack('<?', bytes(data_block))
+            debug_log( "Message received properly? {}".format(success) )
             # If OK, save to database
-            if ok:
+            if success:
                 async_update_status.delay(on, brew, mode)
                 # Update scale
                 if brew != status.brew:
