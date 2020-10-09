@@ -47,20 +47,13 @@ class StatusViewSet(viewsets.ModelViewSet):
         """
         Don't update model directly, first try to update Arduino
         """
-        try:
-            on = serializer.initial_data['on']
-        except KeyError:
-            on = None
-        try:
-            brew = serializer.initial_data['brew']
-        except KeyError:
-            brew = None
-        try:
-            mode = serializer.initial_data['mode']
-        except KeyError:
-            mode = None
-
-        async_comms_update.delay(on, brew, mode)
+        update_args = {}
+        for param in ['on', 'brew', 'mode']:
+            try:
+                update_args[param] = serializer.initial_data[param]
+            except KeyError:
+                pass  # Do nothing
+        async_comms_update.delay(**update_args)
 
     @action(methods=['get', 'put'], detail=True)  # Detail/instance or collection/list
     def update_session(self, request, pk=None):
