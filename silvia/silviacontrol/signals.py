@@ -24,9 +24,9 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
         schedule_on = PeriodicTask.objects.create(
             crontab=crontab_on,
             name="on:{0} {1}".format(instance.id, instance.name),
-            # name=('%s_on' % (instance.name)),  
-            task='silviacontrol.tasks.async_machine_on',
-            # args='[true, false, 0]',  # json format required
+            # task='silviacontrol.tasks.async_machine_on',
+            task='silviacontrol.tasks.async_comms_update',
+            args='[true]',  # json format required
             enabled=instance.active
         )
         instance.schedule_on = schedule_on
@@ -51,9 +51,9 @@ def save_schedule(sender, instance, raw, using, update_fields, **kwargs):
         schedule_off = PeriodicTask.objects.create(
             crontab=crontab_off,
             name="off:{0} {1}".format(instance.id, instance.name),
-            # name=('%s_off' % (instance.name)),  
-            task='silviacontrol.tasks.async_machine_off',
-            # args='[false, false, 0]',  # json format required
+            # task='silviacontrol.tasks.async_machine_off',
+            task='silviacontrol.tasks.async_comms_update',
+            args='[false]',  # json format required
             enabled=instance.active
         )
         instance.schedule_off = schedule_off
