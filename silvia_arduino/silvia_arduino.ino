@@ -25,6 +25,7 @@ Notes:
 #include "silvia_pi_comms.h"
 #include "silvia_output.h"
 #include "silvia_water_sensor.h"
+#include "silvia_clean.h"
 #include "silvia_display.h"
 #include "silvia_modes.h"
 #include "silvia_function.h"
@@ -53,6 +54,9 @@ RelayOutput brew_output = RelayOutput(BREW_RELAY_PIN);
 // Switches
 SwitchInput power_switch = SwitchInput(POWER_SWITCH_PIN, &power_on_switch, &power_off_switch);
 SwitchInput brew_switch = SwitchInput(BREW_SWITCH_PIN, &brew_on_switch, &brew_off_switch);
+
+// cleaner
+CleaningProcess cleaner = CleaningProcess();
 
 // Display
 SilviaDisplay display = SilviaDisplay(&Wire);
@@ -91,13 +95,21 @@ void loop(void)  {
         pid.on(true);  // Reset to avoid windup
     } else if (power_output.getStatus() && mode == 0) { // PID mode
         pid.Compute();  // Method includes sampling time check
-    } else if (mode == 2) { // autotune
+    } else if (mode == MODE_AUTOTUNE) { // autotune - not used currently
         bool still_tuning = pid.tune();
         // When tuning is finished it will restart the PID with new gains
         if (!still_tuning) {
-            mode = 0;
+            mode = MODE_PID;
             if (DEBUG) {
                 Serial.println("Tuning finished");
+            }
+        }
+    } else if (mode == MODE_CLEAN) { // Cleaning
+       unsigned char mode = cleaner.update();
+        if (mode != MODE_CLEAN) {  // Cleaning finished
+            mode = mode;
+            if (DEBUG) {
+                Serial.println("Cleaning finished");
             }
         }
     }

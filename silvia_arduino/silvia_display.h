@@ -8,6 +8,7 @@
 #include "silvia_logo.h"
 #include "silvia_output.h"
 #include "silvia_modes.h"
+#include "silvia_clean.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
@@ -18,7 +19,14 @@ class SilviaDisplay : public Adafruit_SSD1306 {
     unsigned long power_start_;  // Time machine was last turned on
     bool power_status_;
     SilviaDisplay(TwoWire* wire);
-    void showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* pid_overridden_by_brew);
+    void showData(
+      double* T,
+      double* T_set, 
+      unsigned int* t,
+      unsigned char* mode, 
+      bool* pid_overridden_by_brew,
+      int t_clean_remaining
+    );
     void showLogo();
     void showBlank();
     void update();
@@ -27,6 +35,7 @@ class SilviaDisplay : public Adafruit_SSD1306 {
 
 extern RelayOutput power_output;
 extern TemperatureController pid;
+extern CleaningProcess cleaner;
 extern double T_boiler;
 extern double pid_setpoint;
 extern unsigned int brew_duration;

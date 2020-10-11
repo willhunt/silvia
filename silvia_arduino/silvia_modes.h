@@ -5,5 +5,6 @@
 #define MODE_PID 0
 #define MODE_MANUAL 1
 #define MODE_AUTOTUNE 2
+#define MODE_CLEAN 3
 
 #endif // SILVIA_MODES_H

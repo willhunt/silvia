@@ -63,7 +63,7 @@ def async_update_status(on=None, brew=None, mode=None, T=None, m=None, low_water
         status.on = on
     if brew is not None:
         status.brew = brew
-    if mode is not None:
+    if mode is not None and mode != 4: # 4 is MODE_OFF
         status.mode = mode
     if T is not None:
         status.T_boiler = T
@@ -151,7 +151,12 @@ def async_comms_update(on=None, brew=None, mode=None, status=None, settings=None
         if mode is None:
             mode = status.mode
         # Send serial data to arduino
-        data_block = struct.pack('<b2?B4fi', 1, on, brew, mode, settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode)
+        data_block = struct.pack(
+            '<b2?B4f4i', 1, 
+            on, brew, mode, 
+            settings.T_set, settings.k_p, settings.k_i, settings.k_d, settings.k_p_mode,
+            settings.n_clean_cycles, settings.t_clean_on, settings.t_clean_off
+        )
         debug_log( "Data to send: {}".format(data_block) )
         try:
             serial_arduino.reset_input_buffer()
@@ -179,14 +184,14 @@ def async_comms_process():
     """
     Process data from microcontroller
     """
-    if django_settings.SIMULATE_SCALE == False:
+    if django_settings.SIMULATE_MACHINE == False:
         if (serial_arduino.in_waiting > 0): #if incoming bytes are waiting to be read from the serial input buffer
             data_block = serial_arduino.read(size=24)
             debug_log( "Data received: {}".format( list(data_block) ) )
             data_list = struct.unpack('<2?2f?B3f', bytes(data_block))
             [power, brew, T, duty, low_water, mode, Kp, Ki, Kd] = data_list
             # Update status
-            async_update_status.delay(power, brew)
+            async_update_status.delay(power, brew, mode)
             serial_arduino.reset_input_buffer()
 
 @shared_task(queue='comms')

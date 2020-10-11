@@ -21,6 +21,7 @@ void brew_on();
 void brew_on_switch();
 void brew_off();
 void brew_off_switch();
+void clean_cycle();
 
 // Defined in silvia_main.ino
 extern unsigned char mode;

@@ -91,3 +91,7 @@ void brew_off_switch() {
     brew_off();
     send_serial_response();
 }
+
+void clean_cycle() {
+
+}

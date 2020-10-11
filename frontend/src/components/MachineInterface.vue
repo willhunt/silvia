@@ -95,6 +95,16 @@
           </v-btn>
         </v-col>
         <v-col cols="auto" class="px-1">
+          <v-btn color="accent lighten-1" @click="toggleClean">
+            <div v-if="machineMode == 3">
+              Cancel Clean
+            </div>
+            <div v-else>
+              Run Clean
+            </div>
+          </v-btn>
+        </v-col>
+        <!-- <v-col cols="auto" class="px-1">
           <v-btn color="accent lighten-1" @click="toggleAutoTune" disabled>
             <div v-if="machineMode == 2">
               Cancel Tuning
@@ -103,7 +113,7 @@
               Auto Tune
             </div>
           </v-btn>
-        </v-col>
+        </v-col> -->
         <v-col cols="auto" class="px-1">
           <v-chip color="info">
             <v-avatar left color="info darken-1">Kp</v-avatar>{{ Kp }}
@@ -217,6 +227,13 @@ export default {
       axios.get('/api/v1/override/', getParams)
         .then(response => {})
         .catch(error => console.log(error))
+    },
+    toggleClean () {
+      if (this.machineMode === 3) {
+        eventBus.$emit('changeMode', 1) // Manual
+      } else {
+        eventBus.$emit('changeMode', 3) // Clean
+      }
     },
     toggleAutoTune () {
       if (this.machineMode === 2) {

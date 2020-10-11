@@ -24,8 +24,27 @@
       <v-text-field class="mx-4" label="Extraction Mass" type="number" v-model="settings.m" suffix="g"></v-text-field>
 
       <v-card-subtitle>Update</v-card-subtitle>
-      <v-text-field class="mx-4" label="Sampling Interval" type="number" v-model="settings.t_sample" suffix="s"></v-text-field>
-      <v-text-field class="mx-4" label="Update Interval" type="number" v-model="settings.t_update" suffix="s"></v-text-field>
+      <v-row class="mx-1">
+        <v-col>
+          <v-text-field label="Sampling Interval" type="number" v-model="settings.t_sample" suffix="s"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field label="Update Interval" type="number" v-model="settings.t_update" suffix="s"></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-card-subtitle>Cleaning</v-card-subtitle>
+      <v-row class="mx-1">
+        <v-col>
+          <v-text-field label="Cycles" type="number" v-model="settings.n_clean_cycles"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field label="Pump on duration" type="number" v-model="settings.t_clean_on" suffix="s"></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field label="Pump off duration" type="number" v-model="settings.t_clean_off" suffix="s"></v-text-field>
+        </v-col>
+      </v-row>
 
       <v-card-actions>
         <v-btn class="success" text @click="saveSettings">Save</v-btn>

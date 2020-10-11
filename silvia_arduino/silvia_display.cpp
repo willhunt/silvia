@@ -6,7 +6,7 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* pid_overridden_by_brew) {
+void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* pid_overridden_by_brew, int t_clean_remaining) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
@@ -26,6 +26,9 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
   } else if (*mode == MODE_PID) {
     sprintf(buffer, "%d", (int)(*T_set + 0.5)); // 0.5 used for rounding correctly
     drawCentreString(buffer, 102, 10);
+  } else if (*mode == MODE_CLEAN) {
+    setCursor(83, 10);
+    print("(C)");
   } else {
     setCursor(83, 10);
     print("(M)");
@@ -41,10 +44,17 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
     print(")");
     setCursor(10, 50);
     print("Set("); print(pid.getSetpoint(), 0); print(")");
-  } else { // Show brew time
+  } else if (*mode == MODE_CLEAN) {  // Show cleaner time remaining
     setTextSize(3);
     int mins = *t / 60;
     int secs = *t % 60;
+    sprintf(buffer, "%02d:%02d", mins, secs);
+    setCursor(21, 40);
+    print(buffer);
+  } else { // Show brew time
+    setTextSize(3);
+    int mins = t_clean_remaining / 60;
+    int secs = t_clean_remaining % 60;
     sprintf(buffer, "%02d:%02d", mins, secs);
     setCursor(21, 40);
     print(buffer);
@@ -76,7 +86,7 @@ void SilviaDisplay::update() {
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode, &pid_overridden_by_brew);
+        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode, &pid_overridden_by_brew, cleaner.get_time_remaining());
       }
     }
   } else {  // machine off

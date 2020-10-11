@@ -19,6 +19,10 @@ class SettingsModel(models.Model):
     # Sampling times
     t_update = models.IntegerField(default=5)  # Time delay between client side updates [s]
     t_sample = models.IntegerField(default=5)  # Time delay between server side sampling [s]
+    # Cleaning
+    t_clean_on = models.IntegerField(default=10)  # Time to turn pump on for during cleaning cycle [s]
+    t_clean_off = models.IntegerField(default=50)  # Time to turn pump off for during cleaning cycle [s]
+    n_clean_cycles = models.IntegerField(default=5)  # Number of on/off cycles [-]
 
     def __repr__(self):
         repr_str = ('Settings %d' % self.id)
@@ -33,6 +37,7 @@ class StatusModel(models.Model):
         0 : PID control
         1 : Manual/override
         2 : PID auto tune
+        3 : Cleaning
     """
     on = models.BooleanField(default=False)  # Machine on or off
     brew = models.BooleanField(default=False)  # Machine currently brewing
