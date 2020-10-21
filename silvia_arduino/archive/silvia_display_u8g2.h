@@ -28,8 +28,8 @@ class SilviaDisplay : public U8G2_SSD1306_128X64_NONAME_F_HW_I2C {
 };
 
 extern RelayOutput power_output;
-extern double T_boiler;
-extern double pid_setpoint;
+extern double T_measured;
+extern double T_setpoint;
 extern int brew_duration;
 
 #endif // SILVIA_DISPLAY_H

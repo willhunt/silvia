@@ -28,7 +28,7 @@ extern unsigned char mode;
 extern RelayOutput power_output;
 extern RelayOutput brew_output;
 extern WaterLevelSensor water_sensor;
-extern TemperatureController pid;
+extern TemperatureController heater;
 extern void timerStart();
 extern void timerReset();
 

@@ -24,7 +24,7 @@ class SilviaDisplay : public Adafruit_SSD1306 {
       double* T_set, 
       unsigned int* t,
       unsigned char* mode, 
-      bool* pid_overridden_by_brew,
+      bool* heat_overridden_by_brew,
       int t_clean_remaining
     );
     void showLogo();
@@ -34,12 +34,12 @@ class SilviaDisplay : public Adafruit_SSD1306 {
 };
 
 extern RelayOutput power_output;
-extern TemperatureController pid;
+extern TemperatureController heater;
 extern CleaningProcess cleaner;
-extern double T_boiler;
-extern double pid_setpoint;
+extern double T_measured;
+extern double T_setpoint;
 extern unsigned int brew_duration;
 extern unsigned char mode;
-extern bool pid_overridden_by_brew;
+extern bool heat_overridden_by_brew;
 
 #endif // SILVIA_DISPLAY_H

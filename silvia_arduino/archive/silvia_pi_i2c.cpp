@@ -65,7 +65,7 @@ void receiveEvent(int numBytes) {
 
 void requestEvent() {
   // Update values
-  response_data.data.T_boiler = temp_sensor_ref->getLatestTemperature();
+  response_data.data.T_measured = temp_sensor_ref->getLatestTemperature();
   response_data.data.power = power_output_ref->getStatus();
   response_data.data.brew = brew_output_ref->getStatus();
   response_data.data.duty = temperature_controller_ref->getDuty();

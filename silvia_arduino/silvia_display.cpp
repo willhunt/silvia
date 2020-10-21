@@ -6,7 +6,7 @@ SilviaDisplay::SilviaDisplay(TwoWire* twi)
   power_status_ = false;
 };
 
-void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* pid_overridden_by_brew, int t_clean_remaining) {
+void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned char* mode, bool* heat_overridden_by_brew, int t_clean_remaining) {
   clearDisplay();
 
   setTextColor(SSD1306_WHITE);
@@ -20,7 +20,7 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
 
   drawRect(80, 7, 41, 20, WHITE);
   setTextSize(2);
-  if (*pid_overridden_by_brew) {
+  if (*heat_overridden_by_brew) {
     setCursor(83, 10);
     print("(B)");
   } else if (*mode == MODE_PID) {
@@ -36,14 +36,14 @@ void SilviaDisplay::showData(double* T, double* T_set, unsigned int* t, unsigned
 
   // Below line
   drawLine(0, 33, width()-1, 33, WHITE);
-  if (*mode == MODE_MANUAL && !*pid_overridden_by_brew) { // show gains 
+  if (*mode == MODE_MANUAL && !*heat_overridden_by_brew) { // show gains 
     setTextSize(1);
     setCursor(10, 40);
     print("K(");
-    print(pid.GetKp(), 1); print(", "); print(pid.GetKi(), 3); print(", "); print(pid.GetKd(), 0);
+    print(heater.GetKp(), 1); print(", "); print(heater.GetKi(), 3); print(", "); print(heater.GetKd(), 0);
     print(")");
     setCursor(10, 50);
-    print("Set("); print(pid.getSetpoint(), 0); print(")");
+    print("Set("); print(heater.getSetpoint(), 0); print(")");
   } else if (*mode == MODE_CLEAN) {  // Show cleaner time remaining
     setTextSize(3);
     int mins = *t / 60;
@@ -86,7 +86,7 @@ void SilviaDisplay::update() {
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(&T_boiler, &pid_setpoint, &brew_duration, &mode, &pid_overridden_by_brew, cleaner.get_time_remaining());
+        showData(&T_measured, &T_setpoint, &brew_duration, &mode, &heat_overridden_by_brew, cleaner.get_time_remaining());
       }
     }
   } else {  // machine off

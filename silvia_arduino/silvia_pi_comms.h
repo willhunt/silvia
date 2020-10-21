@@ -9,19 +9,22 @@
 #include "silvia_water_sensor.h"
 #include "silvia_timer.h"
 #include "silvia_modes.h"
+#include "silvia_clean.h"
+#include "silvia_pump_controller.h"
 
 // Data to send when data is requested
 struct responseFormat {
   bool power;
   bool brew;
-  double T_boiler;
-  double duty;
+  double T_measured;
+  double heater_duty;
   bool water_level;
   unsigned char mode;
-  double Kp;
-  double Ki;
-  double Kd;
-  // int kp_mode;
+  double heater_Kp;
+  double heater_Ki;
+  double heater_Kd;
+  double P_measured;
+  double pump_duty;
 };
 union responseData {
   responseFormat data;
@@ -33,10 +36,15 @@ struct receivedFormat {
   bool brew;
   unsigned char mode;
   double setpoint;
-  double kp;
-  double ki;
-  double kd;
-  int kp_mode;
+  double heater_Kp;
+  double heater_Ki;
+  double heater_Kd;
+  int heater_Kp_mode;
+  int n_clean_cycles;
+  int t_clean_on;
+  int t_clean_off;
+  int t_profile[PROFILE_STEPS];
+  double P_profile[PROFILE_STEPS];
 };
 union receivedData {
   receivedFormat data;
@@ -44,7 +52,7 @@ union receivedData {
 };
 // Data to receive if override requested
 struct overrideFormat {
-  double duty;
+  double heater_duty;
 };
 union overrideData {
   overrideFormat data;
@@ -64,7 +72,8 @@ extern TemperatureSensor temperature_sensor;
 extern WaterLevelSensor water_sensor;
 extern RelayOutput power_output;
 extern RelayOutput brew_output;
-extern TemperatureController pid;
+extern TemperatureController heater;
+extern CleaningProcess cleaner;
 extern void timerStart();
 extern void timerReset();
 

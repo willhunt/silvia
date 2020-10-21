@@ -22,19 +22,19 @@ void RelayOutput::off() {
 };
 
 // Power ouput need to turn PID on and off
-PowerOutput::PowerOutput(int pin, TemperatureController* pid)
-  : RelayOutput(pin), pid_(pid) {
+PowerOutput::PowerOutput(int pin, TemperatureController* heater)
+  : RelayOutput(pin), heater_(heater) {
 
 };
 
 void PowerOutput::on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode) {
   RelayOutput::on();
-  pid_->on(Setpoint, Kp, Ki, Kd, Kp_mode);
+  heater_->on(Setpoint, Kp, Ki, Kd, Kp_mode);
 };
 
 void PowerOutput::off() {
   RelayOutput::off();
-  pid_->off();
+  heater_->off();
 };
 
 SwitchInput::SwitchInput(int pin, void (*on_callback)(), void (*off_callback)()) {

@@ -16,6 +16,7 @@ Notes:
 #define BREW_RELAY_PIN 12
 #define POWER_SWITCH_PIN 4
 #define BREW_SWITCH_PIN 3
+#define DIMMER_PIN 5
 #define I2C_ADDR 0x8
 #define SAFETY_TEMPERATURE 120
 
@@ -29,6 +30,7 @@ Notes:
 #include "silvia_display.h"
 #include "silvia_modes.h"
 #include "silvia_function.h"
+#include "silvia_pump_controller.h"
 
 // Mode
 unsigned char mode = MODE_OFF;
@@ -41,11 +43,17 @@ TemperatureSensor temperature_sensor(TEMP_SENSOR_PIN);
 WaterLevelSensor water_sensor(WATER_SENSOR_PIN);
 
 // Temperature controller
-double T_boiler;
-double pid_output;
-double pid_setpoint;
+double T_measured;
+double heat_output;
+double T_setpoint;
 // PID gains set to zero/ or default as not known yet
-TemperatureController pid = TemperatureController(&T_boiler, &pid_output, &pid_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
+TemperatureController heater = TemperatureController(&T_measured, &heat_output, &T_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, HEAT_RELAY_PIN);
+
+// Pump Contoller
+double P_measured;
+double pump_output;
+double P_setpoint;
+PumpController pump = PumpController(&P_measured, &pump_output, &P_setpoint, 1.0, 1.0, 1.0, P_ON_E, DIRECT, DIMMER_PIN);
 
 // Relays
 RelayOutput power_output = RelayOutput(POWER_RELAY_PIN);
@@ -78,7 +86,7 @@ void setup(void) {
 }
 
 void loop(void)  {
-    T_boiler = temperature_sensor.getTemperature();  // Method includes sampling time check
+    T_measured = temperature_sensor.getTemperature();  // Method includes sampling time check
     // Check switches
     power_switch.update();
     brew_switch.update();
@@ -87,16 +95,16 @@ void loop(void)  {
     // Display
     display.update();
     // Ensure temperature never goes above safety level
-    if (T_boiler > SAFETY_TEMPERATURE) {
-        pid_output = 0.0;
+    if (T_measured > SAFETY_TEMPERATURE) {
+        heat_output = 0.0;
         if (DEBUG) {
             Serial.println("Over temperature limit");
         }
-        pid.on(true);  // Reset to avoid windup
-    } else if (power_output.getStatus() && mode == 0) { // PID mode
-        pid.Compute();  // Method includes sampling time check
+        heater.on(true);  // Reset to avoid windup
+    } else if (power_output.getStatus() && mode == 0) { // heater mode
+        heater.Compute();  // Method includes sampling time check
     } else if (mode == MODE_AUTOTUNE) { // autotune - not used currently
-        bool still_tuning = pid.tune();
+        bool still_tuning = heater.tune();
         // When tuning is finished it will restart the PID with new gains
         if (!still_tuning) {
             mode = MODE_PID;
@@ -111,8 +119,9 @@ void loop(void)  {
             if (DEBUG) {
                 Serial.println("Cleaning finished");
             }
+            send_serial_response();  // Update server
         }
     }
     check_serial_calls();
-    pid.relayControl();
+    heater.relayControl();
 }

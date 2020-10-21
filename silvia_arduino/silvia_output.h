@@ -19,10 +19,10 @@ class RelayOutput {
 
 class PowerOutput : public RelayOutput {
   private:
-    TemperatureController* pid_;
+    TemperatureController* heater_;
   
   public:
-    PowerOutput(int pin, TemperatureController* pid);
+    PowerOutput(int pin, TemperatureController* heater);
     void on(double Setpoint, double Kp, double Ki, double Kd, int Kp_mode);
     void off();
 };

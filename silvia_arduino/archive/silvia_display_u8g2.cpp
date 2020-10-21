@@ -64,7 +64,7 @@ void SilviaDisplay::update() {
       showLogo();
     } else {
       if (millis() - power_start_ > 2000) {  // Only show temperature after 2 seconds, to leave welcome up
-        showData(&T_boiler, &pid_setpoint, &brew_duration);
+        showData(&T_measured, &T_setpoint, &brew_duration);
       }
     }
   } else {  // machine off

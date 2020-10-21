@@ -20,18 +20,28 @@ void pi_comms_setup() {
 
 void update_data_buffer() {
   // Update values
-  response_data.data.T_boiler = temperature_sensor.getLatestTemperature();
+  response_data.data.T_measured = temperature_sensor.getLatestTemperature();
   response_data.data.power = power_output.getStatus();
   response_data.data.brew = brew_output.getStatus();
-  response_data.data.duty = pid.getDuty();
+  response_data.data.heater_duty = heater.getDuty();
   response_data.data.water_level = water_sensor.getLevel();
   response_data.data.mode = mode;
-  response_data.data.Kp = pid.GetKp();
-  response_data.data.Ki = pid.GetKi();
-  response_data.data.Kd = pid.GetKd();
+  response_data.data.heater_Kp = heater.GetKp();
+  response_data.data.heater_Ki = heater.GetKi();
+  response_data.data.heater_Kd = heater.GetKd();
 }
 
 void response_actions() {
+  // Update PID settings
+  heater.SetTunings(received_data.data.heater_Kp, received_data.data.heater_Ki, received_data.data.heater_Kd, received_data.data.heater_Kp_mode);
+  heater.setSetpoint(received_data.data.setpoint);
+  // Update cleaner settings
+  cleaner.set_timings(received_data.data.n_clean_cycles, received_data.data.t_clean_on, received_data.data.t_clean_off);
+
+  // Add mode 'MODE_OFF' which webserver doesn't record
+  unsigned char new_mode = (received_data.data.power == false) ? MODE_OFF : received_data.data.mode;
+  // Mode change
+  change_mode(new_mode);
   // Check if power needs to be toggled
   if (received_data.data.power != power_output.getStatus()) {
     // toggle power
@@ -41,15 +51,6 @@ void response_actions() {
       power_off();
     }
   }
-  // Update pid settings
-  if (received_data.data.mode == MODE_PID) {
-    pid.SetTunings(received_data.data.kp, received_data.data.ki, received_data.data.kd, received_data.data.kp_mode);
-    pid.setSetpoint(received_data.data.setpoint);
-  }
-  // Add mode 'MODE_OFF' which webserver doesn't record
-  unsigned char new_mode = (received_data.data.power == false) ? MODE_OFF : received_data.data.mode;
-  // Mode change
-  change_mode(new_mode);
   // Check if brew needs to be toggled
   if (received_data.data.brew != brew_output.getStatus()) {
     if (received_data.data.brew) {
@@ -76,7 +77,7 @@ void check_serial_calls() {
     } else if (first_byte == 2) {
       Serial.readBytes(override_data.buffer, sizeof_override_data);
       Serial.flush();
-      heater_on_request(override_data.data.duty);
+      heater_on_request(override_data.data.heater_duty);
       feedbackData feedback_data;
       feedback_data.data.ok = true;
       Serial.write(feedback_data.buffer, sizeof_feedback_data);

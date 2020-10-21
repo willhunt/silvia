@@ -36,7 +36,7 @@ unsigned char CleaningProcess::update() {
         if (duration_ > t_total_) {
             stop();
             return previous_mode_;
-        } else if (duration_ % (t_on_ + t_off_) < t_on_) {
+        } else if ((int)(duration_ / 1000) % (t_on_ + t_off_) < t_on_) {
             pump_on();
             return MODE_CLEAN;
         } else {
